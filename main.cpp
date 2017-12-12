@@ -14,29 +14,25 @@ int main( ){
 
 	two = one;
 
-	std::cout << two.get_id() << "\n";
+	//std::cout << two.get_id() << "\n";
+
+	two.set_id( "2" );
 
 	three.set_id( "3" );
 
 	four.set_id( "4" );
 
-	one.set_ordering( two );
-	one.set_ordering( three );
-	one.set_ordering( four );
-
 	std::vector<PairOfAgents> pairs;
+
+	std::vector<Agent> list{ one, two, three, four };
+
+	one.set_ordering( list );
+
+	//one.set_preferences( list );
 
 	for( int i = 0; i < one.get_preferences().size(); ++i )
 
 		std::cout << one.get_preferences()[ i ] << " ";
 
 	std::cout << "\n\n";
-
-	std::vector<Agent> agent{ one, two, three, four };
-
-	set_pairs( agent, pairs );
-
-	for( int i = 0; i < pairs.size(); ++i )
-
-		std::cout << pairs[ i ].get_id() << "\n";
 }

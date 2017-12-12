@@ -2,6 +2,7 @@
 
 //Class functions
 
+// Default Constructor
 Agent::Agent( ){
 
 	preferences = {};
@@ -11,6 +12,7 @@ Agent::Agent( ){
 	status = false;
 }
 
+// Returns agent n status
 bool Agent::get_status( ){
 
 	// if married
@@ -26,11 +28,30 @@ bool Agent::get_status( ){
 		// return single
 }
 
-void Agent::set_ordering( Agent options ){
 
-	preferences.push_back( options );
+// Will be deleted after set_ordering is done. Reason: Similar purpose. Double code.
+void Agent::set_preferences( std::vector<Agent> list  ){
+
+	preferences = list;
 }
 
+// Receives a list of available agents. Randomly selects an element from the list.
+// Puts selected element into preference.
+// TODO: Check for double inputs of the same element, i.e., randomly select an
+// unique element
+void Agent::set_ordering( std::vector<Agent> list ){
+
+	for( int i = 0; i < list.size( ); ++i ){
+
+		int randindex = rand( ) % list.size( );
+
+		preferences.push_back( list[ randindex ] );
+
+		list.erase( list.begin( ) + randindex );
+	}
+}
+
+// Self-explained
 void Agent::operator=( Agent one ){
 
 	this -> set_id( one.get_id() );
@@ -40,6 +61,7 @@ void Agent::operator=( Agent one ){
 	//this -> set_ordering( one.get_preferences() );
 }
 
+// Sets status according to if agent n is married or free
 const void Agent::set_status( bool status ){
 
 	// check if the agent is married
@@ -52,10 +74,13 @@ const void Agent::set_status( bool status ){
 
 			// keep single
 }
+
+// Self-explained
 const void Agent::set_id( std::string name ){ id = name; }
 
 //Struct functions
 
+// Will be deleted. void set_pairs does the same thing
 void PairOfAgents::set_agents( Agent one, Agent two ){
 
 	this -> one = one;
@@ -91,6 +116,7 @@ bool operator!=( Agent& one, Agent& two ){
 		return true;
 }
 
+// Sets pairs of agents
 void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list ){
 
 	list[ 0 ].one = agents[ 0 ];

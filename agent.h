@@ -18,7 +18,8 @@ public:
 
 	std::string get_id( ){ return id; }
 
-	void set_ordering( Agent );
+	void set_preferences( std::vector<Agent> list );
+	void set_ordering( std::vector<Agent> list );
 	void operator=( Agent one );
 
 	const void set_status( bool status );
