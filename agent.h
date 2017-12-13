@@ -6,6 +6,15 @@
 #ifndef AGENT_H
 #define AGENT_H
 
+struct PairOfAgents : public Agent{
+
+	PairOfAgents( Agent man, Agent woman ) : { one = man, two = woman; }
+
+	void set_agents( Agent one, Agent two );
+
+	Agent one, two;
+};
+
 class Agent{
 
 public:
@@ -15,14 +24,17 @@ public:
 	std::vector<Agent> get_preferences( ){ return preferences; }
 
 	bool get_status( );
+	bool proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list );
 
 	std::string get_id( ){ return id; }
 
-	void set_preferences( std::vector<Agent> list );
+	char get_sex( ){ return sex; }
+
 	void set_ordering( std::vector<Agent> list );
 	void operator=( Agent one );
 
-	const void set_status( bool status );
+	const void set_sex( char sex ){ this -> sex = sex; }
+	const void set_status( bool stat );
 	const void set_id( std::string name );
 
 private:
@@ -32,20 +44,17 @@ private:
 	bool status{ };
 
 	std::string id{ }; // must be constant
+
+	char sex{};
 };
-
-struct PairOfAgents : public Agent{
-
-	void set_agents( Agent one, Agent two );
-
-	Agent one, two;
-};
-
-void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list );
 
 std::ostream& operator<<( std::ostream& os, Agent& one );
 
 bool operator==( Agent& one, Agent& two );
 bool operator!=( Agent& one, Agent& two );
+
+
+
+void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list );
 
 #endif // AGENT_H

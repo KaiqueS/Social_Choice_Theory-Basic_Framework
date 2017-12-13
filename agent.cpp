@@ -12,36 +12,46 @@ Agent::Agent( ){
 	status = false;
 }
 
-// Returns agent n status
+// Returns agent n's status
 bool Agent::get_status( ){
 
-	// if married
-
-		// check to whom
-
-		// cout the agent is married with w
-
-		// return agent is married
-
-	// else
-
-		// return single
+	return status;
 }
 
+bool Agent::proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list ){
 
-// Will be deleted after set_ordering is done. Reason: Similar purpose. Double code.
-void Agent::set_preferences( std::vector<Agent> list  ){
+	for( int i = 0; i < man.preferences.size( ); ++i ){
 
-	preferences = list;
+		if( man.preferences[ i ].get_status( ) == false ){
+
+			for( int j = 0; j < woman.preferences.size( ); ++j ){
+
+				if( woman.preferences[ j ] == man ){
+
+
+				}
+			}
+		}
+	}
 }
 
 // Receives a list of available agents. Randomly selects an element from the list.
 // Puts selected element into preference.
-// TODO: Check for double inputs of the same element, i.e., randomly select an
-// unique element
 void Agent::set_ordering( std::vector<Agent> list ){
 
+	// TODO2: Check if the agent itself is not being included into its preferences vector - Done
+	// TODO3: Optimize. LATER!
 	for( int i = 0; i < list.size( ); ++i ){
+
+		if( list[ i ].get_id( ) == this -> id )
+
+			list.erase( list.begin( ) + i );
+	}
+
+	// TODO: Check for double inputs of the same element, i.e., randomly select an
+	// unique element - Done
+	// TODO4: Find a better random number generator! - LATER!
+	while( list.size( ) > 0 ){
 
 		int randindex = rand( ) % list.size( );
 
@@ -54,41 +64,24 @@ void Agent::set_ordering( std::vector<Agent> list ){
 // Self-explained
 void Agent::operator=( Agent one ){
 
-	this -> set_id( one.get_id() );
+	id = one.get_id( );
 
-	this -> set_status( one.get_status( ) );
+	status = one.get_status( );
 
-	//this -> set_ordering( one.get_preferences() );
-}
-
-// Sets status according to if agent n is married or free
-const void Agent::set_status( bool status ){
-
-	// check if the agent is married
-
-		// if married
-
-			// status = married
-
-		// else
-
-			// keep single
+	preferences = one.get_preferences();
 }
 
 // Self-explained
-const void Agent::set_id( std::string name ){ id = name; }
+const void Agent::set_status( bool stat ){
 
-//Struct functions
-
-// Will be deleted. void set_pairs does the same thing
-void PairOfAgents::set_agents( Agent one, Agent two ){
-
-	this -> one = one;
-
-	this -> two = two;
+	// True = married, False = free
+	status = stat;
 }
 
-//Member functions
+// Self-explained. Find some way to automatize this
+const void Agent::set_id( std::string name ){ id = name; }
+
+//Non-member functions
 
 std::ostream& operator<<( std::ostream& os, Agent& one ){
 
@@ -97,6 +90,7 @@ std::ostream& operator<<( std::ostream& os, Agent& one ){
 
 bool operator==( Agent& one, Agent& two ){
 
+	// Modified: deleted && one.get_status( ) == two.get_status( )
 	if( one.get_id( ) == two.get_id( ) )
 
 		return true;
@@ -116,10 +110,31 @@ bool operator!=( Agent& one, Agent& two ){
 		return true;
 }
 
-// Sets pairs of agents
+// Sets pairs of agents. Actually, this is the Gale-Shepley algorithm
 void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list ){
 
-	list[ 0 ].one = agents[ 0 ];
+	for( int i = 0; i < agents.size( ); ++i ){
 
-	list[ 0 ].two = agents[ 1 ];
+		// If agent[ i ] is a man and is free
+
+			// If there is a w to whom m[ i ] has not proposed
+
+				// if the highest ranked w in m[ i ] is free
+
+					// make a pair ( m[ i ], w )
+
+				// else w is engaged to m'[ i ]
+
+					// if w has m'[ i ] > m[ i ]
+
+						// m[ i ] still free
+
+					// else w has m[ i ] > m'[ i ]
+
+						// make ( m[ i ], w ) a pair
+
+						// make m'[ i ] free
+	}
+
+	// return list
 }
