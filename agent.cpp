@@ -42,23 +42,33 @@ void Agent::set_ordering( std::vector<Agent> list ){
 
 	// TODO2: Check if the agent itself is not being included into its preferences vector - Done
 	// TODO3: Optimize. LATER!
-	for( int i = 0; i < list.size( ); ++i ){
+	// FIX: Sex being changed?????????????
+	/*for( int i = 0; i < list.size( ); ++i ){
 
 		if( list[ i ].get_id( ) == this -> id )
 
 			list.erase( list.begin( ) + i );
-	}
+	}*/
 
 	// TODO: Check for double inputs of the same element, i.e., randomly select an
 	// unique element - Done
 	// TODO4: Find a better random number generator! - LATER!
-	while( list.size( ) > 0 ){
+
+	int flxcontrol = list.size( );
+
+	while( flxcontrol > 0 ){
 
 		int randindex = rand( ) % list.size( );
 
-		preferences.push_back( list[ randindex ] );
+		if( list[ randindex ].get_id( ) != id ){
 
-		list.erase( list.begin( ) + randindex );
+			preferences.push_back( list[ randindex ] );
+
+			//list.erase( list.begin( ) + randindex );
+
+		}
+
+		--flxcontrol;
 	}
 }
 
@@ -186,4 +196,9 @@ void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list ){
 	}
 
 	// return list
+}
+
+std::ostream& operator<<( std::ostream& os, PairOfAgents& list ){
+
+	return os << list.one.get_id( ) << ' ' << list.two.get_id( );
 }
