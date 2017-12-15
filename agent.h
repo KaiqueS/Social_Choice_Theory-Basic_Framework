@@ -53,4 +53,6 @@ struct PairOfAgents : public Agent{
 
 void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list );
 
+std::ostream& operator<<( std::ostream& os, PairOfAgents& list );
+
 #endif // AGENT_H

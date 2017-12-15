@@ -22,7 +22,13 @@ int main( ){
 
 	four.set_id( "4" );
 
-	std::vector<PairOfAgents> pairs;
+	one.set_sex( 'm' );
+
+	two.set_sex( 'm' );
+
+	three.set_sex( 'f' );
+
+	four.set_sex( 'f' );
 
 	std::vector<Agent> list{ one, two, three, four };
 
@@ -34,7 +40,11 @@ int main( ){
 
 	four.set_ordering( list );
 
-	for( int i = 0; i < one.get_preferences().size(); ++i )
+	std::vector<Agent> list2{ one, two, three, four };
+
+	std::vector<PairOfAgents> pairs;
+
+	/*for( int i = 0; i < one.get_preferences().size(); ++i )
 
 		std::cout << one.get_preferences()[ i ] << " ";
 
@@ -58,11 +68,11 @@ int main( ){
 
 	std::cout << "\n\n";
 
-	four = one;
+	//four = one;
 
 	for( int i = 0; i < four.get_preferences().size(); ++i )
 
-		std::cout << four.get_preferences()[ i ] << " ";
+		std::cout << four.get_preferences()[ i ] << " ";*/
 
 	std::cout << "\n";
 
@@ -73,6 +83,14 @@ int main( ){
 	else
 
 		std::cout << "q coisa louca!!!!";
+
+	std::cout << "\n\n";
+
+	set_pairs( list2, pairs );
+
+	for( int i = 0; i < pairs.size( ); ++i )
+
+		std::cout << pairs[ i ] << '\n';
 
 	std::cout << "\n\n";
 }
