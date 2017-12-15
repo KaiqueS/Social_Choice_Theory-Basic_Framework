@@ -6,15 +6,6 @@
 #ifndef AGENT_H
 #define AGENT_H
 
-struct PairOfAgents : public Agent{
-
-	PairOfAgents( Agent man, Agent woman ) : { one = man, two = woman; }
-
-	void set_agents( Agent one, Agent two );
-
-	Agent one, two;
-};
-
 class Agent{
 
 public:
@@ -24,7 +15,7 @@ public:
 	std::vector<Agent> get_preferences( ){ return preferences; }
 
 	bool get_status( );
-	bool proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list );
+	//bool proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list );
 
 	std::string get_id( ){ return id; }
 
@@ -53,7 +44,12 @@ std::ostream& operator<<( std::ostream& os, Agent& one );
 bool operator==( Agent& one, Agent& two );
 bool operator!=( Agent& one, Agent& two );
 
+struct PairOfAgents : public Agent{
 
+	PairOfAgents( Agent man, Agent woman ) { one = man, two = woman; }
+
+	Agent one, two;
+};
 
 void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list );
 

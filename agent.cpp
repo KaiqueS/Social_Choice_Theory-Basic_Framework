@@ -18,7 +18,8 @@ bool Agent::get_status( ){
 	return status;
 }
 
-bool Agent::proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list ){
+// Gale-Shepley algorithm, pairing and repairing
+/*bool Agent::proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list ){
 
 	for( int i = 0; i < man.preferences.size( ); ++i ){
 
@@ -33,7 +34,7 @@ bool Agent::proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list 
 			}
 		}
 	}
-}
+}*/
 
 // Receives a list of available agents. Randomly selects an element from the list.
 // Puts selected element into preference.
@@ -111,17 +112,63 @@ bool operator!=( Agent& one, Agent& two ){
 }
 
 // Sets pairs of agents. Actually, this is the Gale-Shepley algorithm
+// TODO5: Check if there are two equal pairs in list!
 void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list ){
 
 	for( int i = 0; i < agents.size( ); ++i ){
 
+		// USE WHILE, DIPSHIT
+
 		// If agent[ i ] is a man and is free
+		if( agents[ i ].get_sex() == 'm' && agents[ i ].get_status() == false ){
 
-			// If there is a w to whom m[ i ] has not proposed
+			// If there is a w to whom m[ i ] has not proposed - should I add a list of proposed?
+			// if the highest ranked w in m[ i ] is free - since who comes first is preferred
+			// I just have to check if 'i' is married, after that, erase her from the prefere
+			// nces - make a pair ( m[ i ], w )
+			for( int j = 0; j < agents[ i ].get_preferences( ).size( ); ++j ){
 
-				// if the highest ranked w in m[ i ] is free
+				if( agents[ i ].get_preferences( )[ j ].get_sex( ) == 'f' ){
 
-					// make a pair ( m[ i ], w )
+					// If not married, make a pair( m, w )
+					if( agents[ i ].get_preferences( )[ j ].get_status() == false ){
+
+						list.push_back( PairOfAgents( agents[ i ], agents[ i ].get_preferences( )[ j ] ) );
+
+						agents[ i ].set_status( true );
+
+						agents[ i ].get_preferences( )[ j ].set_status( true );
+
+						agents[ i ].get_preferences( ).erase( agents[ i ].get_preferences( ).begin( ) + j );
+					}
+
+					// Else if married
+					else if( agents[ i ].get_preferences( )[ j ].get_status( ) == true ){
+
+						for( int k = 0; k < agents[ i ].get_preferences( )[ j ].get_preferences( ).size( ); ++k ){
+
+							// If k < j, then w prefers m[ k ] to m[ j ], do not make a pair, erase w from m's list
+							if( k < j ){
+
+								agents[ i ].get_preferences( ).erase( agents[ i ].get_preferences( ).begin( ) + j );
+
+								set_pairs( agents[ i ].get_preferences( ), list );
+							}
+
+							// If k > j, w: m > m', make a pair
+							else if( k > j ){
+
+								list.push_back( PairOfAgents( agents[ i ], agents[ i ].get_preferences( )[ j ] ) );
+
+								agents[ i ].set_status( true );
+
+								agents[ i ].get_preferences( )[ j ].set_status( true );
+
+								agents[ i ].get_preferences( ).erase( agents[ i ].get_preferences( ).begin( ) + j );
+							}
+						}
+					}
+				}
 
 				// else w is engaged to m'[ i ]
 
@@ -134,6 +181,8 @@ void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list ){
 						// make ( m[ i ], w ) a pair
 
 						// make m'[ i ] free
+			}
+		}
 	}
 
 	// return list

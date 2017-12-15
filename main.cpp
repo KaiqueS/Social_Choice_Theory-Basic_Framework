@@ -8,7 +8,7 @@ int main( ){
 
 	Agent one, two, three, four;
 
-	PairOfAgents pair;
+	//PairOfAgents pair;
 
 	one.set_id( "1" );
 
