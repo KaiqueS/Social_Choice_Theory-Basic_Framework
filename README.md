@@ -11,7 +11,9 @@ For now: Creating an Agent Class with the following properties -> ID
 
 ID and Preferences may be obvious. In SCT, for a set X of alternatives and an indexed set S of agents, ID represents any agent s_i of S, while Preferences represents s_i's ranking of every x in X, i.e., the property Preferences is already ordered accordingly to s_i's respective ranking of the mentioned options.
 
-The less trivial properties, Status and Sex, were introduced in the class because I decided to proceed with the aforementioned project while programming a version of the Stable-Matching Problem. Status, in the program, represents if some agent is married of free, and, trivially, Sex represents if the agent in question is male or female.
+The less trivial properties, Status and Sex, were introduced in the class because I decided to proceed with the aforementioned project while programming a version of the Stable-Matching Problem. Status, in the program, represents if some agent is married or free, and, trivially, Sex represents if an agent in question is male or female.
+
+Those properties are not used in SCT models, and, because of that, they were coded in a way where it is not necessary for one to use them for some program/model to work/run. Their use is entirelly optional.
 
 # For later:
 
