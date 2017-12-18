@@ -1,4 +1,4 @@
-//This shit is hard. This shit is on progress
+//This shit is hard. This shit is in progress
 
 #include <iostream>
 #include <vector>
