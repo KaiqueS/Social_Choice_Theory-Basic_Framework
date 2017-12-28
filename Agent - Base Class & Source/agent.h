@@ -14,15 +14,14 @@ public:
 
 	std::vector<Agent> get_preferences( ){ return preferences; }
 
-	bool get_status( );
-	//bool proposal( Agent& man, Agent& woman, std::vector<PairOfAgents>& list );
+	bool get_status( ){ return status; }
 
 	std::string get_id( ){ return id; }
 
 	char get_sex( ){ return sex; }
 
-	void set_ordering( std::vector<Agent> list );
 	void operator=( Agent one );
+	void set_ordering( std::vector<Agent> list );
 
 	const void set_sex( char sex ){ this -> sex = sex; }
 	const void set_status( bool stat );
@@ -51,7 +50,7 @@ struct PairOfAgents : public Agent{
 	Agent one, two;
 };
 
-void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list );
+//void set_pairs( std::vector<Agent> agents, std::vector<PairOfAgents>& list );
 
 std::ostream& operator<<( std::ostream& os, PairOfAgents& list );
 
