@@ -54,4 +54,6 @@ struct PairOfAgents : public Agent{
 
 std::ostream& operator<<( std::ostream& os, PairOfAgents& list );
 
+std::ostream& operator<<( std::ostream& os, PairOfAgents& list );
+
 #endif // AGENT_H
