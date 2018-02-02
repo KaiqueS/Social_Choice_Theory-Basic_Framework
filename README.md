@@ -14,4 +14,4 @@ Those properties are not used in SCT models, and, because of that, they were cod
 
 Implement Indifference relation
 
-The plan is to add canon models, for example, Arrow's Impossíbility Theorem, when I start to study, for real, Social Choice Theory. I will be using Wulf Gaertner's A Primer On Social Choice Theory( 2006 ) as textbook, and every program of model will be based on the books presentation of the respective model.
+The plan is to add canonical models, for example, Arrow's Impossíbility Theorem, when I start studying, for real, Social Choice Theory. I will be using Wulf Gaertner's A Primer On Social Choice Theory( 2006 ) as textbook, and every program of model will be based on the books presentation of the respective model.
