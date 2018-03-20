@@ -12,6 +12,6 @@ Those properties are not used in SCT models, and, because of that, they were cod
 
 # For later:
 
-Implement Indifference relation
+Implement Indifference relation: remodel the whole Preferences structure. Think about a data-structure to represent it properly.
 
 The plan is to add canonical models, for example, Arrow's Impossíbility Theorem, when I start studying, for real, Social Choice Theory. I will be using Wulf Gaertner's A Primer On Social Choice Theory( 2006 ) as textbook, and every program of model will be based on the books presentation of the respective model.
