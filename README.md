@@ -20,15 +20,15 @@ The data structure used will be a Bidimensional Matrix, composed by three elemen
 
 <ul type="circle">
   
-<li>How will indifference be represented?</li> 
+<li><b>How will indifference be represented?</li> 
 
 &emsp;For any two x and y preferences in an agent's ordering, if x and y have both the same value, then one may say that the agent is indifferent between both of them, and, trivially, for any two options a and b, if the values of a and b are different, the option with a higher value will come, obviously, first in the ordering, being, thus, preferred by the agent.
 
-<li>How will the agents have access to their preferences?</li>
+<li><b>How will the agents have access to their preferences?</li>
 
 &emsp;Each agent will have access to one, and only one, row of the matrix. This will prevent having access, at least at the beginning, to other agent's preferences. 
 
-<li>Why are preferences external?</li>
+<li><b>Why are preferences external?</li>
  
 &emsp;To be simple: it is easier to implement and it saves memory.
 
