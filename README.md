@@ -18,17 +18,21 @@ Preferences will be externaly given, but agents will be able to modify them.
 
 The data structure used will be a Bidimensional Matrix, composed by three elements, i.e., Agents, Alternatives/Options, and a Value which will be representing the ranking of an alternative/option in an agent ordering.
 
-How will indifference be represented? 
+<ul type="circle">
+  
+<li>How will indifference be represented?</li> 
 
-  For any two x and y preferences in an agent's ordering, if x and y have both the same value, then one may say that the agent is indifferent between both of them, and, trivially, for any two options a and b, if the values of a and b are different, the option with a higher value will come, obviously, first in the ordering, being, thus, preferred by the agent.
+&emsp;For any two x and y preferences in an agent's ordering, if x and y have both the same value, then one may say that the agent is indifferent between both of them, and, trivially, for any two options a and b, if the values of a and b are different, the option with a higher value will come, obviously, first in the ordering, being, thus, preferred by the agent.
 
-How will the agents have access to their preferences?
+<li>How will the agents have access to their preferences?</li>
 
-  Each agent will have access to one, and only one, row of the matrix. This will prevent having access, at least at the beginning, to other agent's preferences. 
+&emsp;Each agent will have access to one, and only one, row of the matrix. This will prevent having access, at least at the beginning, to other agent's preferences. 
 
-Why are preferences external?
+<li>Why are preferences external?</li>
  
-  To be simple: it easier to implement and it saves memory.
+&emsp;To be simple: it is easier to implement and it saves memory.
+
+</ul>
 
 # For later:
 
