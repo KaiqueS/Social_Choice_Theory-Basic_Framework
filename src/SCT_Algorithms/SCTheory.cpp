@@ -41,7 +41,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 		for( int j = i; j < paircomp.size( ); ++j ){
 
 			if( paircomp[ j ].xpref == std::get<0>( pairs ) && paircomp[ j ].ypref == std::get<1>( pairs ) &&
-				paircomp[ j ].xpref != std::get<1>( pairs ) && paircomp[ j ].ypref != std::get<0>( pairs )){
+			    paircomp[ j ].xpref != std::get<1>( pairs ) && paircomp[ j ].ypref != std::get<0>( pairs )){
 
 				noreppairs.push_back( paircomp[ i ] );
 			}
