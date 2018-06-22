@@ -137,13 +137,13 @@ template<typename Prefs> bool operator==( Agent<Prefs>& one, Agent<Prefs>& two )
 }
 template<typename Prefs> bool operator!=( Agent<Prefs>& one, Agent<Prefs>& two ){
 
-	if( one.get_id( ) == two.get_id( ) )
+	if( one.get_id( ) != two.get_id( ) )
 
-		return false;
+		return true;
 
 	else
 
-		return true;
+		return false;
 }
 
 #endif // AGENT_H

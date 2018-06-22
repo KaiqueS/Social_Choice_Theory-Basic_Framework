@@ -143,6 +143,27 @@ template<typename PrefCol> Preferencematrix<PrefCol>& Preferencematrix<PrefCol>:
 	return *this;
 }
 
+template<typename PrefCol> bool operator==( Preferencematrix<PrefCol>& one, Preferencematrix<PrefCol>& two ){
+
+	if( one.get_matrix( ) == two.get_matrix( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+template<typename PrefCol> bool operator!=( Preferencematrix<PrefCol>& one, Preferencematrix<PrefCol>& two ){
+
+	if( one.get_matrix( ) != two.get_matrix( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+
 /* Helpers */
 
 // Delete a specified row. Used in Agent.h class

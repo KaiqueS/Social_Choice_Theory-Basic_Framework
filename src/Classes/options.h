@@ -27,7 +27,7 @@ public:
 	int get_value( ){ return value; }
 
 	// Operators
-	Options<Opts>& operator=( Opts copy );
+	Options<Opts>& operator=( Options<Opts> copy );
 
 private:
 
@@ -65,13 +65,36 @@ template<typename Opts> void Options<Opts>::set_value( int val ){ value = val; }
 /* Operators */
 
 // Overloaded assignment operator
-template<typename Opts> Options<Opts>& Options<Opts>::operator=( Opts copy ){
+template<typename Opts> Options<Opts>& Options<Opts>::operator=( Options<Opts> copy ){
 
 	alternatives = copy.get_alternatives( );
 
 	value = copy.get_value( );
 
 	return *this;
+}
+
+template<typename Opts> bool operator==( Options<Opts>& one, Options<Opts>& two ){
+
+	if( one.get_alternatives( ) == two.get_alternatives( ) &&
+		one.get_value( ) == two.get_value( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+template<typename Opts> bool operator!=( Options<Opts>& one, Options<Opts>& two ){
+
+	if( one.get_alternatives( ) != two.get_alternatives( ) ||
+		one.get_value( ) != two.get_value( ) )
+
+		return true;
+
+	else
+
+		return false;
 }
 
 #endif // OPTIONS_H
