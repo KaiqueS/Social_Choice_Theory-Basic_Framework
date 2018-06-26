@@ -18,7 +18,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 
 	std::vector<PairsOfOpts<Prefs>> paircomp{ };
 
-	// get all possible combination of pairs, including repeated pairs
+	// gets all possible combination of pairs, including repeated pairs
 	for( int i = 0; i < listofagents[ 0 ].get_preferences( ).size( ); ++i ){
 
 		compairs.xpref = listofagents[ 0 ].get_preferences( )[ i ];
@@ -36,7 +36,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 
 	std::vector<PairsOfOpts<Prefs>> noreppairs{ };
 
-	// delete repeated combinations
+	// deletes repeated combinations
 	for( int i = 0; i < paircomp.size( ); ++i ){
 
 		std::tuple<Options<Prefs>, Options<Prefs>> pairs{ };
@@ -50,7 +50,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 			// adds to No Repeated Pairs only one version of the repeated pairs, i.e., ( x, y ) OR ( y, x ),
 			// but never both
 			if( paircomp[ j ].xpref == std::get<0>( pairs ) && paircomp[ j ].ypref == std::get<1>( pairs ) &&
-				paircomp[ j ].xpref != std::get<1>( pairs ) && paircomp[ j ].ypref != std::get<0>( pairs )){
+			    paircomp[ j ].xpref != std::get<1>( pairs ) && paircomp[ j ].ypref != std::get<0>( pairs )){
 
 				noreppairs.push_back( paircomp[ i ] );
 			}
