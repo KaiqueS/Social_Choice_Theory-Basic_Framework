@@ -7,8 +7,8 @@
 
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
- *						   order agent's orderings according to alternatives' values
- *						   a ranking class/struct. Easier to manipulates, when compared to tuples
+ *			   order agent's orderings according to alternatives' values
+ *			   a ranking class/struct. Easier to manipulates, when compared to tuples
 */
 
 // Generates, without repetition, all combinations of pairs of alternatives
