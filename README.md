@@ -14,6 +14,8 @@ Implement Condorcert Paradox - working on it
 
 Implement Arrow's Impossibility Theorem - after Condorcet Par.
 
+Implement Gibbard-Sattertwaite Theorem - after Arrow.
+
 Preferences will be externaly given, but agents will be able to modify them.
 
 The data structure used will be a Bidimensional Matrix, composed by three elements, i.e., Agents, Alternatives/Options, and a Value which will be representing the ranking of an alternative/option in an agent ordering.
