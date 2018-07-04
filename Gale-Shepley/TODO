@@ -1,4 +1,0 @@
-Create an agent.h specific for G-S algorithms, i.e., a class with sex and status.
-
-Reason: let the base agent class, the one which will be used in SCT models, not have those properties. This will be more apropriate
-for SCT modeling
