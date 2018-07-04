@@ -65,7 +65,7 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 	// Sets alternatives' id's
 	for( int i = 0; i < setofalts.size( ); ++i ){
 
-		int randaltid = rand( ) % colsz;
+		//int randaltid = rand( ) % colsz; - useless
 
 		std::string subs = std::to_string( i );
 

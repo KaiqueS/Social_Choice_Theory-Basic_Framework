@@ -5,8 +5,6 @@
 
 template<typename Prefs> struct PairsOfOpts{
 
-
-
 	PairsOfOpts& operator=( PairsOfOpts copy );
 
 	Options<Prefs> xpref{ };
