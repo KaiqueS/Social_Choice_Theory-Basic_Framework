@@ -1,14 +1,15 @@
-#include<vector>
+#include <vector>
 #include <tuple>
 #include <map>
 #include "agent.h"
 #include "options.h"
 #include "pairsofopts.h"
-
+#include "socialprefnode.h"
+#include "socialchoicegraph.h"
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
- *			   order agent's orderings according to alternatives' values
- *			   a ranking class/struct. Easier to manipulates, when compared to tuples
+ *						   order agent's orderings according to alternatives' values
+ *						   a ranking class/struct. Easier to manipulates, when compared to tuples
 */
 
 // Generates, without repetition, all combinations of pairs of alternatives
@@ -18,7 +19,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 
 	std::vector<PairsOfOpts<Prefs>> paircomp{ };
 
-	// gets all possible combination of pairs, including repeated pairs
+	// get all possible combination of pairs, including repeated pairs
 	for( int i = 0; i < listofagents[ 0 ].get_preferences( ).size( ); ++i ){
 
 		compairs.xpref = listofagents[ 0 ].get_preferences( )[ i ];
@@ -36,7 +37,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 
 	std::vector<PairsOfOpts<Prefs>> noreppairs{ };
 
-	// deletes repeated combinations
+	// delete repeated combinations
 	for( int i = 0; i < paircomp.size( ); ++i ){
 
 		std::tuple<Options<Prefs>, Options<Prefs>> pairs{ };
@@ -50,7 +51,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 			// adds to No Repeated Pairs only one version of the repeated pairs, i.e., ( x, y ) OR ( y, x ),
 			// but never both
 			if( paircomp[ j ].xpref == std::get<0>( pairs ) && paircomp[ j ].ypref == std::get<1>( pairs ) &&
-			    paircomp[ j ].xpref != std::get<1>( pairs ) && paircomp[ j ].ypref != std::get<0>( pairs )){
+				paircomp[ j ].xpref != std::get<1>( pairs ) && paircomp[ j ].ypref != std::get<0>( pairs )){
 
 				noreppairs.push_back( paircomp[ i ] );
 			}
@@ -61,9 +62,9 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 	return noreppairs;
 }
 
-// Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
-// x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
-// represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives
+/* Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
+ * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
+ * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives */
 template<typename Prefs> std::vector<std::tuple<Options<Prefs>, Options<Prefs>, int, int, int>> rank_generation( std::vector<Agent<Prefs>>& listofagents ){
 
 	// Holder for a pair of options
@@ -126,4 +127,25 @@ template<typename Prefs> std::vector<std::tuple<Options<Prefs>, Options<Prefs>, 
 template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents ){
 
 	std::vector<std::tuple<Options<Prefs>, Options<Prefs>, int, int, int>> rank = rank_generation( listofagents );
+
+	SocialChoiceGraph<Prefs> choicegraph{ };
+
+	choicegraph.initializvec( listofagents );
+
+	choicegraph.makegraph( rank );
+
+	//SocialPrefNode<Prefs> schoicegraph[ rank.size( ) ];
+
+	// create a graph data structure only for the cycle
+
+
+	/*for( int i = 0; i < rank.size( ); ++ i ){
+
+		std::cout << "X: " << std::get<0>( rank[ i ] ).get_alternatives( ) << "\tY: " << std::get<1>( rank[ i ] ).get_alternatives( )
+				  << "\tXval: " << std::get<2>( rank[ i ] ) << "\tYval: " << std::get<3>( rank[ i ] ) << "\tIval:  "
+				  << std::get<4>( rank[ i ] ) << "\n";
+	}*/
+
+	// check for cycles
+
 }
