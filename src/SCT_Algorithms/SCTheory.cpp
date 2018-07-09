@@ -139,12 +139,12 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 	// create a graph data structure only for the cycle
 
 
-	/*for( int i = 0; i < rank.size( ); ++ i ){
+	for( int i = 0; i < rank.size( ); ++ i ){
 
 		std::cout << "X: " << std::get<0>( rank[ i ] ).get_alternatives( ) << "\tY: " << std::get<1>( rank[ i ] ).get_alternatives( )
 				  << "\tXval: " << std::get<2>( rank[ i ] ) << "\tYval: " << std::get<3>( rank[ i ] ) << "\tIval:  "
 				  << std::get<4>( rank[ i ] ) << "\n";
-	}*/
+	}
 
 	// check for cycles
 
