@@ -45,18 +45,58 @@ template<typename Prefs> void SocialChoiceGraph<Prefs>::makegraph( std::vector<s
 
 	for( int i = 0; i < rank.size( ); ++i ){
 
-		if( std::get<2>( rank[ i ] ) > std::get<3>( rank[ i ] ) ){
+		for( int j = 0; j < scgraph.size( ); ++j ){
 
+			// If xval > yval
+			if( std::get<2>( rank[ i ] ) > std::get<3>( rank[ i ] ) ){
 
+				// If scgraph[ i ] == x, set scgraph[ i ] > y, y = y, increment pref pointer
+				if( scgraph[ j ].getself( ).get_alternatives( ) == std::get<0>( rank[ i ] ).get_alternatives( ) ){
+
+					scgraph[ j ].setpreferred( std::get<1>( rank[ i ] ) );
+
+					scgraph[ j ].getpreferred( ) -> set_alternatives( std::get<1>( rank[ i ] ).get_alternatives( ) );
+
+					scgraph[ j ].incrementpref( );
+				}
+
+				// Else if scgraph[ i ] == y, set scgraph[ i ] < x, x = x, increment worse pointer
+				else if( scgraph[ i ].getself( ).get_alternatives( ) == std::get<1>( rank[ i ] ).get_alternatives( ) ){
+
+					scgraph[ j ].setworse( std::get<0>( rank[ i ] ) );
+
+					scgraph[ j ].getworse( ) -> set_alternatives( std::get<0>( rank[ i ] ).get_alternatives( ) ); ;
+
+					scgraph[ j ].incrementworse( );
+				}
+			}
+
+			else if( std::get<2>( rank[ i ] ) < std::get<3>( rank[ i ] ) ){
+
+				if( scgraph[ j ].getself( ).get_alternatives( ) == std::get<0>( rank[ i ] ).get_alternatives( ) ){
+
+					scgraph[ j ].setpreferred( std::get<1>( rank[ i ] ) );
+
+					scgraph[ j ].getpreferred( ) -> set_alternatives( std::get<0>( rank[ i ] ).get_alternatives( ) );
+
+					scgraph[ j ].incrementworse( ); // shit happening here
+				}
+
+				else if( scgraph[ j ].getself( ).get_alternatives( ) == std::get<1>( rank[ i ] ).get_alternatives( ) ){
+
+					scgraph[ j ].setworse( std::get<0>( rank[ i ] ) );
+
+					scgraph[ j ].getworse( ) -> set_alternatives( std::get<0>( rank[ i ] ).get_alternatives( ) ); ;
+
+					scgraph[ j ].incrementworse( );
+				}
+			}
+
+			else if( std::get<2>( rank[ i ] ) == std::get<4>( rank[ i ] ) ||
+					 std::get<3>( rank[ i ] ) == std::get<4>( rank[ i ] ) ){
+
+			}
 		}
-
-		else if( std::get<2>( rank[ i ] ) < std::get<23>( rank[ i ] ) ){
-
-
-		}
-
-		else if( std::get<2>( rank[ i ] ) == std::get<4>( rank[ i ] ) ||
-				 std::get<3>( rank[ i ] ) == std::get<4>( rank[ i ] ) )
 	}
 }
 
