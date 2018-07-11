@@ -19,5 +19,4 @@ template<typename Prefs> PairsOfOpts<Prefs>& PairsOfOpts<Prefs>::operator=( Pair
 	return *this;
 }
 
-
 #endif // PAIRSOFOPTS_H

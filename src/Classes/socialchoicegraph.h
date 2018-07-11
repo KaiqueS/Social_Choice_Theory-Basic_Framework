@@ -3,6 +3,9 @@
 
 #include "agent.h"
 #include "socialprefnode.h"
+#include "pairwiserank.h"
+
+// TODO: REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure
 
 template<typename Prefs> class SocialChoiceGraph{
 
@@ -16,7 +19,8 @@ public:
 	// Setters
 	void setvecsize( int size ){ scgraph.resize( size ); }
 	void initializvec( std::vector<Agent<Prefs>>& listofagents );
-	void makegraph( std::vector<std::tuple<Options<Prefs>, Options<Prefs>, int, int, int>> rank );
+	void makegraph( std::vector<std::tuple<Options<Prefs>, Options<Prefs>, int, int, int>> rank ); //REFACTOR: USei PairWiseRank instead of Tuple
+	void makegraph( std::vector<PairWiseRank<Prefs>> rank );
 
 	// Getters
 	std::vector<SocialPrefNode<Prefs>> getgraph( ){ return scgraph; }
@@ -41,60 +45,72 @@ template<typename Prefs> void SocialChoiceGraph<Prefs>::initializvec( std::vecto
 	}
 }
 
-template<typename Prefs> void SocialChoiceGraph<Prefs>::makegraph( std::vector<std::tuple<Options<Prefs>, Options<Prefs>, int, int, int>> rank ){
+template<typename Prefs> void SocialChoiceGraph<Prefs>::makegraph( std::vector<PairWiseRank<Prefs>> rank ){
 
 	for( int i = 0; i < rank.size( ); ++i ){
 
 		for( int j = 0; j < scgraph.size( ); ++j ){
 
-			// If xval > yval
-			if( std::get<2>( rank[ i ] ) > std::get<3>( rank[ i ] ) ){
+			// if x > y
+			if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) ){
 
-				// If scgraph[ i ] == x, set scgraph[ i ] > y, y = y, increment pref pointer
-				if( scgraph[ j ].getself( ).get_alternatives( ) == std::get<0>( rank[ i ] ).get_alternatives( ) ){
+				// If scgraph[ j ] == x, set preferredto = y, increment preferredto
+				if( scgraph[ j ].getself( ).get_alternatives( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
 
-					scgraph[ j ].setpreferred( std::get<1>( rank[ i ] ) );
+					scgraph[ j ].setpreferredto( rank[ i ].get_opty( ) );
 
-					scgraph[ j ].getpreferred( ) -> set_alternatives( std::get<1>( rank[ i ] ).get_alternatives( ) );
-
-					scgraph[ j ].incrementpref( );
+					scgraph[ j ].incrmntprefto( );
 				}
 
-				// Else if scgraph[ i ] == y, set scgraph[ i ] < x, x = x, increment worse pointer
-				else if( scgraph[ i ].getself( ).get_alternatives( ) == std::get<1>( rank[ i ] ).get_alternatives( ) ){
+				// Else if scgraph[ j ] == y, set
+				else if( scgraph[ j ].getself( ).get_alternatives( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
 
-					scgraph[ j ].setworse( std::get<0>( rank[ i ] ) );
+					scgraph[ j ].setworse( rank[ i ].get_optx( ) );
 
-					scgraph[ j ].getworse( ) -> set_alternatives( std::get<0>( rank[ i ] ).get_alternatives( ) ); ;
-
-					scgraph[ j ].incrementworse( );
+					scgraph[ j ].incrmntworse( );
 				}
 			}
 
-			else if( std::get<2>( rank[ i ] ) < std::get<3>( rank[ i ] ) ){
+			else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) ){
 
-				if( scgraph[ j ].getself( ).get_alternatives( ) == std::get<0>( rank[ i ] ).get_alternatives( ) ){
+				// If scgraph[ j ] == x, set preferredto = y, increment preferredto
+				if( scgraph[ j ].getself( ).get_alternatives( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
 
-					scgraph[ j ].setpreferred( std::get<1>( rank[ i ] ) );
+					scgraph[ j ].setworse( rank[ i ].get_opty( ) );
 
-					scgraph[ j ].getpreferred( ) -> set_alternatives( std::get<0>( rank[ i ] ).get_alternatives( ) );
-
-					scgraph[ j ].incrementworse( ); // shit happening here
+					scgraph[ j ].incrmntworse( );
 				}
 
-				else if( scgraph[ j ].getself( ).get_alternatives( ) == std::get<1>( rank[ i ] ).get_alternatives( ) ){
+				// Else if scgraph[ j ] == y, set
+				else if( scgraph[ j ].getself( ).get_alternatives( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
 
-					scgraph[ j ].setworse( std::get<0>( rank[ i ] ) );
+					scgraph[ j ].setpreferredto( rank[ i ].get_optx( ) );
 
-					scgraph[ j ].getworse( ) -> set_alternatives( std::get<0>( rank[ i ] ).get_alternatives( ) ); ;
-
-					scgraph[ j ].incrementworse( );
+					scgraph[ j ].incrmntprefto( );
 				}
 			}
 
-			else if( std::get<2>( rank[ i ] ) == std::get<4>( rank[ i ] ) ||
-					 std::get<3>( rank[ i ] ) == std::get<4>( rank[ i ] ) ){
+			else if( rank[ i ].get_xval( ) == rank[ i ].get_yval( ) ){ // Revise this later: how to deal with indifference?
 
+				// If scgraph[ j ] == x, set preferredto = y, increment preferredto
+				if( scgraph[ j ].getself( ).get_alternatives( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
+
+					scgraph[ j ].setpreferredto( rank[ i ].get_opty( ) );
+					scgraph[ j ].setworse( rank[ i ].get_opty( ) );
+
+					scgraph[ j ].incrmntprefto( );
+					scgraph[ j ].incrmntworse( );
+				}
+
+				// Else if scgraph[ j ] == y, set
+				else if( scgraph[ j ].getself( ).get_alternatives( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
+
+					scgraph[ j ].setpreferredto( rank[ i ].get_optx( ) );
+					scgraph[ j ].setworse( rank[ i ].get_optx( ) );
+
+					scgraph[ j ].incrmntprefto( );
+					scgraph[ j ].incrmntworse( );
+				}
 			}
 		}
 	}

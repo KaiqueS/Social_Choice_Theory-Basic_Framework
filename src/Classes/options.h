@@ -88,7 +88,7 @@ template<typename Opts> bool operator==( Options<Opts>& one, Options<Opts>& two 
 template<typename Opts> bool operator!=( Options<Opts>& one, Options<Opts>& two ){
 
 	if( one.get_alternatives( ) != two.get_alternatives( ) ||
-		one.get_value( ) != two.get_value( ) )
+		one.get_value( ) != two.get_value( ) ) // WRONG: should be && instead of ||
 
 		return true;
 
