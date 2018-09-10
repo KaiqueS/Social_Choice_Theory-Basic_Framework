@@ -8,14 +8,13 @@
 #include "socialchoicegraph.h"
 #include "pairwiserank.h"
 
-// TODO: REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure
+// TODO: REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure -> DONE
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
  *						   order agent's orderings according to alternatives' values
- *						   a ranking class/struct. Easier to manipulates, when compared to tuples - DONE: PairWiseRank
 */
 
-// Generates, without repetition, all combinations of pairs of alternatives -> REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure <-
+// Generates, without repetition, all combinations of pairs of alternatives -> REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure <- -> DONE
 template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::vector<Agent<Prefs>>& listofagents ){
 
 	PairsOfOpts<Prefs> compairs;
@@ -68,7 +67,7 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 /* Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
  * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
  * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives */
-template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::vector<Agent<Prefs>>& listofagents ){
+template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::vector<Agent<Prefs>>& listofagents ){ // maybe try to return a reference?
 
 	// Holder for a pair of options
 	PairsOfOpts<Prefs> compairs{ };
@@ -128,9 +127,7 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 	return ranking;
 }
 
-template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents ){
-
-	std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
+template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, SocialChoiceGraph<Prefs>& graph ){
 
 	for( int i = 0; i < rank.size( ); ++ i ){
 
@@ -141,11 +138,9 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 					  << "\tIval: " << rank[ i ].get_ival( ) << "\n";
 	}
 
-	SocialChoiceGraph<Prefs> choicegraph{ };
+	graph.initializvec( listofagents );
 
-	choicegraph.initializvec( listofagents );
-
-	choicegraph.makegraph( rank );
+	graph.makegraph( rank );
 
 	//SocialPrefNode<Prefs> schoicegraph[ rank.size( ) ];
 
