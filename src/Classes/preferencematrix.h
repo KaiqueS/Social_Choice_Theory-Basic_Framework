@@ -3,10 +3,10 @@
 #ifndef PREFERENCEMATRIX_H
 #define PREFERENCEMATRIX_H
 
-#include<iostream>
-#include<vector>
-#include<random>
-#include<algorithm>
+#include <iostream>
+#include <vector>
+#include <random>
+#include <algorithm>
 #include "options.h"
 
 template<typename PrefCol> class Preferencematrix{
@@ -16,7 +16,7 @@ public:
 	// Constructors & Destructor
 	Preferencematrix( );
 
-	Preferencematrix( std::vector<std::vector<Options<PrefCol>>> copymatrix );
+	Preferencematrix( const std::vector<std::vector<Options<PrefCol>>>& copymatrix );
 
 	~Preferencematrix( ){ std::cout << "Matrix destructed.\n\n"; }
 
@@ -26,15 +26,15 @@ public:
 	// Getters
 	std::vector<std::vector<Options<PrefCol>>> get_matrix( ){ return matrix; }
 
-	void print_mtx( );
-
 	// Operators
-	std::vector<Options<PrefCol>>& operator[ ]( int position ){ return matrix[ position ]; }
+	std::vector<Options<PrefCol>>& operator[ ]( const int& position ){ return matrix[ position ]; }
 
-	Preferencematrix<PrefCol>& operator=( Preferencematrix copy );
+	Preferencematrix<PrefCol>& operator=( const Preferencematrix& copy );
 
-	//Helpers
+	// Helpers
 	void delete_row( int rowindex );
+
+	void print_mtx( );
 
 private:
 
@@ -44,20 +44,14 @@ private:
 /* Constructors */
 
 // Default Constructor. Initializes private members to its default values
-template<typename PrefCol> Preferencematrix<PrefCol>::Preferencematrix( ){
+template<typename PrefCol> Preferencematrix<PrefCol>::Preferencematrix( ){ matrix = { }; }
 
-	matrix = { };
-}
-
-// Parameterized Constructor. Initializes values according to parameters
-template<typename PrefCol> Preferencematrix<PrefCol>::Preferencematrix( std::vector<std::vector<Options<PrefCol>>> copymatrix ){
-
-	matrix = copymatrix;
-}
+// Copy Constructor. Initializes values according to parameters
+template<typename PrefCol> Preferencematrix<PrefCol>::Preferencematrix( const std::vector<std::vector<Options<PrefCol>>>& copymatrix ){ matrix = copymatrix; }
 
 /* Setters*/
 
-// Set a matrix of RowSZ x ColSZ dimension. Sets a random value to each alternative
+// Set a matrix of RowSZ x ColSZ dimensions. Sets a random value to each alternative
 template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz, int colsz ){
 
 	std::vector<Options<PrefCol>> setofalts( colsz );
@@ -136,9 +130,9 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::print_mtx( ){
 /* Operators */
 
 // Overloaded assignment operator
-template<typename PrefCol> Preferencematrix<PrefCol>& Preferencematrix<PrefCol>::operator=( Preferencematrix copy ){
+template<typename PrefCol> Preferencematrix<PrefCol>& Preferencematrix<PrefCol>::operator=( const Preferencematrix& copy ){
 
-	matrix = copy.get_matrix( );
+	matrix = copy.matrix;
 
 	return *this;
 }
@@ -166,7 +160,7 @@ template<typename PrefCol> bool operator!=( Preferencematrix<PrefCol>& one, Pref
 
 /* Helpers */
 
-// Delete a specified row. Used in Agent.h class
+// Deletes a specified row. Used in Agent.h class
 template<typename PrefCol> void Preferencematrix<PrefCol>::delete_row( int rowindex ){
 
 	matrix.erase( matrix.begin( ) + rowindex );

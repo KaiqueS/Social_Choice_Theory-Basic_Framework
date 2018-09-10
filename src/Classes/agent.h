@@ -15,8 +15,8 @@ public:
 
 	// Constructors & Destructor
 	Agent( );
-
 	Agent( std::vector<Options<Prefs>> list, std::string name );
+	Agent( const Agent& copy );
 
 	~Agent( ){ std::cout << "Agent " << id << " destructed.\n\n"; }
 
@@ -34,7 +34,9 @@ public:
 	void check_indifference( );
 
 	// Operators
-	Agent<Prefs>& operator=( Agent<Prefs> one );
+	Agent<Prefs>& operator=( const Agent<Prefs>& one );
+
+	Options<Prefs>& operator[ ]( const int& index ){ return preferences[ index ]; }
 
 private:
 
@@ -62,9 +64,17 @@ template<typename Prefs> Agent<Prefs>::Agent( std::vector<Options<Prefs>> list, 
 	id = name;
 }
 
+// Copy constructor
+template<typename Prefs> Agent<Prefs>::Agent( const Agent& copy ){
+
+	preferences = copy.preferences;
+
+	id = copy.id;
+}
+
 /* Setters */
 
-// Set agent preferences. Takes a random row from PrefMatrix and set it to be the agent's preferences.
+// Sets agent's preferences. Takes a random row from PrefMatrix and set it to be the agent's preferences.
 // Deletes the used row at the end: Avoid repeated preferences for different agents
 template<typename Prefs> void Agent<Prefs>::set_preferences( Preferencematrix<Prefs>& prefmatrix ){
 
@@ -84,8 +94,8 @@ template<typename Prefs> void Agent<Prefs>::print_prefs( ){
 
 	for( int i = 0; i < preferences.size( ); ++i ){
 
-		std::cout << "( " << preferences[ i ].get_alternatives( ) << " , " <<
-			preferences[ i ].get_value( ) << " ) ";
+		std::cout << "( " << preferences[ i ].get_alternatives( ) << " , "
+				  << preferences[ i ].get_value( ) << " ) ";
 	}
 
 	std::cout << "\n";
@@ -114,11 +124,11 @@ template<typename Prefs> void Agent<Prefs>::check_indifference( ){
 /* Operators */
 
 // Overloaded assignment operator. 
-template<typename Prefs> Agent<Prefs>& Agent<Prefs>::operator=( Agent<Prefs> one ){
+template<typename Prefs> Agent<Prefs>& Agent<Prefs>::operator=( const Agent<Prefs>& one ){
 
-	id = one.get_id( );
+	id = one.id;
 
-	preferences = one.get_preferences( );
+	preferences = one.preferences;
 
 	return *this;
 }
