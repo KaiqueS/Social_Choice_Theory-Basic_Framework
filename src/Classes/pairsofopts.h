@@ -13,7 +13,7 @@ template<typename Prefs> struct PairsOfOpts{
 	~PairsOfOpts( ){ }
 
 	// Operators
-	PairsOfOpts& operator=( const PairsOfOpts<Prefs>& copy );
+	PairsOfOpts& operator=( const PairsOfOpts& copy );
 
 	// Members
 	Options<Prefs> xpref{ };

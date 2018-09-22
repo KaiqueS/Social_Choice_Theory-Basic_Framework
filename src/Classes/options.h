@@ -14,7 +14,7 @@ public:
 
 	Options( );
 	Options( const Opts& alts, const int& val );
-	Options( const Options<Opts>& copy );
+	Options( const Options& copy );
 
 	~Options( ){ }
 
@@ -28,7 +28,7 @@ public:
 	int get_value( ){ return value; }
 
 	// Operators
-	Options<Opts>& operator=( const Options<Opts>& copy );
+	Options& operator=( const Options& copy );
 
 private:
 
@@ -105,5 +105,4 @@ template<typename Opts> bool operator!=( Options<Opts>& one, Options<Opts>& two 
 
 		return false;
 }
-
 #endif // OPTIONS_H

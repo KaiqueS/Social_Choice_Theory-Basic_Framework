@@ -37,7 +37,7 @@ public:
 	int get_ival( );
 
 	// Operators
-	PairWiseRank& operator=( const PairWiseRank<Prefs>& copy );
+	PairWiseRank& operator=( const PairWiseRank& copy );
 
 private:
 
@@ -131,6 +131,17 @@ template<typename Prefs> PairWiseRank<Prefs>& PairWiseRank<Prefs>::operator=( co
 	ival = copy.ival;
 
 	return *this;
+}
+
+template<typename Prefs> std::ostream& operator<<( std::ostream& os, PairWiseRank<Prefs>& rank ){
+
+	os << "X: " << rank.get_optx( ).get_alternatives( )
+	   << "\tY: " << rank.get_opty( ).get_alternatives( )
+	   << "\tXval: " << rank.get_xval( )
+	   << "\tYval: " << rank.get_yval( )
+	   << "\tIval: " << rank.get_ival( );
+
+	return os;
 }
 
 #endif // PAIRWISERANK_H

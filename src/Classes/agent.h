@@ -22,7 +22,7 @@ public:
 
 	// Setters
 	void set_preferences( Preferencematrix<Prefs>& prefmatrix );
-	
+
 	void set_id( std::string name ){ id = name; }
 
 	// Getters
@@ -34,7 +34,7 @@ public:
 	void check_indifference( );
 
 	// Operators
-	Agent<Prefs>& operator=( const Agent<Prefs>& one );
+	Agent& operator=( const Agent<Prefs>& one );
 
 	Options<Prefs>& operator[ ]( const int& index ){ return preferences[ index ]; }
 
@@ -42,7 +42,7 @@ private:
 
 	// A row of the preferencematrix class. One row for each agent
 	std::vector<Options<Prefs>> preferences;
-	
+
 	std::string id{ }; // must be constant
 };
 
@@ -123,7 +123,7 @@ template<typename Prefs> void Agent<Prefs>::check_indifference( ){
 
 /* Operators */
 
-// Overloaded assignment operator. 
+// Overloaded assignment operator.
 template<typename Prefs> Agent<Prefs>& Agent<Prefs>::operator=( const Agent<Prefs>& one ){
 
 	id = one.id;
@@ -155,5 +155,4 @@ template<typename Prefs> bool operator!=( Agent<Prefs>& one, Agent<Prefs>& two )
 
 		return false;
 }
-
 #endif // AGENT_H

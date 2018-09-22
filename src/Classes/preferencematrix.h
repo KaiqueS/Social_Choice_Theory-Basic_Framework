@@ -29,7 +29,7 @@ public:
 	// Operators
 	std::vector<Options<PrefCol>>& operator[ ]( const int& position ){ return matrix[ position ]; }
 
-	Preferencematrix<PrefCol>& operator=( const Preferencematrix& copy );
+	Preferencematrix& operator=( const Preferencematrix& copy );
 
 	// Helpers
 	void delete_row( int rowindex );
@@ -86,26 +86,20 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 	}
 
 	/* Deprecated
-	
+
 	for( int i = 0; i < rowsz; ++i ){
-
 		std::vector<Options<PrefCol>> altern{ };
-
 		matrix.push_back( altern );
-
 		for( int j = 0; j < colsz; ++j ){
-
 			Options<PrefCol> newopt{ };
-
 			int val = rand( ) % colsz;
-
 			newopt.set_value( val );
-			
+
 			matrix[ i ].push_back( newopt );
 		}
 	}*/
 }
- 
+
 /* Getters */
 
 // Prints matrix
