@@ -8,13 +8,12 @@
 #include "socialchoicegraph.h"
 #include "pairwiserank.h"
 
-// TODO: REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure -> DONE
-
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
- *						   order agent's orderings according to alternatives' values
-*/
+ *						   order agent's orderings according to alternatives' values - enables
+ *						   binary search
+ */
 
-// Generates, without repetition, all combinations of pairs of alternatives -> REFACTOR! Remove all uses of Tuple. Replace it with a custom data structure <- -> DONE
+// Generates, without repetition, all combinations of pairs of alternatives
 template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::vector<Agent<Prefs>>& listofagents ){
 
 	PairsOfOpts<Prefs> compairs;
@@ -64,10 +63,10 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 	return noreppairs;
 }
 
-/* Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
- * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
- * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives */
-template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::vector<Agent<Prefs>>& listofagents ){ // maybe try to return a reference?
+// Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
+// x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
+// represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives
+template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::vector<Agent<Prefs>>& listofagents ){
 
 	// Holder for a pair of options
 	PairsOfOpts<Prefs> compairs{ };
@@ -127,25 +126,119 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 	return ranking;
 }
 
-template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, SocialChoiceGraph<Prefs>& graph ){
+// Creates a graph GRAPH composed by nodes of alternatives. Relates those nodes according to how the alt-
+// ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
+// that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
+// x.indifference
+template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
-	for( int i = 0; i < rank.size( ); ++ i ){
+	// Initializes nodes' ids. Take as argument the ids from an agent
+	for( int i = 0; i < graph.size( ); ++i )
 
-			std::cout << "X: " << rank[ i ].get_optx( ).get_alternatives( )
-					  << "\tY: " << rank[ i ].get_opty( ).get_alternatives( )
-					  << "\tXval: " << rank[ i ].get_xval( )
-					  << "\tYval: " << rank[ i ].get_yval( )
-					  << "\tIval: " << rank[ i ].get_ival( ) << "\n";
+		graph[ i ].set_id( listofagents[ 0 ].get_preferences( )[ i ].get_alternatives( ) );
+
+	// Checks how alternatives are related. Links them accordingly to their relation
+	for( int i = 0; i < rank.size( ); ++i ){
+
+		for( int j = 0; j < graph.size( ); ++j ){
+
+			// if x > y
+			if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) ){
+
+				// If graph[ j ] == x, set preferredto = y, i.e., x is preferred to y
+				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
+
+					for( int k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) )
+
+							graph[ j ].set_pref( graph[ k ] );
+					}
+				}
+
+				// Else if graph[ j ] == y, set worse = x, i.e., y is worse than x
+				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
+
+					for( int k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) )
+
+							graph[ j ].set_worse( graph[ k ] );
+					}
+				}
+			}
+
+			// if y > x
+			else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) ){
+
+				// If graph[ j ] == x, set worsethan = y
+				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
+
+					for( int k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) )
+
+							graph[ j ].set_worse( graph[ k ] );
+					}
+				}
+
+				// Else if scgraph[ j ] == y, set preferences = y
+				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
+
+					for( int k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) )
+
+							graph[ j ].set_pref( graph[ k ] );
+					}
+				}
+			}
+
+			// if x == y
+			else if( rank[ i ].get_xval( ) == rank[ i ].get_yval( ) ){
+
+				// If scgraph[ j ] == x, set indiff = y
+				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
+
+					for( int k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
+
+							graph[ k ].set_indiff( graph[ j ] );
+						}
+					}
+				}
+
+				// Else if scgraph[ j ] == y, set indiff = x
+				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
+
+					for( int k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
+
+							graph[ k ].set_indiff( graph[ j ] );
+						}
+					}
+				}
+			}
+		}
 	}
 
-	graph.initializvec( listofagents );
+	// Returns the completed graph
+	return graph;
+}
 
-	graph.makegraph( rank );
+template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
-	//SocialPrefNode<Prefs> schoicegraph[ rank.size( ) ];
+	// Prints social ranking of alternatives
+	for( int i = 0; i < rank.size( ); ++i )
 
-	// create a graph data structure only for the cycle
+		std::cout << rank[ i ] << "\n";
+
+	std::cout << "\n";
+
+	// Creates a graph. This graph will be checked for cycles
+	make_graph( listofagents, rank, graph );
 
 	// check for cycles
-
 }
