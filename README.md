@@ -1,6 +1,7 @@
 # Social Choice Theory - A Toolbox
 
-The purpose is the following: to create a library of Axiomatic Social Choice Theory canonical models, e.g., Arrow's impossibility theorem.
+The purpose is the following: to create a library of Axiomatic Social Choice Theory canonical models, e.g., Arrow's impossibility theorem. The library is intended to help, or aid, students that are being introduced to Social Choice Theory.
+They will be able to follow, step-by-step, the theorems implemented here.
 
 # About the properties
 
