@@ -6,6 +6,8 @@
 #include <vector>
 #include <iostream>
 
+// TODO: Document this
+
 template<typename Prefs> class SocialPrefNode{
 
 public:
@@ -40,8 +42,6 @@ public:
 	// Operators
 	SocialPrefNode& operator=( const SocialPrefNode& copy );
 
-	//SocialPrefNode*& operator[ ]( const int index );
-
 private:
 
 	char id{ };
@@ -53,18 +53,23 @@ private:
 
 /* Constructors & Destructor */
 
+// Default constructor. Initializes members to its default values
 template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( ){
 
 	id = '0';
 
 	preferences = { };
 }
+
+// Parameterized constructor.
 template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( char self, std::vector<SocialPrefNode*> pref ){
 
 	id = self;
 
 	preferences = pref;
 }
+
+// Copy constructor
 template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( const SocialPrefNode& copy ){
 
 	id = copy.id;
@@ -72,10 +77,12 @@ template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( const SocialPref
 	preferences = copy.preferences;
 }
 
+// Destructor
 template<typename Prefs> SocialPrefNode<Prefs>::~SocialPrefNode( ){ }
 
 /* Setters */
 
+// Sets SocialPreferenceNodes's id
 template<typename Prefs> void SocialPrefNode<Prefs>::set_id( char self ){
 
 	if( !self ) // checking for nullptr
@@ -84,6 +91,7 @@ template<typename Prefs> void SocialPrefNode<Prefs>::set_id( char self ){
 
 	id = self;
 }
+
 
 template<typename Prefs> void SocialPrefNode<Prefs>::set_pref( std::vector<SocialPrefNode*> prefs ){ preferences = prefs; }
 template<typename Prefs> void SocialPrefNode<Prefs>::set_pref( SocialPrefNode& prefs ){ preferences.push_back( &prefs ); }
@@ -98,6 +106,7 @@ template<typename Prefs> void SocialPrefNode<Prefs>::set_indiff( SocialPrefNode&
 
 /* Operators */
 
+// Overloaded assignment operator
 template<typename Prefs> SocialPrefNode<Prefs>& SocialPrefNode<Prefs>::operator=( const SocialPrefNode& copy ){
 
 	id = copy.id;
@@ -107,6 +116,32 @@ template<typename Prefs> SocialPrefNode<Prefs>& SocialPrefNode<Prefs>::operator=
 	return *this;
 }
 
-//template<typename Prefs> SocialPrefNode<Prefs>*& SocialPrefNode<Prefs>::operator[ ]( const int index ){ return preferences[ index ]; }
+template<typename Prefs> std::ostream& operator<<( std::ostream& os, SocialPrefNode<Prefs>& node ){
+
+	os << "Node " << node.get_id() << "\nIs preferred to nodes: ";
+
+	for( int i = 0; i < node.get_preferences( ).size( ); ++i ){
+
+		os << "[ " << node.get_preferences( )[ i ] -> get_id( ) << " ] ";
+	}
+
+	os << "\nIs worse than nodes: ";
+
+	for( int i = 0; i < node.get_worse( ).size( ); ++i ){
+
+		os << "[ " << node.get_worse( )[ i ] -> get_id( ) << " ] ";
+	}
+
+	os << "\nIs equal to nodes: ";
+
+	for( int i = 0; i < node.get_indiff( ).size( ); ++i ){
+
+		os << "[ " << node.get_indiff( )[ i ] -> get_id( ) << " ] ";
+	}
+
+	os << "\n\n";
+
+	return os;
+}
 
 #endif // SOCIALPREFNODE_H

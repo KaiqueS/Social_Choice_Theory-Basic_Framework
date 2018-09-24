@@ -112,10 +112,10 @@ template<typename Prefs> void Agent<Prefs>::check_indifference( ){
 
 			if( i != j && preferences[ i ].get_value( ) == preferences[ j ].get_value( ) ){
 
-				std::cout << "Agent " << this->get_id( ) << " is indifferent between preferences " <<
-					i << "- ( " << preferences[ i ].get_alternatives( ) << ", " << preferences[ i ].get_value( )
-					<< " ) and " << j << "- ( " << preferences[ j ].get_alternatives( ) << ", " <<
-					preferences[ j ].get_value( ) << " )\n";
+				std::cout << "Agent " << this -> get_id( ) << " is indifferent between preferences " << i
+						  << "- ( " << preferences[ i ].get_alternatives( ) << ", " << preferences[ i ].get_value( )
+						  << " ) and " << j << "- ( " << preferences[ j ].get_alternatives( ) << ", "
+						  << preferences[ j ].get_value( ) << " )\n";
 			}
 		}
 	}

@@ -9,6 +9,9 @@
 #include <algorithm>
 #include "options.h"
 
+// A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
+// The outermost vector represents the rows, while the innermost vector represents the
+// collumns
 template<typename PrefCol> class Preferencematrix{
 
 public:
@@ -102,7 +105,7 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 
 /* Getters */
 
-// Prints matrix
+// Prints the matrix
 template<typename PrefCol> void Preferencematrix<PrefCol>::print_mtx( ){
 
 	std::cout << "Preference Matrix\n\n" << "\t\t\tOptions/Alternatives Columns\n\n";
@@ -154,7 +157,7 @@ template<typename PrefCol> bool operator!=( Preferencematrix<PrefCol>& one, Pref
 
 /* Helpers */
 
-// Deletes a specified row. Used in Agent.h class
+// Deletes an specific row. Used in Agent.h class
 template<typename PrefCol> void Preferencematrix<PrefCol>::delete_row( int rowindex ){
 
 	matrix.erase( matrix.begin( ) + rowindex );

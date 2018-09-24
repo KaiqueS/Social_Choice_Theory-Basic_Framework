@@ -12,7 +12,7 @@ public:
 	// Constructors & Destructor
 	PairWiseRank( );
 	PairWiseRank( const Options<Prefs>& x, const Options<Prefs>& y, const int& valx, const int& valy, const int& vali );
-	PairWiseRank( const PairWiseRank<Prefs>& copy );
+	PairWiseRank( const PairWiseRank& copy );
 
 	~PairWiseRank( ){ }
 
