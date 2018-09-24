@@ -5,8 +5,8 @@
 #include "options.h"
 #include "pairsofopts.h"
 #include "socialprefnode.h"
-#include "socialchoicegraph.h"
 #include "pairwiserank.h"
+#include "helper_functions.cpp"
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
  *						   order agent's orderings according to alternatives' values - enables
@@ -224,7 +224,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 		}
 	}
 
-	// Returns the completed graph
+	// Returns the graph
 	return graph;
 }
 
@@ -240,5 +240,13 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 	// Creates a graph. This graph will be checked for cycles
 	make_graph( listofagents, rank, graph );
 
+	print_graph( graph );
+
+	std::vector<std::vector<Prefs>> cycles{};
+
 	// check for cycles
+	for( int i = 0; i < graph.size( ); ++i ){
+
+
+	}
 }
