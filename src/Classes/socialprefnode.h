@@ -38,7 +38,6 @@ public:
 	std::vector<SocialPrefNode*> get_worse( ){ return worsethan; }
 	std::vector<SocialPrefNode*> get_indiff( ){ return indifference; }
 
-
 	// Operators
 	SocialPrefNode& operator=( const SocialPrefNode& copy );
 
@@ -92,7 +91,7 @@ template<typename Prefs> void SocialPrefNode<Prefs>::set_id( char self ){
 	id = self;
 }
 
-
+//
 template<typename Prefs> void SocialPrefNode<Prefs>::set_pref( std::vector<SocialPrefNode*> prefs ){ preferences = prefs; }
 template<typename Prefs> void SocialPrefNode<Prefs>::set_pref( SocialPrefNode& prefs ){ preferences.push_back( &prefs ); }
 

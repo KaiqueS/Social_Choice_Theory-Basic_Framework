@@ -87,20 +87,6 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 			matrix[ i ][ j ].set_value( val );
 		}
 	}
-
-	/* Deprecated
-
-	for( int i = 0; i < rowsz; ++i ){
-		std::vector<Options<PrefCol>> altern{ };
-		matrix.push_back( altern );
-		for( int j = 0; j < colsz; ++j ){
-			Options<PrefCol> newopt{ };
-			int val = rand( ) % colsz;
-			newopt.set_value( val );
-
-			matrix[ i ].push_back( newopt );
-		}
-	}*/
 }
 
 /* Getters */
