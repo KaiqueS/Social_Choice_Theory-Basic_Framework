@@ -1,12 +1,11 @@
 #include <vector>
-#include <tuple>
-#include <map>
 #include "agent.h"
 #include "options.h"
 #include "pairsofopts.h"
 #include "socialprefnode.h"
 #include "pairwiserank.h"
 #include "helper_functions.cpp"
+#include "cycle.h"
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
  *						   order agent's orderings according to alternatives' values - enables
@@ -77,7 +76,6 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 	PairWiseRank<Prefs> paircomp{ };
 
 	std::vector<PairWiseRank<Prefs>> ranking{ };
-
 
 	// Checks how a pair ( x, y ) is ranked for each agent
 	for( int i = 0; i < ordering.size( ); ++i ){
@@ -228,9 +226,37 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 	return graph;
 }
 
+template<typename Prefs> void make_paths( std::vector<SocialPrefNode<Prefs>> graph ){ // returns a vector of cycles
+
+	Cycle<Prefs> pathway{ };
+
+	while( graph.size( ) != 0 ){
+
+		auto comparison = [ ]( SocialPrefNode<Prefs>& left, SocialPrefNode<Prefs>& right ){
+
+			return left.get_preferences( ).size( ) < right.get_preferences( ).size( );
+		};
+
+		auto max = std::max_element( graph.begin( ), graph.end( ), comparison );
+
+		pathway.set_path( max -> get_id( ) );
+
+		// Remove max from graph to get a new, and different, max value
+		for( int j = 0; j < graph.size( ); ++j ){
+
+			if( max -> get_id( ) == graph[ j ].get_id( ) ){
+
+				graph.erase( graph.begin( ) + j );
+			}
+		}
+	}
+
+	// Get all paths
+}
+
 template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
-	// Prints social ranking of alternatives
+	// Prints social ranking of alternatives - Used for debugging only
 	for( int i = 0; i < rank.size( ); ++i )
 
 		std::cout << rank[ i ] << "\n";
@@ -242,11 +268,37 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 
 	print_graph( graph );
 
-	std::vector<std::vector<Prefs>> cycles{};
+	make_paths( graph );
 
-	// check for cycles
+	Options<Prefs> winner{ };
+
+	// Check for cycles
+
+		// If there are no cycles, Use outdegree as a mean to determine if a node is the Condorcet winner
+		// Else, use another method
 	for( int i = 0; i < graph.size( ); ++i ){
 
+		for( int j = 0; j < graph.size( ); ++j ){
 
+			if( graph[ i ].get_preferences( ).size( ) > graph[ j ].get_preferences( ).size( ) ){
+
+				if( graph[ i ].get_preferences( ).size( ) > ( graph.size( ) / 2 ) ){
+
+					winner.set_alternatives( graph[ i ].get_id( ) );
+					winner.set_value( graph[ i ].get_preferences( ).size( ) );
+				}
+			}
+
+			else{
+
+				if( graph[ j ].get_preferences( ).size( ) > ( graph.size( ) / 2 ) ){
+
+					winner.set_alternatives( graph[ j ].get_id( ) );
+					winner.set_value( graph[ j ].get_preferences( ).size( ) );
+				}
+			}
+		}
 	}
+
+	std::cout << winner.get_alternatives( ) << " is the winner.\n";
 }
