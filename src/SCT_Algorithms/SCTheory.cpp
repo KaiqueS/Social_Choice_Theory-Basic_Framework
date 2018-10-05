@@ -6,6 +6,7 @@
 #include "pairwiserank.h"
 #include "helper_functions.cpp"
 #include "cycle.h"
+#include "aggregation_rules.cpp"
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
  *						   order agent's orderings according to alternatives' values - enables
@@ -226,7 +227,8 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 	return graph;
 }
 
-template<typename Prefs> void make_paths( std::vector<SocialPrefNode<Prefs>> graph ){ // returns a vector of cycles
+// Hamiltonian Paths for each node in GRAPH
+template<typename Prefs> Cycle<Prefs> make_paths( std::vector<SocialPrefNode<Prefs>> graph ){ // returns a vector of cycles
 
 	Cycle<Prefs> pathway{ };
 
@@ -250,8 +252,8 @@ template<typename Prefs> void make_paths( std::vector<SocialPrefNode<Prefs>> gra
 			}
 		}
 	}
-
 	// Get all paths
+	return pathway;
 }
 
 template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
@@ -270,35 +272,13 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 
 	make_paths( graph );
 
-	Options<Prefs> winner{ };
+	Options<Prefs> winner = majority_rule( graph );
 
 	// Check for cycles
 
 		// If there are no cycles, Use outdegree as a mean to determine if a node is the Condorcet winner
 		// Else, use another method
-	for( int i = 0; i < graph.size( ); ++i ){
 
-		for( int j = 0; j < graph.size( ); ++j ){
-
-			if( graph[ i ].get_preferences( ).size( ) > graph[ j ].get_preferences( ).size( ) ){
-
-				if( graph[ i ].get_preferences( ).size( ) > ( graph.size( ) / 2 ) ){
-
-					winner.set_alternatives( graph[ i ].get_id( ) );
-					winner.set_value( graph[ i ].get_preferences( ).size( ) );
-				}
-			}
-
-			else{
-
-				if( graph[ j ].get_preferences( ).size( ) > ( graph.size( ) / 2 ) ){
-
-					winner.set_alternatives( graph[ j ].get_id( ) );
-					winner.set_value( graph[ j ].get_preferences( ).size( ) );
-				}
-			}
-		}
-	}
 
 	std::cout << winner.get_alternatives( ) << " is the winner.\n";
 }
