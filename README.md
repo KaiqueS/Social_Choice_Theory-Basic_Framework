@@ -1,11 +1,13 @@
 # Social Choice Theory - A Toolbox
 
-The purpose is the following: to create a library of Axiomatic Social Choice Theory canonical models, e.g., Arrow's impossibility theorem. The library is intended to help, aid, students that are being introduced to Social Choice Theory.
-They will be able to follow, step-by-step, the theorems implemented here and its results.
+&emsp;The purpose is the following: to create a library of Axiomatic Social Choice Theory canonical models, e.g., Arrow's impossibility theorem. The library is intended to help, aid, newcomers to the area of Social Choice Theory.
+Those will be able to follow, step-by-step, the theorems implemented here and its results, along with additional information.
 
 # About the properties
 
-ID and Preferences may be obvious. In SCT, for a set X of alternatives and an indexed set S of agents, ID represents any agent s<sub> i </sub> of S, while Preferences represents s<sub> i </sub>'s ranking of every x <span>&#8714;</span> X, i.e., the property Preferences is already ordered accordingly to s<sub> i </sub>'s respective ranking of the mentioned options.
+&emsp;ID and Preferences may be obvious. In SCT, for a set X of alternatives and an indexed set S of agents, ID represents any agent s<sub> i </sub> of S, while Preferences represents s<sub> i </sub>'s ranking of every x <span>&#8714;</span> X..
+
+Preferences will be externaly given, i.e, agents cannot propose "new alternatives", but [ the agents ] will be able to modify them.
 
 <p><li><strong>Data Structures</strong></li>
 
@@ -23,15 +25,14 @@ SocialPrefNode
 
 Implement Indifference relation: done.
 
-Implement Condorcert Paradox - working on it
+Implement Condorcert Paradox - almost done, needs cycle-checking algorithm 
 
-Implement Arrow's Impossibility Theorem - after Condorcet Par.
+Implement Arrow's Impossibility Theorem - working on it
 
 Implement GUI - after Arrow
 
 Implement Gibbard-Sattertwaite Theorem - after GUI.
 
-Preferences will be externaly given, i.e, agents cannot propose "new alternatives", but [ the agents ] will be able to modify them.
 
 <ul type="circle">
   
