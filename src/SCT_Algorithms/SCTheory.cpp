@@ -13,23 +13,27 @@
  *						   binary search
  */
 
-// Generates, without repetition, all combinations of pairs of alternatives
+// Generates, without repetition, all combinations of pairs of alternatives - magic number removed
 template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::vector<Agent<Prefs>>& listofagents ){
 
 	PairsOfOpts<Prefs> compairs;
 
 	std::vector<PairsOfOpts<Prefs>> paircomp{ };
 
+	int randagt = rand( ) % listofagents.size( );
+
+	int randindx = rand( ) % listofagents[ randagt ].get_preferences( ).size( );
+
 	// gets all possible combination of pairs, including repeated pairs
-	for( int i = 0; i < listofagents[ 0 ].get_preferences( ).size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < listofagents[ randindx ].get_preferences( ).size( ); ++i ){
 
-		compairs.xpref = listofagents[ 0 ].get_preferences( )[ i ];
+		compairs.xpref = listofagents[ randindx ].get_preferences( )[ i ];
 
-		for( int j = 0; j < listofagents[ 0 ].get_preferences( ).size( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < listofagents[ randindx ].get_preferences( ).size( ); ++j ){
 
 			if( j != i ){
 
-				compairs.ypref = listofagents[ 0 ].get_preferences( )[ j ];
+				compairs.ypref = listofagents[ randindx ].get_preferences( )[ j ];
 
 				paircomp.push_back( compairs );
 			}
@@ -39,14 +43,14 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 	std::vector<PairsOfOpts<Prefs>> noreppairs{ };
 
 	// deletes repeated combinations
-	for( int i = 0; i < paircomp.size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < paircomp.size( ); ++i ){
 
 		Options<Prefs> invrsx{ }, invrsy{ };
 
 		invrsx = paircomp[ i ].ypref;
 		invrsy = paircomp[ i ].xpref;
 
-		for( int j = i; j < paircomp.size( ); ++j ){
+		for( std::vector<int>::size_type j = i; j < paircomp.size( ); ++j ){
 
 			// checks if there are pairs a and b s.t. b == inverse( a ), i.e., a == ( x, y ) and b == ( y, x ).
 			// Adds to No Repeated Pairs only one version of the repeated pairs: ( x, y ) OR ( y, x ), but nev-
@@ -79,15 +83,15 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 	std::vector<PairWiseRank<Prefs>> ranking{ };
 
 	// Checks how a pair ( x, y ) is ranked for each agent
-	for( int i = 0; i < ordering.size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < ordering.size( ); ++i ){
 
-		// Hold both alternatives that will be checked
+		// Holds both alternatives that will be checked
 		compairs.xpref = ordering[ i ].xpref;
 		compairs.ypref = ordering[ i ].ypref;
 
-		for( int j = 0; j < listofagents.size( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < listofagents.size( ); ++j ){
 
-			for( int k = 0; k < listofagents[ j ].get_preferences( ).size( ); ++ k ){
+			for( std::vector<int>::size_type k = 0; k < listofagents[ j ].get_preferences( ).size( ); ++ k ){
 
 				// Search for x in agent's preferences
 				if( listofagents[ j ].get_preferences( )[ k ].get_alternatives( ) == compairs.xpref.get_alternatives( ) )
@@ -128,18 +132,21 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 // Creates a graph GRAPH composed by nodes of alternatives. Relates those nodes according to how the alt-
 // ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
 // that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
-// x.indifference
+// x.indifference - DEBUG -> magic number removed
 template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
-	// Initializes nodes' ids. Take as argument the ids from an agent
-	for( int i = 0; i < graph.size( ); ++i )
+	int randagt = rand( ) % listofagents.size( );
+	int randindx = rand( ) % listofagents[ randagt ].get_preferences( ).size( );
 
-		graph[ i ].set_id( listofagents[ 0 ].get_preferences( )[ i ].get_alternatives( ) );
+	// Initializes nodes' ids. Take as argument the ids from an agent
+	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i )
+
+		graph[ i ].set_id( listofagents[ randindx ].get_preferences( )[ i ].get_alternatives( ) );
 
 	// Checks how alternatives are related. Links them accordingly to their relation
-	for( int i = 0; i < rank.size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
 
-		for( int j = 0; j < graph.size( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < graph.size( ); ++j ){
 
 			// if x > y
 			if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) ){
@@ -147,7 +154,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 				// If graph[ j ] == x, set preferredto = y, i.e., x is preferred to y
 				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
 
-					for( int k = 0; k < graph.size( ); ++k ){
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
 						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) )
 
@@ -158,7 +165,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 				// Else if graph[ j ] == y, set worse = x, i.e., y is worse than x
 				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
 
-					for( int k = 0; k < graph.size( ); ++k ){
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
 						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) )
 
@@ -173,7 +180,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 				// If graph[ j ] == x, set worsethan = y
 				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
 
-					for( int k = 0; k < graph.size( ); ++k ){
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
 						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) )
 
@@ -184,7 +191,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 				// Else if scgraph[ j ] == y, set preferences = y
 				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
 
-					for( int k = 0; k < graph.size( ); ++k ){
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
 						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) )
 
@@ -199,7 +206,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 				// If scgraph[ j ] == x, set indiff = y
 				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
 
-					for( int k = 0; k < graph.size( ); ++k ){
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
 						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
 
@@ -211,7 +218,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vec
 				// Else if scgraph[ j ] == y, set indiff = x
 				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_alternatives( ) ){
 
-					for( int k = 0; k < graph.size( ); ++k ){
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
 						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_alternatives( ) ){
 
@@ -244,7 +251,7 @@ template<typename Prefs> Cycle<Prefs> make_paths( std::vector<SocialPrefNode<Pre
 		pathway.set_path( max -> get_id( ) );
 
 		// Remove max from graph to get a new, and different, max value
-		for( int j = 0; j < graph.size( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < graph.size( ); ++j ){
 
 			if( max -> get_id( ) == graph[ j ].get_id( ) ){
 
@@ -259,7 +266,7 @@ template<typename Prefs> Cycle<Prefs> make_paths( std::vector<SocialPrefNode<Pre
 template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
 	// Prints social ranking of alternatives - Used for debugging only
-	for( int i = 0; i < rank.size( ); ++i )
+	for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i )
 
 		std::cout << rank[ i ] << "\n";
 
@@ -270,15 +277,21 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 
 	print_graph( graph );
 
-	make_paths( graph );
+	Cycle<Prefs> hamiltonian_path = make_paths( graph );
 
 	Options<Prefs> winner = majority_rule( graph );
 
 	// Check for cycles
-
+	// std::vector<Cycle<Prefs>> paths = check_cycle( graph );
 		// If there are no cycles, Use outdegree as a mean to determine if a node is the Condorcet winner
 		// Else, use another method
 
+	// for( int i = 0; i < paths.size( ); ++i ) std::cout << paths[ i ];
 
-	std::cout << winner.get_alternatives( ) << " is the winner.\n";
+	std::cout << "\n" << winner.get_alternatives( ) << " is the winner.\n";
+}
+
+template<typename Prefs> void arrow_impossibility( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
+
+
 }
