@@ -8,7 +8,7 @@
 #include "options.h"
 #include "preferencematrix.h"
 
-// I do not like letting the agents define the type of the preferences, this violates encapsulation
+// I do not like letting the agents define the type of the preferences, this violates encapsulation - when removing templates
 template<typename Prefs> class Agent{
 
 public:
@@ -28,15 +28,19 @@ public:
 	// Getters
 	std::vector<Options<Prefs>> get_preferences( ){ return preferences; }
 
-	std::string get_id( ){ return id; }
+	std::vector<Prefs> get_indifference( );
 
-	void print_prefs( );
-	void check_indifference( );
+	std::string get_id( ){ return id; }
 
 	// Operators
 	Agent& operator=( const Agent<Prefs>& one );
 
 	Options<Prefs>& operator[ ]( const int& index ){ return preferences[ index ]; }
+
+	// Helpers
+
+	void print_prefs( );
+	void print_indifference( );
 
 private:
 
@@ -75,7 +79,7 @@ template<typename Prefs> Agent<Prefs>::Agent( const Agent& copy ){
 /* Setters */
 
 // Sets agent's preferences. Takes a random row from PrefMatrix and set it to be the agent's preferences.
-// Deletes the used row at the end: Avoid repeated preferences for different agents
+// Deletes the used row at the end: Avoids repeated preferences for different agents
 template<typename Prefs> void Agent<Prefs>::set_preferences( Preferencematrix<Prefs>& prefmatrix ){
 
 	int randindex = std::rand( ) % prefmatrix.get_matrix( ).size( );
@@ -87,38 +91,45 @@ template<typename Prefs> void Agent<Prefs>::set_preferences( Preferencematrix<Pr
 
 /* Getters */
 
-// Prints preferences
-template<typename Prefs> void Agent<Prefs>::print_prefs( ){
-
-	std::cout << "Agent " << this -> get_id( ) << " preferences: ";
-
-	for( int i = 0; i < preferences.size( ); ++i ){
-
-		std::cout << "( " << preferences[ i ].get_alternatives( ) << " , "
-				  << preferences[ i ].get_value( ) << " ) ";
-	}
-
-	std::cout << "\n";
-}
-
 // Checks if two different preferences have the same value. If they do, the agent is
 // indifferent between then.
-// TODO: Repetition ongoing: double printing, when i != j and j != i, even though the preferences are the same
-template<typename Prefs> void Agent<Prefs>::check_indifference( ){
+// TODO: Repetition ongoing: double printing, when i != j and j != i, even though the preferences are the same - DONE
+template<typename Prefs> std::vector<Prefs> Agent<Prefs>::get_indifference( ){
 
-	for( int i = 0; i < preferences.size( ); ++i ){
+	std::vector<Prefs> indiff{ };
 
-		for( int j = 0; j < preferences.size( ); ++j ){
+	// Get all pairs ( x, y ), where votes( x ) == votes( y )
+	for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ){
+
+		for( std::vector<int>::size_type j = 0; j < preferences.size( ); ++j ){
 
 			if( i != j && preferences[ i ].get_value( ) == preferences[ j ].get_value( ) ){
 
-				std::cout << "Agent " << this -> get_id( ) << " is indifferent between preferences " << i
-						  << "- ( " << preferences[ i ].get_alternatives( ) << ", " << preferences[ i ].get_value( )
-						  << " ) and " << j << "- ( " << preferences[ j ].get_alternatives( ) << ", "
-						  << preferences[ j ].get_value( ) << " )\n";
+				indiff.push_back( preferences[ i ].get_alternatives( ) );
+				indiff.push_back( preferences[ j ].get_alternatives( ) );
 			}
 		}
 	}
+
+	// Removes repeated values
+	for( std::vector<int>::size_type i = 0; i < indiff.size( ); ++i ){
+
+		for( std::vector<int>::size_type j = 0; j < indiff.size( ); ++j ){
+
+			if( i != j ){
+
+				if( indiff[ i ] == indiff[ j ] ){
+
+					indiff.erase( indiff.begin( ) + i );
+
+					i = 0;
+					j = 0;
+				}
+			}
+		}
+	}
+
+	return indiff;
 }
 
 /* Operators */
@@ -155,4 +166,32 @@ template<typename Prefs> bool operator!=( Agent<Prefs>& one, Agent<Prefs>& two )
 
 		return false;
 }
+
+/* Helpers */
+
+// Prints all preferences of an agent
+template<typename Prefs> void Agent<Prefs>::print_prefs( ){
+
+	std::cout << "Agent " << id << " preferences: ";
+
+	for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ){
+
+		std::cout << "( " << preferences[ i ].get_alternatives( ) << " , "
+				  << preferences[ i ].get_value( ) << " ) ";
+	}
+
+	std::cout << "\n";
+}
+
+// Prints options that have the same value
+template<typename Prefs> void Agent<Prefs>::print_indifference( ){
+
+	std::cout << "Agent " << id << " is indifferent between alternatives ";
+
+	for( std::vector<int>::size_type i = 0; i < get_indifference( ).size( ); ++i ){
+
+		std::cout << "[ " << get_indifference( )[ i ] << " ] ";
+	}
+}
+
 #endif // AGENT_H

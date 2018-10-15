@@ -83,6 +83,7 @@ template<typename Opts> Options<Opts>& Options<Opts>::operator=( const Options<O
 	return *this;
 }
 
+// Compares options
 template<typename Opts> bool operator==( Options<Opts>& one, Options<Opts>& two ){
 
 	if( one.get_alternatives( ) == two.get_alternatives( ) &&

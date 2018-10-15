@@ -4,6 +4,7 @@
 #define CYCLE_H
 
 #include <vector>
+#include <iostream>
 
 template<typename Prefs> class Cycle{
 
@@ -81,5 +82,18 @@ template<typename Prefs> Cycle<Prefs>& Cycle<Prefs>::operator=( const Cycle& cop
 }
 
 template<typename Prefs> Cycle<Prefs>& Cycle<Prefs>::operator[ ]( const int index ){ return path[ index ]; }
+
+template<typename Prefs> std::ostream& operator<<( std::ostream& os, Cycle<Prefs>& path ){
+
+	os << path.get_id( ) << ": ";
+
+	for( int i = 0; i < path.get_path( ).size( ); ++i )
+
+		os << path.get_path( )[ i ] << " ";
+
+	os << "\n";
+
+	return os;
+}
 
 #endif // CYCLE_H

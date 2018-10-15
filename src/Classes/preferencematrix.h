@@ -7,6 +7,7 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <ctime>
 #include "options.h"
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
@@ -60,9 +61,7 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 	std::vector<Options<PrefCol>> setofalts( colsz );
 
 	// Sets alternatives' id's
-	for( int i = 0; i < setofalts.size( ); ++i ){
-
-		//int randaltid = rand( ) % colsz; - useless
+	for( std::vector<int>::size_type i = 0; i < setofalts.size( ); ++i ){
 
 		std::string subs = std::to_string( i );
 
@@ -96,14 +95,14 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::print_mtx( ){
 
 	std::cout << "Preference Matrix\n\n" << "\t\t\tOptions/Alternatives Columns\n\n";
 
-	for( int i = 0; i < matrix.size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
 
 		std::cout << "Row vector id number: " << i << "| ";
 
-		for( int j = 0; j < matrix[ i ].size( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < matrix[ i ].size( ); ++j ){
 
-			std::cout << "( " << matrix[ i ][ j ].get_alternatives( ) << ", " <<
-				matrix[ i ][ j ].get_value( ) << " ) ";
+			std::cout << "( " << matrix[ i ][ j ].get_alternatives( )
+					  << ", " << matrix[ i ][ j ].get_value( ) << " ) ";
 		}
 
 		std::cout << "\n";

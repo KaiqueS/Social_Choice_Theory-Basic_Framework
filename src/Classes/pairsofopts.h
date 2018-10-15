@@ -20,7 +20,7 @@ template<typename Prefs> struct PairsOfOpts{
 	Options<Prefs> ypref{ };
 };
 
-/* Constructos & Destructor */
+/* Constructors & Destructor */
 
 // Default constructor
 template<typename Prefs> PairsOfOpts<Prefs>::PairsOfOpts( ){
