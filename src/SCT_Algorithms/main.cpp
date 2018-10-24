@@ -1,11 +1,10 @@
 #include <iostream>
 #include <vector>
-#include "preferencematrix.h"
-#include "agent.h"
+#include "Classes/preferencematrix.h"
+#include "Classes/agent.h"
 #include "SCTheory.cpp"
-#include "pairwiserank.h"
-#include "socialchoicegraph.h"
-#include "socialprefnode.h"
+#include "Classes/pairwiserank.h"
+#include "Classes/socialprefnode.h"
 
 /*
  *		 Fix indifference - associate alternatives that have the same weight for an agent

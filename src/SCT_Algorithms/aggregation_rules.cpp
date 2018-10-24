@@ -1,10 +1,10 @@
 #include <vector>
-#include "agent.h"
-#include "options.h"
-#include "pairsofopts.h"
-#include "socialprefnode.h"
-#include "pairwiserank.h"
-#include "cycle.h"
+#include "Classes/agent.h"
+#include "Classes/options.h"
+#include "Classes/pairsofopts.h"
+#include "Classes/socialprefnode.h"
+#include "Classes/pairwiserank.h"
+#include "Classes/cycle.h"
 
 // Correct this, get the element with the greatest preferences size
 template<typename Prefs> Options<Prefs> majority_rule( std::vector<SocialPrefNode<Prefs>>& graph ){

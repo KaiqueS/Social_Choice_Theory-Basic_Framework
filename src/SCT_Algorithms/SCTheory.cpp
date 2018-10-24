@@ -1,11 +1,11 @@
 #include <vector>
-#include "agent.h"
-#include "options.h"
-#include "pairsofopts.h"
-#include "socialprefnode.h"
-#include "pairwiserank.h"
+#include "Classes/agent.h"
+#include "Classes/options.h"
+#include "Classes/pairsofopts.h"
+#include "Classes/socialprefnode.h"
+#include "Classes/pairwiserank.h"
 #include "helper_functions.cpp"
-#include "cycle.h"
+#include "Classes/cycle.h"
 #include "aggregation_rules.cpp"
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.

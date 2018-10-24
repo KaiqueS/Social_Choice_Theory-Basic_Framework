@@ -1,6 +1,6 @@
-#include "socialprefnode.h"
-#include "cycle.h"
-#include "nodeopt.h"
+#include "Classes/socialprefnode.h"
+#include "Classes/cycle.h"
+#include "Classes/nodeopt.h"
 
 template<typename Prefs> void print_graph( std::vector<SocialPrefNode<Prefs>>& graph ){
 
