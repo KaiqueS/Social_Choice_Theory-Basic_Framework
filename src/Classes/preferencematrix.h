@@ -73,7 +73,7 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 	// Sets alternatives' values
 	for( int i = 0; i < rowsz; ++i ){
 
-		auto randvalind = std::default_random_engine{ };
+		//auto randvalind = std::default_random_engine{ };
 
         //the shuffler was commented to simplify the read
         //std::shuffle( setofalts.begin( ), setofalts.end( ), randvalind );

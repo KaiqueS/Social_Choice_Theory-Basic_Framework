@@ -93,60 +93,31 @@ template<typename Prefs> void Agent<Prefs>::set_preferences( Preferencematrix<Pr
 
 // Checks if two different preferences have the same value. If they do, the agent is
 // indifferent between then.
-// TODO: Repetition ongoing: double printing, when i != j and j != i, even though the preferences are the same - DONE
 template<typename Prefs> std::vector<Options<Prefs>> Agent<Prefs>::get_sorted_preferences( ){
 
     //FLAL
     //Returns a vector of options sorted by the value
     std::vector<Options<Prefs>> indiff{ };
-    for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ){
-        std::vector<Options<char>>::iterator aux;
-        aux = indiff.begin();
-        int iValue = preferences[i].get_value( );
-        for( std::vector<int>::size_type j = 0; j < indiff.size( ) &&
-             iValue<=indiff[j].get_value( ); ++j ){
-            aux++;
-        }
-        indiff.insert(aux,preferences[i]);
-    }
-    return indiff;
 
-    //KIQ
-    /*
-	// Get all pairs ( x, y ), where votes( x ) == votes( y )
 	for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ){
 
-		for( std::vector<int>::size_type j = 0; j < preferences.size( ); ++j ){
+		std::vector<Options<char>>::iterator aux;
 
-			if( i != j && preferences[ i ].get_value( ) == preferences[ j ].get_value( ) ){
+		aux = indiff.begin();
 
-                indiff.push_back( preferences[ i ].get_alternatives( ) );
-                indiff.push_back( preferences[ j ].get_alternatives( ) );
-			}
-		}
-	}
+		int iValue = preferences[i].get_value( );
 
-	// Removes repeated values
-	for( std::vector<int>::size_type i = 0; i < indiff.size( ); ++i ){
+		for( std::vector<int>::size_type j = 0; j < indiff.size( ) &&
 
-		for( std::vector<int>::size_type j = 0; j < indiff.size( ); ++j ){
+			iValue <= indiff[ j ].get_value( ); ++j ){
 
-			if( i != j ){
+			++aux;
+        }
 
-				if( indiff[ i ] == indiff[ j ] ){
+		indiff.insert( aux, preferences[ i ] );
+    }
 
-					indiff.erase( indiff.begin( ) + i );
-
-					i = 0;
-					j = 0;
-				}
-			}
-		}
-	}
-
-	return indiff;
-    */
-
+    return indiff;
 }
 
 /* Operators */
@@ -206,24 +177,24 @@ template<typename Prefs> void Agent<Prefs>::print_rank( ){
     //FLAL
     //Print the rank of preferences
     std::cout << "Agent " << id << " Rank alternatives \t";
-    int aux = get_sorted_preferences( )[0].get_value();
-    std::cout << "[ ";
-    for( std::vector<int>::size_type i = 0; i < get_sorted_preferences( ).size( ); ++i ){
-        if(get_sorted_preferences( )[i].get_value()!=aux){
-            std::cout << "] > [ ";
-            aux = get_sorted_preferences( )[i].get_value();
+
+	int aux = get_sorted_preferences( ).begin( ) -> get_value( );
+
+	std::cout << "[ ";
+
+	for( std::vector<int>::size_type i = 0; i < get_sorted_preferences( ).size( ); ++i ){
+
+		if( get_sorted_preferences( )[ i ].get_value( ) != aux ){
+
+			std::cout << "] > [ ";
+
+			aux = get_sorted_preferences( )[ i ].get_value( );
         }
-        std::cout << get_sorted_preferences( )[ i ].get_alternatives( ) << " ";
+
+		std::cout << get_sorted_preferences( )[ i ].get_alternatives( ) << " ";
     }
-    std::cout << "] ";
 
-    //KIQ
-/*    std::cout << "Agent " << id << " is indifferent between alternatives ";
-
-    for( std::vector<int>::size_type i = 0; i < get_indifference( ).size( ); ++i ){
-
-        std::cout << "[ " << get_indifference( )[ i ] << " ] ";
-    }*/
+	std::cout << "] ";
 }
 
 #endif // AGENT_H
