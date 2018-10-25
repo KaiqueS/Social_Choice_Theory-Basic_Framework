@@ -60,14 +60,23 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 
 	std::vector<Options<PrefCol>> setofalts( colsz );
 
+	int aux{ 30 };
+
 	// Sets alternatives' id's
 	for( std::vector<int>::size_type i = 0; i < setofalts.size( ); ++i ){
 
-		std::string subs = std::to_string( i );
+		while( !std::isalnum( aux ) )
 
-        char const* pchar = subs.c_str( );
+			++aux;
+		//std::string subs = std::to_string( i );
 
-		setofalts[ i ].set_alternatives( *pchar );
+		char subs = aux;
+
+		//char const* pchar = subs.c_str( );
+
+		setofalts[ i ].set_alternatives( subs );
+
+		++aux;
 	}
 
 	// Sets alternatives' values

@@ -22,49 +22,21 @@ template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::v
 
 	int randagt = rand( ) % listofagents.size( );
 
-	int randindx = rand( ) % listofagents[ randagt ].get_preferences( ).size( );
-
 	// gets all possible combination of pairs, including repeated pairs
-	for( std::vector<int>::size_type i = 0; i < listofagents[ randindx ].get_preferences( ).size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < listofagents[ randagt ].get_preferences( ).size( ); ++i ){
 
-		compairs.xpref = listofagents[ randindx ].get_preferences( )[ i ];
+		compairs.xpref = listofagents[ randagt ].get_preferences( )[ i ];
 
-		for( std::vector<int>::size_type j = 0; j < listofagents[ randindx ].get_preferences( ).size( ); ++j ){
+		for( std::vector<int>::size_type j = i + 1; j < listofagents[ randagt ].get_preferences( ).size( ); ++j ){
 
-			if( j != i ){
+			compairs.ypref = listofagents[ randagt ].get_preferences( )[ j ];
 
-				compairs.ypref = listofagents[ randindx ].get_preferences( )[ j ];
-
-				paircomp.push_back( compairs );
-			}
-		}
-	}
-
-	std::vector<PairsOfOpts<Prefs>> noreppairs{ };
-
-	// deletes repeated combinations
-	for( std::vector<int>::size_type i = 0; i < paircomp.size( ); ++i ){
-
-		Options<Prefs> invrsx{ }, invrsy{ };
-
-		invrsx = paircomp[ i ].ypref;
-		invrsy = paircomp[ i ].xpref;
-
-		for( std::vector<int>::size_type j = i; j < paircomp.size( ); ++j ){
-
-			// checks if there are pairs a and b s.t. b == inverse( a ), i.e., a == ( x, y ) and b == ( y, x ).
-			// Adds to No Repeated Pairs only one version of the repeated pairs: ( x, y ) OR ( y, x ), but nev-
-			// er both
-			if( paircomp[ j ].xpref == invrsx && paircomp[ j ].ypref == invrsy &&
-				paircomp[ j ].xpref != invrsy && paircomp[ j ].ypref != invrsx ){
-
-				noreppairs.push_back( paircomp[ i ] );
-			}
+			paircomp.push_back( compairs );
 		}
 	}
 
 	// returns all combinations without repetitions
-	return noreppairs;
+	return paircomp;
 }
 
 // Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
@@ -136,12 +108,13 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
 	int randagt = rand( ) % listofagents.size( );
-	int randindx = rand( ) % listofagents[ randagt ].get_preferences( ).size( );
+	//int randindx = rand( ) % listofagents[ randagt ].get_preferences( ).size( );
 
 	// Initializes nodes' ids. Take as argument the ids from an agent
-	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i )
+	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
-		graph[ i ].set_id( listofagents[ randindx ].get_preferences( )[ i ].get_alternatives( ) );
+		graph[ i ].set_id( listofagents[ randagt ].get_preferences( )[ i ].get_alternatives( ) );
+	}
 
 	// Checks how alternatives are related. Links them accordingly to their relation
 	for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
@@ -286,7 +259,11 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 		// If there are no cycles, Use outdegree as a mean to determine if a node is the Condorcet winner
 		// Else, use another method
 
-	// for( int i = 0; i < paths.size( ); ++i ) std::cout << paths[ i ];
+	std::cout << "The winner path is: ";
+
+	for( int i = 0; i < hamiltonian_path.get_path( ).size( ); ++i )
+
+		std::cout << hamiltonian_path.get_path( )[ i ] << " ";
 
 	std::cout << "\n" << winner.get_alternatives( ) << " is the winner.\n";
 }
