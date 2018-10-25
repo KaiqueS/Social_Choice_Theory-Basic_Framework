@@ -65,7 +65,7 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 
 		std::string subs = std::to_string( i );
 
-		char const* pchar = subs.c_str( );
+        char const* pchar = subs.c_str( );
 
 		setofalts[ i ].set_alternatives( *pchar );
 	}
@@ -75,7 +75,8 @@ template<typename PrefCol> void Preferencematrix<PrefCol>::set_matrix( int rowsz
 
 		auto randvalind = std::default_random_engine{ };
 
-		std::shuffle( setofalts.begin( ), setofalts.end( ), randvalind );
+        //the shuffler was commented to simplify the read
+        //std::shuffle( setofalts.begin( ), setofalts.end( ), randvalind );
 
 		matrix.push_back( setofalts );
 

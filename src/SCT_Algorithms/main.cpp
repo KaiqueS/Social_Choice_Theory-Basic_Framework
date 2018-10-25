@@ -28,11 +28,11 @@ int main( ){
 
 	newmtx.print_mtx( );
 
-	for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+    for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-		listofagents[ i ].set_id( std::to_string( i ) );
-		listofagents[ i ].set_preferences( newmtx );
-	}
+        listofagents[ i ].set_id( std::to_string( i ) );
+        listofagents[ i ].set_preferences( newmtx );
+    }
 
 	std::cout << "\n\n";
 
@@ -46,9 +46,24 @@ int main( ){
 
 	condorcet_paradox( listofagents, rank, graph );
 
-	//listofagents[ 2 ].get_indifference( );
+    //listofagents[ 2 ].get_indifference( );
 
-	listofagents[ 2 ].print_indifference( );
+    std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
 
-	std::cout << "\n\n";
+    for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+
+        std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : \t";
+        for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
+            std::cout << "( " << listofagents[ i ].get_preferences()[j].get_alternatives() << " , ";
+            std::cout << listofagents[ i ].get_preferences()[j].get_value() << " ) ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+    for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+        listofagents[i].print_rank( );
+        std::cout << "\n";
+    }
+    std::cout << "____________________________________________________";
+    std::cout << "\n\n" << std::flush;
 }
