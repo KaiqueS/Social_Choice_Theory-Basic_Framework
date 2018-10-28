@@ -95,7 +95,6 @@ template<typename Prefs> void Agent<Prefs>::set_preferences( Preferencematrix<Pr
 // indifferent between then.
 template<typename Prefs> std::vector<Options<Prefs>> Agent<Prefs>::get_sorted_preferences( ){
 
-    //FLAL
     //Returns a vector of options sorted by the value
     std::vector<Options<Prefs>> indiff{ };
 
@@ -103,9 +102,9 @@ template<typename Prefs> std::vector<Options<Prefs>> Agent<Prefs>::get_sorted_pr
 
 		std::vector<Options<char>>::iterator aux;
 
-		aux = indiff.begin();
+		aux = indiff.begin( );
 
-		int iValue = preferences[i].get_value( );
+		int iValue = preferences[ i ].get_value( );
 
 		for( std::vector<int>::size_type j = 0; j < indiff.size( ) &&
 
@@ -174,9 +173,8 @@ template<typename Prefs> void Agent<Prefs>::print_prefs( ){
 // Prints options that have the same value
 template<typename Prefs> void Agent<Prefs>::print_rank( ){
 
-    //FLAL
     //Print the rank of preferences
-    std::cout << "Agent " << id << " Rank alternatives \t";
+	std::cout << "Agent " << id << " Rank alternatives: ";
 
 	int aux = get_sorted_preferences( ).begin( ) -> get_value( );
 
