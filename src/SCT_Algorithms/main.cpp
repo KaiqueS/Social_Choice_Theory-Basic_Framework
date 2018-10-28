@@ -6,13 +6,9 @@
 #include "Classes/pairwiserank.h"
 #include "Classes/socialprefnode.h"
 
-/*
- *		 Fix indifference - associate alternatives that have the same weight for an agent
- *		 Fix the case where x and y have the same amount of votes, but no indifference: if xval == yval, then increase
+/*		 Fix the case where x and y have the same amount of votes, but no indifference: if xval == yval, then increase
  *		 Start documenting - IN PROGRESS
- *		 Problem: when i > 9, id, being a char, cannot contain 2 or more characters
  *		 TODO: enhance code -> ADD EXCEPTIONS!
- *		 TODO: Problem: when row != col, for col > row
  *		 TODO: Remove templates, use static typing
  */
 
@@ -22,7 +18,7 @@ int main( ){
 
 	Preferencematrix<char> newmtx{ };
 
-	newmtx.set_matrix( 2, 7 );
+	newmtx.set_matrix( 3, 3 );
 
 	std::vector<Agent<char>> listofagents( newmtx.get_matrix( ).size( ) );
 
@@ -48,7 +44,7 @@ int main( ){
 
     for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-        std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : \t";
+		std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
 
 		for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
 

@@ -8,10 +8,7 @@
 #include "Classes/cycle.h"
 #include "aggregation_rules.cpp"
 
-/* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
- *						   order agent's orderings according to alternatives' values - enables
- *						   binary search
- */
+// Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
 
 // Generates, without repetition, all combinations of pairs of alternatives - magic number removed
 template<typename Prefs> std::vector<PairsOfOpts<Prefs>> pair_generation( std::vector<Agent<Prefs>>& listofagents ){
@@ -104,7 +101,6 @@ template<typename Prefs> std::vector<PairWiseRank<Prefs>> rank_generation( std::
 // Creates a graph GRAPH composed by nodes of alternatives. Relates those nodes according to how the alt-
 // ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
 // that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
-// x.indifference - DEBUG -> magic number removed
 template<typename Prefs> std::vector<SocialPrefNode<Prefs>> make_graph( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
 	int randagt = rand( ) % listofagents.size( );
@@ -232,7 +228,8 @@ template<typename Prefs> Cycle<Prefs> make_paths( std::vector<SocialPrefNode<Pre
 			}
 		}
 	}
-	// Get all paths
+
+	// Gets all paths
 	return pathway;
 }
 
@@ -259,9 +256,9 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 		// If there are no cycles, Use outdegree as a mean to determine if a node is the Condorcet winner
 		// Else, use another method
 
-	std::cout << "The winner path is: ";
+	std::cout << "The Hamiltonian path is: ";
 
-	for( int i = 0; i < hamiltonian_path.get_path( ).size( ); ++i )
+	for( std::vector<int>::size_type i = 0; i < hamiltonian_path.get_path( ).size( ); ++i )
 
 		std::cout << hamiltonian_path.get_path( )[ i ] << " ";
 
@@ -270,5 +267,11 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 
 template<typename Prefs> void arrow_impossibility( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
+	// Universal Domain
 
+	// Pareto Principle
+
+	// Independence of Irrelevant Alternatives
+
+	// Non-dictatorship
 }
