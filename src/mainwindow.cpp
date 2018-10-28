@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "Classes/program_logic.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -25,4 +26,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::on_set_dimension_button_clicked()
+{
+	int row = ui->row_size_input->value();
+	int column = ui->column_size_input->value();
+	Program_Logic::run_project(row,column);
 }

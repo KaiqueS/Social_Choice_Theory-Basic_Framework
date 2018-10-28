@@ -41,7 +41,8 @@ HEADERS += \
     Classes/pairsofopts.h \
     Classes/pairwiserank.h \
     Classes/preferencematrix.h \
-    Classes/socialprefnode.h
+    Classes/socialprefnode.h\
+    Classes/program_logic.h
 
 FORMS += \
         mainwindow.ui

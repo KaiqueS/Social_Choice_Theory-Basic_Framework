@@ -20,6 +20,9 @@ public:
 	explicit MainWindow(QWidget *parent = nullptr);
 	~MainWindow();
 
+private slots:
+	void on_set_dimension_button_clicked();
+
 private:
 	Ui::MainWindow *ui;
 
