@@ -14,58 +14,69 @@
 
 int main( ){
 
-	srand( time( NULL ) );
+	int row;
 
-	Preferencematrix<char> newmtx{ };
+	int column;
 
-	newmtx.set_matrix( 3, 3 );
 
-	std::vector<Agent<char>> listofagents( newmtx.get_matrix( ).size( ) );
 
-	newmtx.print_mtx( );
+	while(std::cout << "> Row = " && std::cin >> row && std::cout << "\n> Column = " && std::cin >> column){
 
-    for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+		std::cout << "\n____________________________\nVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n";
 
-        listofagents[ i ].set_id( std::to_string( i ) );
-        listofagents[ i ].set_preferences( newmtx );
-    }
+		srand( time( NULL ) );
 
-	std::cout << "\n\n";
+		Preferencematrix<char> newmtx{ };
 
-	std::vector<PairWiseRank<char>> rank = rank_generation( listofagents );
+		newmtx.set_matrix( row, column );
 
-	std::vector<SocialPrefNode<char>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
+		std::vector<Agent<char>> listofagents( newmtx.get_matrix( ).size( ) );
 
-	condorcet_paradox( listofagents, rank, graph );
+		newmtx.print_mtx( );
 
-    //listofagents[ 2 ].get_indifference( );
+		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-    std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
+			listofagents[ i ].set_id( std::to_string( i ) );
+			listofagents[ i ].set_preferences( newmtx );
+		}
 
-    for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+		std::cout << "\n\n";
 
-		std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
+		std::vector<PairWiseRank<char>> rank = rank_generation( listofagents );
 
-		for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
+		std::vector<SocialPrefNode<char>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
 
-			std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
-			std::cout << listofagents[ i ].get_preferences()[ j ].get_value() << " ) ";
-        }
+		condorcet_paradox( listofagents, rank, graph );
+
+		//listofagents[ 2 ].get_indifference( );
+
+		std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
+
+		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+
+			std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
+
+			for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
+
+				std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
+				std::cout << listofagents[ i ].get_preferences()[ j ].get_value() << " ) ";
+			}
+
+			std::cout << "\n";
+		}
 
 		std::cout << "\n";
-    }
 
-	std::cout << "\n";
+		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-	for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+			listofagents[i].print_rank( );
 
-		listofagents[i].print_rank( );
+			std::cout << "\n";
+		}
 
-		std::cout << "\n";
+		std::cout << "____________________________________________________";
+
+		std::cout << "\n\n" << std::flush;
 	}
-
-    std::cout << "____________________________________________________";
-
-	std::cout << "\n\n" << std::flush;
 
 }
