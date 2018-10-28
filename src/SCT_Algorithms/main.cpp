@@ -18,9 +18,10 @@ int main( ){
 
 	int column;
 
+	std::cout << ">To exit put an alhpa char\n";
 
-
-	while(std::cout << "> Row = " && std::cin >> row && std::cout << "\n> Column = " && std::cin >> column){
+	while(std::cout << "_________________________________________________________\n> Row = " &&
+		  std::cin >> row && std::cout << "> Column = " && std::cin >> column){
 
 		std::cout << "\n____________________________\nVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n";
 
