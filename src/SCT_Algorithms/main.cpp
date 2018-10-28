@@ -1,3 +1,6 @@
+#include "mainwindow.h"
+#include <QApplication>
+
 #include <iostream>
 #include <vector>
 #include "Classes/preferencematrix.h"
@@ -12,72 +15,74 @@
  *		 TODO: Remove templates, use static typing
  */
 
-int main( ){
 
-	int row;
+int main(int argc, char *argv[] ){
 
-	int column;
+	//	Run project
+	int row = 6;
 
-	std::cout << ">To exit put an alhpa char\n";
+	int column = 4;
 
-	while(std::cout << "_________________________________________________________\n> Row = " &&
-		  std::cin >> row && std::cout << "> Column = " && std::cin >> column){
 
-		std::cout << "\n____________________________\nVVVVVVVVVVVVVVVVVVVVVVVVVVVV\n";
+	srand( time( NULL ) );
 
-		srand( time( NULL ) );
+	Preferencematrix<char> newmtx{ };
 
-		Preferencematrix<char> newmtx{ };
+	newmtx.set_matrix( row, column );
 
-		newmtx.set_matrix( row, column );
+	std::vector<Agent<char>> listofagents( newmtx.get_matrix( ).size( ) );
 
-		std::vector<Agent<char>> listofagents( newmtx.get_matrix( ).size( ) );
+	newmtx.print_mtx( );
 
-		newmtx.print_mtx( );
+	for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+		listofagents[ i ].set_id( std::to_string( i ) );
+		listofagents[ i ].set_preferences( newmtx );
+	}
 
-			listofagents[ i ].set_id( std::to_string( i ) );
-			listofagents[ i ].set_preferences( newmtx );
-		}
+	std::cout << "\n\n";
 
-		std::cout << "\n\n";
+	std::vector<PairWiseRank<char>> rank = rank_generation( listofagents );
 
-		std::vector<PairWiseRank<char>> rank = rank_generation( listofagents );
+	std::vector<SocialPrefNode<char>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
 
-		std::vector<SocialPrefNode<char>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
+	condorcet_paradox( listofagents, rank, graph );
 
-		condorcet_paradox( listofagents, rank, graph );
+	//listofagents[ 2 ].get_indifference( );
 
-		//listofagents[ 2 ].get_indifference( );
+	std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
 
-		std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
+	for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+		std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
 
-			std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
+		for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
 
-			for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
-
-				std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
-				std::cout << listofagents[ i ].get_preferences()[ j ].get_value() << " ) ";
-			}
-
-			std::cout << "\n";
+			std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
+			std::cout << listofagents[ i ].get_preferences()[ j ].get_value() << " ) ";
 		}
 
 		std::cout << "\n";
-
-		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
-
-			listofagents[i].print_rank( );
-
-			std::cout << "\n";
-		}
-
-		std::cout << "____________________________________________________";
-
-		std::cout << "\n\n" << std::flush;
 	}
+
+	std::cout << "\n";
+
+	for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+
+		listofagents[i].print_rank( );
+
+		std::cout << "\n";
+	}
+
+	std::cout << "____________________________________________________";
+
+	std::cout << "\n\n" << std::flush;
+
+
+//	Start Widget
+	QApplication a(argc, argv);
+	MainWindow w;
+	w.show();
+	return a.exec();
 
 }
