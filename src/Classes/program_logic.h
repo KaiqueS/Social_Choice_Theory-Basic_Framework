@@ -1,5 +1,8 @@
+#pragma once
+
 #ifndef PROGRAM_LOGIC_H
 #define PROGRAM_LOGIC_H
+
 #include <iostream>
 #include <vector>
 #include "Classes/preferencematrix.h"
@@ -8,13 +11,13 @@
 #include "Classes/pairwiserank.h"
 #include "Classes/socialprefnode.h"
 
-class Program_Logic
-{
+class Program_Logic{
+
 public:
-	Program_Logic();
 
+	Program_Logic( );
 
-	static void run_project(int row, int column){
+	static void run_project( int row, int column ){
 			//	Run project
 
 
@@ -41,8 +44,6 @@ public:
 		std::vector<SocialPrefNode<char>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
 
 		condorcet_paradox( listofagents, rank, graph );
-
-		//listofagents[ 2 ].get_indifference( );
 
 		std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
 
