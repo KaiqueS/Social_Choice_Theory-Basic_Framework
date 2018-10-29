@@ -4,9 +4,9 @@ A Social Choice Theory software. Intended to be used as a study companion, it is
 
 # About: Data Structures & Properties
 
-<p><li><strong>PREAMBLE: </strong></li>
+<strong>PREAMBLE: </strong>
   
-<br>&emsp; According to <a href="https://plato.stanford.edu/entries/social-choice/#Aca">List( 2013 )</a>, Social Choice Theory is, actually, a collection of models, each of which represents decision procedures involving a collectity. Common to a cathegory of those procedures, are Individuals, Alternatives, and a decision mechanism, i.e., social function, that maps every individual profiles of alternatives into a social profile or decision.<br>
+<br> According to <a href="https://plato.stanford.edu/entries/social-choice/#Aca">List( 2013 )</a>, Social Choice Theory is, actually, a collection of models, each of which represents decision procedures involving a collectity. Common to a cathegory of those procedures, are Individuals, Alternatives, and a decision mechanism, i.e., social function, that maps every individual profiles of alternatives into a social profile or decision.<br>
 
 In order to represent the above definitions, the following data structures were implemented:
 
