@@ -18,6 +18,7 @@ public:
 	Q_Graphic_Node(int z, QPointF position, int size, QGraphicsScene *scene, SocialPrefNode<Prefs> SocialPrefNode){
 		SPNode = SocialPrefNode;
 		createGraphicItem(z, position, size, scene, SocialPrefNode);
+		moveVector = QPointF(0,0);
 	}
 
 	QPointF getPosition(){
@@ -58,8 +59,8 @@ public:
 
 		QGraphicsPolygonItem* pTriangleItem = scene->addPolygon(Triangle);
 		QGraphicsLineItem * pLineItem = scene->addLine(position.rx(), position.ry(), node->getPosition().rx(), node->getPosition().ry());
-		pLineItem->setZValue(-3);
-		pTriangleItem->setZValue(-3);
+		pLineItem->setZValue(-10);
+		pTriangleItem->setZValue(-10);
 		edges.push_back( pLineItem );
 		arrow.push_back( pTriangleItem );
 
@@ -76,14 +77,14 @@ public:
 
 		label_name = scene->addText(QString(SocialPrefNode.get_id()), QFont("Arial", size) );
 		label_name->setZValue(z+2);
-		label_name->setFlag(QGraphicsItem::ItemIsMovable);
+		label_name-> setFlag( QGraphicsItem::ItemIsMovable );
 		itemForm = scene->addRect(label_name->boundingRect(), outlinePen, innerBrush);
 		itemForm->setZValue(z+1);
 		setPos(position);
 	}
 
-	void moveNode(QPointF movement){
-		setPos(label_name->pos()+movement);
+	void moveNode(){
+		setPos(label_name->pos()+moveVector);
 		for(std::vector<int>::size_type i = 0; i < next_node.size( ); ++i ){
 			QVector2D vAuxMiddle = QVector2D(position.rx()+next_node[i]->getPosition().rx(), position.ry()+next_node[i]->getPosition().ry());
 			QVector2D vAuxaDiff = QVector2D(position.rx()-next_node[i]->getPosition().rx(), position.ry()-next_node[i]->getPosition().ry());
@@ -115,33 +116,40 @@ public:
 		this->position = QPointF(position.rx()+(itemForm->boundingRect().width())/2,position.ry()+(itemForm->boundingRect().height())/2);
 	}
 
-	QPointF calcMovement(){
+	void calcMovement(){
 		QPointF move1(0,0);
 		QPointF move2(0,0);
 		int sizeAux = next_node.size();
 		for(Q_Graphic_Node* node: next_node){
-			if(std::rand()%100>10){
-				QVector2D distance(node->position-position);
-				if(distance.length() > sizeAux*sizeAux*40)
-					move1+=distance.normalized().toPointF()*(distance.length()*sizeAux)/5000*sizeAux;
-				}
+			QVector2D distance(node->position-position);
+			QPointF pointAux(0,0);
+			if(distance.length() > 200*sizeAux)
+				pointAux+=distance.normalized().toPointF()*(distance.length()*sizeAux)/500*sizeAux;
+			if(QVector2D(pointAux).length()>8)
+				pointAux = (QVector2D(pointAux).normalized()*8).toPointF();
+			move2+=pointAux;
 		}
 		for(Q_Graphic_Node* node: next_node){
-			if(std::rand()%100>10){
+			QVector2D distance(node->position-position);
+			QPointF pointAux(0,0);
+			if(distance.length() < 100)
+				pointAux-=distance.normalized().toPointF()/600*distance.length()*distance.length();
+			if(QVector2D(pointAux).length()>8)
+				pointAux = (QVector2D(pointAux).normalized()*8).toPointF();
+			move2+=pointAux;
 
-				QVector2D distance(node->position-position);
-				if(distance.length() < sizeAux*30)
-					move2-=distance.normalized().toPointF()/500*distance.length();
-			}
 		}
-		if(QVector2D(move1+move2).length()>0.5)
-			return (move1+move2);
+		QVector2D vetor(move1+move2);
+		if(vetor.length()>4)
+			moveVector = (vetor.normalized()*2).toPointF();
+		else if(vetor.length()>0.3)
+			moveVector = vetor.toPointF();
 		else
-			return QPointF(0,0);
+			moveVector = QPointF(0,0);
 	}
 
 	void update(){
-		moveNode(calcMovement());
+		moveNode();
 	}
 
 	SocialPrefNode<Prefs> getSPNode(){
@@ -154,6 +162,7 @@ private:
 	std::vector<QGraphicsLineItem *> edges;
 	std::vector<QGraphicsPolygonItem*> arrow;
 	QPointF position;
+	QPointF moveVector;
 	SocialPrefNode<Prefs> SPNode;
 	QGraphicsTextItem* label_name;
 	std::vector<Q_Graphic_Node*> next_node;
