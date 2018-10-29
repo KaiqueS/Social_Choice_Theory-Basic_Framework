@@ -99,6 +99,8 @@ public:
 
 	void update(){
 
+		if(std::rand()%100>90)
+			std::random_shuffle(graphic_graph.begin(),graphic_graph.end());
 		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
 		{
 				graphic_graph[i]->update();

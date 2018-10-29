@@ -32,7 +32,6 @@ private:
 	QGraphicsScene *scene;
 	QGraphicsEllipseItem *ellipse;
 	QGraphicsRectItem *rectangle;
-	QGraphicsTextItem *text;
 };
 
 #endif // MAINWINDOW_H

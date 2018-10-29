@@ -23,10 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	fps->start(20);
 
 
-	text = scene->addText("Teste", QFont("Arial", 20) );
+//	text = scene->addText("Teste", QFont("Arial", 20) );
 //	text->setPos(150,-150);
 
-	text->setFlag(QGraphicsItem::ItemIsMovable);
 }
 
 MainWindow::~MainWindow(){

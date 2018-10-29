@@ -58,8 +58,8 @@ public:
 
 		QGraphicsPolygonItem* pTriangleItem = scene->addPolygon(Triangle);
 		QGraphicsLineItem * pLineItem = scene->addLine(position.rx(), position.ry(), node->getPosition().rx(), node->getPosition().ry());
-		pLineItem->setZValue(-1);
-		pTriangleItem->setZValue(-1);
+		pLineItem->setZValue(-3);
+		pTriangleItem->setZValue(-3);
 		edges.push_back( pLineItem );
 		arrow.push_back( pTriangleItem );
 
@@ -75,9 +75,10 @@ public:
 		outlinePen.setWidth(2);
 
 		label_name = scene->addText(QString(SocialPrefNode.get_id()), QFont("Arial", size) );
-		label_name->setZValue(z+1);
+		label_name->setZValue(z+2);
+		label_name->setFlag(QGraphicsItem::ItemIsMovable);
 		itemForm = scene->addRect(label_name->boundingRect(), outlinePen, innerBrush);
-		itemForm->setZValue(z);
+		itemForm->setZValue(z+1);
 		setPos(position);
 	}
 
@@ -119,18 +120,18 @@ public:
 		QPointF move2(0,0);
 		int sizeAux = next_node.size();
 		for(Q_Graphic_Node* node: next_node){
-			if(std::rand()%10>2){
+			if(std::rand()%100>10){
 				QVector2D distance(node->position-position);
-				if(distance.length() > sizeAux*90)
-					move1+=distance.normalized().toPointF()*(distance.length()*sizeAux)/500*sizeAux;
+				if(distance.length() > sizeAux*sizeAux*40)
+					move1+=distance.normalized().toPointF()*(distance.length()*sizeAux)/5000*sizeAux;
 				}
 		}
 		for(Q_Graphic_Node* node: next_node){
-			if(std::rand()%10>2){
+			if(std::rand()%100>10){
 
 				QVector2D distance(node->position-position);
-				if(distance.length() < sizeAux*20)
-					move2-=distance.normalized().toPointF()/200*distance.length();
+				if(distance.length() < sizeAux*30)
+					move2-=distance.normalized().toPointF()/500*distance.length();
 			}
 		}
 		if(QVector2D(move1+move2).length()>0.5)
