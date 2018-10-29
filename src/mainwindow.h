@@ -25,38 +25,18 @@ public:
 	~MainWindow();
 
 private slots:
-//<<<<<<< HEAD
 	void on_set_dimension_button_clicked();
 	void update();
-//=======
 
-//	void on_set_dimension_button_clicked( );
-
-//>>>>>>> 62dde527f5b0c715e69e2538f8189fac9e4c0b7e
 private:
 
 	Ui::MainWindow *ui;
-//<<<<<<< HEAD
 	Program_Logic<char> logic;
 	QTimer *fps;
 	QTimer *controle;
 	QGraphicsScene *scene;
 	QGraphicsEllipseItem *ellipse;
 	QGraphicsRectItem *rectangle;
-//<<<<<<< HEAD
-//=======
-
-//	QTimer* fps;
-//	QTimer* controle;
-
-//	QGraphicsScene* scene;
-//	QGraphicsEllipseItem* ellipse;
-//	QGraphicsRectItem* rectangle;
-	QGraphicsTextItem* text;
-//>>>>>>> 62dde527f5b0c715e69e2538f8189fac9e4c0b7e
-//=======
-//	QGraphicsTextItem *text;
-//>>>>>>> parent of 1e8b17a... click and drag on graph
 };
 
 #endif // MAINWINDOW_H

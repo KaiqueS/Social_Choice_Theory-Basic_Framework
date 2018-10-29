@@ -156,6 +156,10 @@ public:
 		return SPNode;
 	}
 
+	void setMoveVector(QPointF move){
+		moveVector = move;
+	}
+
 private:
 
 	QGraphicsItem *itemForm;
