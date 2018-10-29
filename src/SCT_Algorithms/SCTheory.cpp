@@ -267,11 +267,9 @@ template<typename Prefs> void condorcet_paradox( std::vector<Agent<Prefs>>& list
 
 template<typename Prefs> void arrow_impossibility( std::vector<Agent<Prefs>>& listofagents, std::vector<PairWiseRank<Prefs>>& rank, std::vector<SocialPrefNode<Prefs>>& graph ){
 
-	// Universal Domain
-
-	// Pareto Principle
-
-	// Independence of Irrelevant Alternatives
-
-	// Non-dictatorship
+	// Checks if all the below conditions are satisfied simultaneously
+		// Universal Domain
+		// Pareto Principle
+		// Independence of Irrelevant Alternatives
+		// Non-dictatorship
 }

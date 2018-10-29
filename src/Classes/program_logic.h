@@ -1,5 +1,8 @@
+#pragma once
+
 #ifndef PROGRAM_LOGIC_H
 #define PROGRAM_LOGIC_H
+
 #include <iostream>
 #include <vector>
 #include "Classes/preferencematrix.h"
@@ -9,11 +12,21 @@
 #include "Classes/socialprefnode.h"
 #include "Classes/q_graphic_node.h"
 
+//<<<<<<< HEAD
 template<typename Prefs> class Program_Logic
 {
 public:
 	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph;
 	std::vector<SocialPrefNode<Prefs>> run_project(int row, int column){
+//=======
+//class Program_Logic{
+
+//public:
+
+	Program_Logic( );
+
+//	static void run_project( int row, int column ){
+//>>>>>>> 62dde527f5b0c715e69e2538f8189fac9e4c0b7e
 			//	Run project
 
 		Preferencematrix<Prefs> newmtx{ };
@@ -37,8 +50,6 @@ public:
 		std::vector<SocialPrefNode<Prefs>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
 
 		condorcet_paradox( listofagents, rank, graph );
-
-		//listofagents[ 2 ].get_indifference( );
 
 		std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
 
@@ -98,13 +109,13 @@ public:
 	}
 
 	void update(){
-
-		if(std::rand()%100>90)
-			std::random_shuffle(graphic_graph.begin(),graphic_graph.end());
+		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
+		{
+				graphic_graph[i]->calcMovement();
+		}
 		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
 		{
 				graphic_graph[i]->update();
-
 		}
 	}
 	void clean(){
