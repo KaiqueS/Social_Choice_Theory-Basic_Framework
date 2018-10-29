@@ -42,7 +42,8 @@ HEADERS += \
     Classes/pairwiserank.h \
     Classes/preferencematrix.h \
     Classes/socialprefnode.h\
-    Classes/program_logic.h
+    Classes/program_logic.h \
+    Classes/q_graphic_node.h
 
 FORMS += \
         mainwindow.ui

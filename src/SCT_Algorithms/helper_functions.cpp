@@ -9,6 +9,7 @@ template<typename Prefs> void print_graph( std::vector<SocialPrefNode<Prefs>>& g
 		std::cout << graph[ i ] << "\n";
 }
 
+
 template<typename Prefs> void strongconnect( std::vector<SocialPrefNode<Prefs>>& graph, std::vector<NodeOpt<Prefs>>& track, int index ){
 
 	NodeOpt<Prefs> v{ };

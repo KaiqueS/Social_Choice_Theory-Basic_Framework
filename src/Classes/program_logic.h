@@ -7,24 +7,20 @@
 #include "SCT_Algorithms/SCTheory.cpp"
 #include "Classes/pairwiserank.h"
 #include "Classes/socialprefnode.h"
+#include "Classes/q_graphic_node.h"
 
-class Program_Logic
+template<typename Prefs> class Program_Logic
 {
 public:
-	Program_Logic();
-
-
-	static void run_project(int row, int column){
+	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph;
+	std::vector<SocialPrefNode<Prefs>> run_project(int row, int column){
 			//	Run project
 
-
-		srand( time( NULL ) );
-
-		Preferencematrix<char> newmtx{ };
+		Preferencematrix<Prefs> newmtx{ };
 
 		newmtx.set_matrix( row, column );
 
-		std::vector<Agent<char>> listofagents( newmtx.get_matrix( ).size( ) );
+		std::vector<Agent<Prefs>> listofagents( newmtx.get_matrix( ).size( ) );
 
 		newmtx.print_mtx( );
 
@@ -36,9 +32,9 @@ public:
 
 		std::cout << "\n\n";
 
-		std::vector<PairWiseRank<char>> rank = rank_generation( listofagents );
+		std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
 
-		std::vector<SocialPrefNode<char>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
+		std::vector<SocialPrefNode<Prefs>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
 
 		condorcet_paradox( listofagents, rank, graph );
 
@@ -72,7 +68,52 @@ public:
 
 		std::cout << "\n\n" << std::flush;
 
+		return graph;
+	}
+
+	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene *scene){
+
+		int z=0;
+		for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+
+			QPointF position = QPointF(std::rand( ) % 500,std::rand( ) % 200);
+
+			graphic_graph.push_back(new Q_Graphic_Node<Prefs>(z++, position, 10, scene, graph[i]));
+		}
+
+		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
+
+			std::vector<SocialPrefNode<Prefs>*> preferences = graphic_graph[i]->getSPNode().get_preferences();
+			for(SocialPrefNode<Prefs>* node : preferences){
+				int aux = 0;
+				for( std::vector<int>::size_type j = 0; j < graphic_graph.size( ) && node->get_id()!=graphic_graph[j]->getSPNode().get_id(); ++j){
+					aux++;
+				}
+				if(aux<graphic_graph.size( )){
+					graphic_graph[aux]->insert_node(graphic_graph[i], scene);
+				}
+			}
+		}
+
+	}
+
+	void update(){
+
+		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
+		{
+				graphic_graph[i]->update();
+
+		}
+	}
+	void clean(){
+		for( Q_Graphic_Node<Prefs>* element : graphic_graph){
+//			element->
+			delete element;
+		}
+		graphic_graph.clear();
 	}
 };
+
+
 
 #endif // PROGRAM_LOGIC_H

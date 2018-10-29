@@ -7,6 +7,7 @@
 #include <QGraphicsItem>
 #include <QTimer>
 #include <iostream>
+#include "Classes/program_logic.h"
 
 namespace Ui {
 	class MainWindow;
@@ -22,10 +23,10 @@ public:
 
 private slots:
 	void on_set_dimension_button_clicked();
-
+	void update();
 private:
 	Ui::MainWindow *ui;
-
+	Program_Logic<char> logic;
 	QTimer *fps;
 	QTimer *controle;
 	QGraphicsScene *scene;

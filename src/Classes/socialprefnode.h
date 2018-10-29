@@ -5,6 +5,8 @@
 
 #include <vector>
 #include <iostream>
+#include <QGraphicsView>
+#include <QGraphicsItem>
 
 // TODO: Document this
 
