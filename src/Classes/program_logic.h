@@ -82,7 +82,7 @@ public:
 
 			QPointF position = QPointF(std::rand( ) % 500,std::rand( ) % 200);
 
-			graphic_graph.push_back(new Q_Graphic_Node<Prefs>(z++, position, 10, scene, graph[i]));
+			graphic_graph.push_back(new Q_Graphic_Node<Prefs>(z++, position, 10, graph.size(), scene, graph[i]));
 		}
 
 		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){

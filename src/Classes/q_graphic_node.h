@@ -15,10 +15,12 @@ public:
 		std::cout << "Node " << SPNode.get_id() << "was destructed.\n\n";
 	}
 
-	Q_Graphic_Node(int z, QPointF position, int size, QGraphicsScene *scene, SocialPrefNode<Prefs> SocialPrefNode){
+	Q_Graphic_Node(int z, QPointF position, int size, double allNodes, QGraphicsScene *scene, SocialPrefNode<Prefs> SocialPrefNode){
 		SPNode = SocialPrefNode;
 		createGraphicItem(z, position, size, scene, SocialPrefNode);
 		moveVector = QPointF(0,0);
+		this->quantNodes = allNodes;
+		strength = 0;
 	}
 
 	QPointF getPosition(){
@@ -40,7 +42,6 @@ public:
 	void insert_node(Q_Graphic_Node* node, QGraphicsScene *scene){
 
 		next_node.push_back(node);
-
 		QVector2D vAuxMiddle = QVector2D(position.rx()+node->getPosition().rx(), position.ry()+node->getPosition().ry());
 		QVector2D vAuxaDiff = QVector2D(position.rx()-node->getPosition().rx(), position.ry()-node->getPosition().ry());
 		vAuxMiddle/=2;
@@ -64,6 +65,16 @@ public:
 		edges.push_back( pLineItem );
 		arrow.push_back( pTriangleItem );
 
+		strength = (quantNodes-next_node.size()-1)/quantNodes;
+		QBrush innerBrush(QColor(245-20*strength,245-100*strength,245-100*strength));
+		QPen outlinePen(Qt::black);
+		outlinePen.setWidth(2);
+		int zValue = itemForm->zValue();
+		delete itemForm;
+		itemForm = scene->addRect(label_name->boundingRect(), outlinePen, innerBrush);
+		itemForm->setZValue(zValue);
+		setPos(position);
+		std::cout<< "strength = "<<strength<<"\n";
 
 	}
 
@@ -71,7 +82,7 @@ public:
 
 		QPen outlinePen(Qt::black);
 
-		QBrush innerBrush(Qt::lightGray);
+		QBrush innerBrush(QColor(255,130,130));
 
 		outlinePen.setWidth(2);
 
@@ -170,6 +181,8 @@ private:
 	SocialPrefNode<Prefs> SPNode;
 	QGraphicsTextItem* label_name;
 	std::vector<Q_Graphic_Node*> next_node;
+	double strength;
+	double quantNodes;
 };
 
 
