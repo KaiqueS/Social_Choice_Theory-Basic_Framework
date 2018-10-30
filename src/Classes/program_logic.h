@@ -12,16 +12,63 @@
 #include "Classes/socialprefnode.h"
 #include "Classes/q_graphic_node.h"
 
-template<typename Prefs> class Program_Logic
-{
+// TODO: Use RAII in class design
+
+template<typename Prefs> class Program_Logic{
+
 public:
-	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph;
-	std::vector<SocialPrefNode<Prefs>> run_project(int row, int column){
 
+	// Constructors & Destructor
 	Program_Logic( );
+	Program_Logic( std::vector<Q_Graphic_Node<Prefs>*> ggraph );
+	Program_Logic( const Program_Logic& copy_plogic );
 
-			//	Run project
+	~Program_Logic( ){ }
 
+	// Setters
+
+	// Getters
+
+	// Operators
+	std::vector<Q_Graphic_Node<Prefs>*>& operator=( const Program_Logic& plogic );
+
+	// Helper Functions
+	std::vector<SocialPrefNode<Prefs>> run_project( int row, int column );
+
+	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene* scene );
+	void update( bool isMagnetic );
+	void clean( );
+
+private:
+
+	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph{ };
+};
+
+/* Constructors & Destructor */
+template<typename Prefs> Program_Logic<Prefs>::Program_Logic( ){ graphic_graph = { }; }
+template<typename Prefs> Program_Logic<Prefs>::Program_Logic( std::vector<Q_Graphic_Node<Prefs>*> ggraph ){ graphic_graph = ggraph; }
+template<typename Prefs> Program_Logic<Prefs>::Program_Logic( const Program_Logic& copy_plogic ){ graphic_graph = copy_plogic.graphic_graph; }
+
+/* Setters */
+
+/* Getters */
+
+/* Operators */
+
+template<typename Prefs> std::vector<Q_Graphic_Node<Prefs>*>& Program_Logic<Prefs>::operator=( const Program_Logic& plogic ){
+
+	graphic_graph = plogic.graphic_graph;
+
+	return *this;
+}
+
+/* Helper Functions */
+
+template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>::run_project( int row, int column ){
+
+		Program_Logic( );
+
+		//	Run project
 		Preferencematrix<Prefs> newmtx{ };
 
 		newmtx.set_matrix( row, column );
@@ -73,60 +120,73 @@ public:
 		std::cout << "\n\n" << std::flush;
 
 		return graph;
+}
+
+template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene* scene ){
+
+	int z{ 0 };
+
+	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+
+		QPointF position = QPointF( std::rand( ) % 500,std::rand( ) % 200 );
+
+		graphic_graph.push_back( new Q_Graphic_Node<Prefs>( z++, position, 10, graph.size( ), scene, graph[ i ] ) );
 	}
 
-	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene *scene){
+	for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
 
-		int z=0;
-		for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+		std::vector<SocialPrefNode<Prefs>*> preferences = graphic_graph[ i ] -> getSPNode( ).get_preferences( );
 
-			QPointF position = QPointF(std::rand( ) % 500,std::rand( ) % 200);
+		for( SocialPrefNode<Prefs>* node : preferences ){
 
-			graphic_graph.push_back(new Q_Graphic_Node<Prefs>(z++, position, 10, graph.size(), scene, graph[i]));
+			unsigned int aux = 0;
+
+			for( std::vector<int>::size_type j = 0; j < graphic_graph.size( ) &&
+				 node -> get_id( ) != graphic_graph[ j ] -> getSPNode( ).get_id ( ); ++j ){
+
+				aux++;
+			}
+
+			if( aux < graphic_graph.size( ) ){
+
+				graphic_graph[ aux ] -> insert_node( graphic_graph[ i ], scene );
+			}
 		}
+	}
+}
+
+template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
+
+	if( isMagnetic ){
 
 		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
 
-			std::vector<SocialPrefNode<Prefs>*> preferences = graphic_graph[i]->getSPNode().get_preferences();
-			for(SocialPrefNode<Prefs>* node : preferences){
-				int aux = 0;
-				for( std::vector<int>::size_type j = 0; j < graphic_graph.size( ) && node->get_id()!=graphic_graph[j]->getSPNode().get_id(); ++j){
-					aux++;
-				}
-				if(aux<graphic_graph.size( )){
-					graphic_graph[aux]->insert_node(graphic_graph[i], scene);
-				}
-			}
-		}
-
-	}
-
-	void update(bool isMagnetic){
-
-		if(isMagnetic){
-			for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
-			{
-					graphic_graph[i]->calcMovement();
-			}
-		}else{
-			for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
-			{
-					graphic_graph[i]->setMoveVector(QPointF(0,0));
-			}
-		}
-		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i )
-		{
-				graphic_graph[i]->update();
+			graphic_graph[ i ] -> calcMovement( );
 		}
 	}
-	void clean(){
-		for( Q_Graphic_Node<Prefs>* element : graphic_graph){
-			delete element;
+
+	else{
+
+		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
+
+			graphic_graph[ i ] -> setMoveVector( QPointF( 0, 0 ) );
 		}
-		graphic_graph.clear();
 	}
-};
 
+	for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
 
+		graphic_graph[ i ] -> update( );
+	}
+}
+
+template<typename Prefs> void Program_Logic<Prefs>::clean( ){
+
+	for( Q_Graphic_Node<Prefs>* element : graphic_graph ){
+
+		delete element;
+	}
+
+	graphic_graph.clear( );
+}
 
 #endif // PROGRAM_LOGIC_H
