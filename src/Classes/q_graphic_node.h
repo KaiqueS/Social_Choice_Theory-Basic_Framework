@@ -44,7 +44,7 @@ public:
 
 	void moveNode( );
 
-	void calcMovement( );
+	void calcMovement( std::vector<Q_Graphic_Node*> graph );
 
 	void update( );
 
@@ -95,7 +95,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF p
 
 	this -> quantNodes = allNodes;
 
-	strength = 0;
+	strength = ( ( quantNodes - next_node.size( ) - 1 ) / quantNodes );
 }
 template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_Node& copy_qgnode ){
 
@@ -149,12 +149,17 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 									 position.ry( ) - ( node -> getPosition( ).ry( ) ) );
 
 	// MAGIC NUMBER
+
+	// Vector to middle of edge
 	vAuxMiddle /= 2 ;
 
+	// Vector to represents the edge direction
 	vAuxaDiff.normalize( );
 	vAuxaDiff *= 10;
 
 	// MAGIC NUMBER
+
+	// Angle of arrow pointer
 	double angle = 10;
 
 	QPointF v1( vAuxaDiff.x( )*cos( angle ) - ( vAuxaDiff.y( )*sin( angle ) ),
@@ -177,9 +182,9 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 													 node -> getPosition( ).rx( ),
 													 node -> getPosition( ).ry( ) );
 
-	pLineItem -> setZValue( -10 );
+	pLineItem -> setZValue( -1 );
 
-	pTriangleItem -> setZValue( -10 );
+	pTriangleItem -> setZValue( -1 );
 
 	edges.push_back( pLineItem );
 
@@ -202,8 +207,6 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 	itemForm -> setZValue( zValue );
 
 	setPos( position );
-
-	std::cout<< "Strength = "<< strength << "\n";
 
 }
 
@@ -280,67 +283,54 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 
 		edges[ i ] = pLineItem;
 	}
+
 }
 
-template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( ){
+template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q_Graphic_Node*> graph ){
 
 	QPointF move1( 0, 0 );
-	QPointF move2( 0, 0 );
 
-	int sizeAux = next_node.size( );
+	int sizeAux = graph.size( );
 
-	for( Q_Graphic_Node* node: next_node ){
+	// MAGIC NUMBERs
+	float velMax = 3/(strength+1);
+	float velMin = velMax/10;
+	float edgeMaxLength = 90 * sqrt(sizeAux);
+	float edgeMinLength = 80;
 
-		QVector2D distance( ( node -> position ) - position );
+	for( Q_Graphic_Node* node: graph ){
 
-		QPointF pointAux( 0, 0 );
+		if( node->SPNode.get_id( ) != SPNode.get_id( ) )
+		{
+			QVector2D distance( ( node -> position ) - position );
 
-		if( distance.length( ) > ( 200 * sizeAux ) )
+			QVector2D moveAux(distance - distance.normalized() * edgeMaxLength);
 
-			pointAux += distance.normalized( ).toPointF( ) * ( ( distance.length( ) * sizeAux ) / ( 500 * sizeAux ) );
+			if(distance.length() > edgeMaxLength || distance.length() < edgeMinLength)
 
-		if( QVector2D( pointAux ).length( ) > 8 )
-
-			pointAux = ( QVector2D( pointAux ).normalized( ) * 8 ).toPointF( );
-
-		move2 += pointAux;
+				move1 += moveAux.toPointF();
+		}
 	}
 
-	for( Q_Graphic_Node* node: next_node ){
+	QVector2D vetor( move1 );
 
-		QVector2D distance( ( node -> position ) - position );
+	if( vetor.length( ) > velMax )
 
-		QPointF pointAux( 0, 0 );
+		move1 = vetor.normalized().toPointF() * velMax;
 
-		if( distance.length( ) < 100 )
+	if( vetor.length() < velMin)
 
-			pointAux -= distance.normalized( ).toPointF( ) / ( 600 * distance.length( ) * distance.length( ) );
-
-		if( QVector2D( pointAux ).length( ) > 8 )
-
-			pointAux = ( QVector2D( pointAux ).normalized( ) * 8 ).toPointF( );
-
-		move2 += pointAux;
-	}
-
-	QVector2D vetor( move1 + move2 );
+		move1 = QPointF( 0, 0 );
 
 	// MAGIC NUMBER
-	if( vetor.length( ) > 4 )
+	// Resistence
+	moveVector *= 0.85;
 
-		moveVector = ( vetor.normalized( ) * 2 ).toPointF( );
+	moveVector += move1;
 
-	// MAGIC NUMBER
-	else if( vetor.length( ) > 0.3 )
-
-		moveVector = vetor.toPointF( );
-
-	else
-
-		moveVector = QPointF( 0, 0 );
 }
 
-template<typename Prefs> void Q_Graphic_Node<Prefs>::update( ){ moveNode( ); }
+template<typename Prefs> void Q_Graphic_Node<Prefs>::update( ){	moveNode( ); }
 
 /* Operators */
 

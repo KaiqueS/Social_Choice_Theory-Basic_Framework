@@ -161,7 +161,7 @@ template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 
 		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
 
-			graphic_graph[ i ] -> calcMovement( );
+			graphic_graph[ i ] -> calcMovement( graphic_graph );
 		}
 	}
 
