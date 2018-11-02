@@ -182,11 +182,7 @@ template<typename Prefs> void Program_Logic<Prefs>::rank( ){
 
 	int rank{ 1 };
 
-	//signed int aux_step{ };
-
-	for( std::vector<int>::size_type i = 0 && signed int aux_step = graphic_graph[ i ] -> get_Steps( ); i < graphic_graph.size( ); ++i ){
-
-		//aux_step = graphic_graph[ i ] -> get_Steps( );
+	for( std::vector<int>::size_type i = 0, aux_step = graphic_graph[ i ] -> get_Steps( ); i < graphic_graph.size( ); ++i ){
 
 		if( graphic_graph[ i ] -> get_Steps( ) < aux_step ){
 

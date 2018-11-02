@@ -5,6 +5,7 @@
 #include <Classes/socialprefnode.h>
 #include <QVector2D>
 #include <QtMath>
+#include <typeinfo>
 
 template<typename Prefs> class Q_Graphic_Node{
 
@@ -18,13 +19,9 @@ public:
 	~Q_Graphic_Node( );
 
 	// Setters
-
 	void setRectangle( QGraphicsRectItem* value );
-
 	void setPosition( const QPointF& value );
-
 	void setPos( QPointF position );
-
 	void setMoveVector( QPointF move );
 
 	// Getters
@@ -34,29 +31,22 @@ public:
 
 	SocialPrefNode<Prefs> getSPNode( ){ return SPNode; }
 
+	int get_Steps( ){ return steps; }
+	int get_Rank( ){ return rank; }
+
 	// Operators
 	Q_Graphic_Node& operator=( const Q_Graphic_Node& copy_qgnode );
 
 	// Helper Functions
 	void insert_node( Q_Graphic_Node* node, QGraphicsScene* scene );
-
 	void createGraphicItem( int z, QPointF position, int size, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode );
-
 	void moveNode( );
-
 	void calcMovement( std::vector<Q_Graphic_Node*> graph );
-
 	void walkGraph( std::vector<Q_Graphic_Node*> last_node );
-
-	bool has_loop( std::vector<Q_Graphic_Node*> last_node,  Q_Graphic_Node* node);
-
 	void update( );
-
-	int get_Steps();
-
 	void set_Rank( int rank );
 
-	int get_Rank();
+	bool has_loop( std::vector<Q_Graphic_Node*> last_node,  Q_Graphic_Node* node);
 
 private:
 
@@ -116,7 +106,6 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF p
 	steps = 0;
 
 	rank = 0;
-
 }
 template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_Node& copy_qgnode ){
 
@@ -141,9 +130,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::~Q_Graphic_Node( ){ std::cout <<
 /* Setters */
 
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setRectangle( QGraphicsRectItem* value ){ itemForm = value; }
-
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setPosition( const QPointF& value ){ position = value; }
-
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 
 	label_name -> setPos( position.rx( ), position.ry( ) );
@@ -157,10 +144,37 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 								position.ry( ) + ( ( itemForm -> boundingRect( ).height( ) ) / 2 ) );
 
 }
-
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setMoveVector( QPointF move ){ moveVector = move; }
 
 /* Getters */
+
+
+/* Operators */
+
+template<typename Prefs> Q_Graphic_Node<Prefs>& Q_Graphic_Node<Prefs>::operator=( const Q_Graphic_Node& copy_qgnode ){
+
+	edges = copy_qgnode.edges;
+	arrow = copy_qgnode.arrow;
+	next_node = copy_qgnode.next_node;
+
+	itemForm = copy_qgnode.itemForm;
+	label_name = copy_qgnode.label_name;
+	label_Rank = copy_qgnode.label_Rank;
+
+	position = copy_qgnode.position;
+	moveVector = copy_qgnode.moveVector;
+
+	SPNode = copy_qgnode.SPNode;
+
+	strength = copy_qgnode.strength;
+	quantNodes = copy_qgnode.quantNodes;
+	steps = copy_qgnode.steps;
+	rank = copy_qgnode.rank;
+
+	return *this;
+}
+
+/* Helper Functions */
 
 // TODO: Resolve issues
 template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node* node, QGraphicsScene* scene ){
@@ -173,8 +187,6 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 	QVector2D vAuxaDiff = QVector2D( position.rx( ) - ( node -> getPosition( ).rx( ) ),
 									 position.ry( ) - ( node -> getPosition( ).ry( ) ) );
 
-	// MAGIC NUMBER
-
 	// Vector to middle of edge
 	vAuxMiddle /= 2 ;
 
@@ -182,22 +194,28 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 	vAuxaDiff.normalize( );
 	vAuxaDiff *= 10;
 
-	// MAGIC NUMBER
-
 	// Angle of arrow pointer
 	double angle = 10;
 
-	QPointF v1( vAuxaDiff.x( )*cos( angle ) - ( vAuxaDiff.y( )*sin( angle ) ),
-				vAuxaDiff.y( )*cos( angle ) + ( vAuxaDiff.x( )*sin( angle ) ) );
+	// Static casting vAuxaDiff x and y methods, removes implicit conversion
+	qreal xvAuxDiff = static_cast<qreal>( vAuxaDiff.x( ) );
+	qreal yvAuxDiff = static_cast<qreal>( vAuxaDiff.y( ) );
 
-	QPointF v2( vAuxaDiff.x( )*cos( -angle ) - ( vAuxaDiff.y( )*sin( -angle ) ),
-				vAuxaDiff.y( )*cos( -angle ) + ( vAuxaDiff.x( )*sin( -angle ) ) );
+	QPointF v1( ( xvAuxDiff * cos( angle ) ) - ( yvAuxDiff * sin( angle ) ),
+				( yvAuxDiff * cos( angle ) ) + ( xvAuxDiff * sin( angle ) ) );
 
-	QPolygonF Triangle;
+	QPointF v2( ( xvAuxDiff * cos( -angle ) ) - ( yvAuxDiff * sin( -angle ) ),
+				( yvAuxDiff * cos( -angle ) ) + ( xvAuxDiff * sin( -angle ) ) );
 
-	Triangle.append( QPointF( vAuxMiddle.x( ), vAuxMiddle.y( ) ) );
-	Triangle.append( v1+ QPointF( vAuxMiddle.x( ), vAuxMiddle.y( ) ) );
-	Triangle.append( v2+ QPointF( vAuxMiddle.x( ), vAuxMiddle.y( ) ) );
+	QPolygonF Triangle{ };
+
+	// Static casting vAuxMiddle x and y methods, removes implicit conversion
+	qreal xvAuxMiddle = static_cast<qreal>( vAuxMiddle.x( ) );
+	qreal yvAuxMiddle = static_cast<qreal>( vAuxMiddle.y( ) );
+
+	Triangle.append( QPointF( xvAuxMiddle, yvAuxMiddle ) );
+	Triangle.append( v1 + QPointF( xvAuxMiddle, yvAuxMiddle ) );
+	Triangle.append( v2 + QPointF( xvAuxMiddle, yvAuxMiddle ) );
 
 	// Add the triangle & line polygon to the scene
 	QGraphicsPolygonItem* pTriangleItem = scene -> addPolygon( Triangle );
@@ -232,9 +250,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 	itemForm -> setZValue( zValue );
 
 	setPos( position );
-
 }
-
 template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int z, QPointF position, int size, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode ){
 
 	QPen outlinePen( Qt::black );
@@ -246,7 +262,6 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int z, Q
 	label_name = scene -> addText( QString( SocialPrefNode.get_id( ) ), QFont( "Arial", size ) );
 
 	label_name -> setZValue( z + 2 );
-
 	label_name -> setFlag( QGraphicsItem::ItemIsMovable );
 
 	itemForm = scene -> addRect( label_name -> boundingRect( ), outlinePen, innerBrush );
@@ -257,7 +272,6 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int z, Q
 
 	setPos( position );
 }
-
 template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 
 	setPos( label_name -> pos( ) + moveVector );
@@ -274,24 +288,30 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 		vAuxMiddle /= 2;
 
 		vAuxaDiff.normalize( );
-
-		// MAGIC NUMBER
 		vAuxaDiff *= -10;
 
 		// MAGIC NUMBER
 		double angle = 10;
 
-		QPointF v1( ( vAuxaDiff.x( ) * cos( angle ) ) - ( vAuxaDiff.y( ) * sin( angle ) ),
-					( vAuxaDiff.y( ) * cos( angle ) ) + ( vAuxaDiff.x( ) * sin( angle ) ) );
+		// Static casting vAuxaDiff x and y methods, removes implicit conversion
+		qreal xvAuxDiff = static_cast<qreal>( vAuxaDiff.x( ) );
+		qreal yvAuxDiff = static_cast<qreal>( vAuxaDiff.y( ) );
 
-		QPointF v2( ( vAuxaDiff.x( ) * cos( -angle ) ) - ( vAuxaDiff.y( ) * sin( -angle ) ),
-					( vAuxaDiff.y( ) * cos( -angle ) ) + ( vAuxaDiff.x( ) * sin( -angle ) ) );
+		QPointF v1( ( xvAuxDiff * cos( angle ) ) - ( yvAuxDiff * sin( angle ) ),
+					( yvAuxDiff * cos( angle ) ) + ( xvAuxDiff * sin( angle ) ) );
+
+		QPointF v2( ( xvAuxDiff * cos( -angle ) ) - ( yvAuxDiff * sin( -angle ) ),
+					( yvAuxDiff * cos( -angle ) ) + ( xvAuxDiff * sin( -angle ) ) );
 
 		QPolygonF Triangle;
 
-		Triangle.append( QPointF( vAuxMiddle.x( ), vAuxMiddle.y( ) ) );
-		Triangle.append( v1 + QPointF( vAuxMiddle.x( ), vAuxMiddle.y( ) ) );
-		Triangle.append( v2 + QPointF( vAuxMiddle.x( ), vAuxMiddle.y( ) ) );
+		// Static casting vAuxMiddle x and y methods, removes implicit conversion
+		qreal xvAuxMiddle = static_cast<qreal>( vAuxMiddle.x( ) );
+		qreal yvAuxMiddle = static_cast<qreal>( vAuxMiddle.y( ) );
+
+		Triangle.append( QPointF( xvAuxMiddle, yvAuxMiddle ) );
+		Triangle.append( v1 + QPointF( xvAuxMiddle, yvAuxMiddle ) );
+		Triangle.append( v2 + QPointF( xvAuxMiddle, yvAuxMiddle ) );
 
 		QGraphicsScene* scene = arrow[ i ] -> scene( );
 
@@ -311,73 +331,90 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 
 		edges[ i ] = pLineItem;
 	}
-
 }
-
 template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q_Graphic_Node*> graph ){
 
 	QPointF move1( 0, 0 );
 
 	int sizeAux = graph.size( );
 
-	// MAGIC NUMBERs
-	float velMax = 3/(strength+1);
-	float velMin = velMax/10;
-	float edgeMaxLength = 90 * sqrt(sizeAux);
-	float edgeMinLength = 80;
+	qreal velMax = 3 / ( strength + 1 );
+	qreal velMin = velMax / 10;
+
+	double edgeMaxLength = 90 * sqrt( sizeAux );
+	qreal edgeMinLength = 80;
 
 	for( Q_Graphic_Node* node: graph ){
 
-		if( node->SPNode.get_id( ) != SPNode.get_id( ) )
-		{
+		if( node -> SPNode.get_id( ) != SPNode.get_id( ) ){
+
 			QVector2D distance( ( node -> position ) - position );
 
-			QVector2D moveAux(distance - distance.normalized() * edgeMaxLength);
+			// Static casting QVector2D distance length into q real, removes implicit conversion on if statement belw
+			qreal vecdistance = static_cast<qreal>( distance.length( ) );
 
-			if(distance.length() > edgeMaxLength || distance.length() < edgeMinLength)
+			QVector2D moveAux( distance - ( distance.normalized( ) * edgeMaxLength ) );
 
-				move1 += moveAux.toPointF();
+			if( vecdistance > edgeMaxLength || vecdistance < edgeMinLength )
+
+				move1 += moveAux.toPointF( );
 		}
 	}
 
 	QVector2D vetor( move1 );
 
-	if( vetor.length( ) > velMax )
+	// Static casting vetor length into qreal, removes implicit conversion on if statement below
+	qreal vetorlen = static_cast<qreal>( vetor.length( ) );
 
-		move1 = vetor.normalized().toPointF() * velMax;
+	if( vetorlen > velMax )
 
-	if( vetor.length() < velMin)
+		move1 = vetor.normalized( ).toPointF( ) * velMax;
+
+	if( vetorlen < velMin )
 
 		move1 = QPointF( 0, 0 );
 
-	// MAGIC NUMBER
 	// Resistence
 	moveVector *= 0.85;
-
 	moveVector += move1;
-
 }
+template<typename Prefs> void Q_Graphic_Node<Prefs>::walkGraph( std::vector<Q_Graphic_Node<Prefs>*> last_node ){
 
-template<typename Prefs> void Q_Graphic_Node<Prefs>::walkGraph(std::vector<Q_Graphic_Node<Prefs>*> last_node){
-
-	for(Q_Graphic_Node<Prefs>* nextNode : next_node){
+	for( Q_Graphic_Node<Prefs>* nextNode : next_node ){
 
 		if( !has_loop( last_node, nextNode ) ){
 
 			std::vector<Q_Graphic_Node<Prefs>*> lastAux = last_node;
 
-			lastAux.push_back(this);
+			lastAux.push_back( this );
 
-			nextNode->walkGraph(lastAux);
+			nextNode -> walkGraph( lastAux );
 		}
 	}
 
 	++steps;
 }
+template<typename Prefs> void Q_Graphic_Node<Prefs>::update( ){	moveNode( ); }
+template<typename Prefs> void Q_Graphic_Node<Prefs>::set_Rank( int rank ){
 
-template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop(std::vector<Q_Graphic_Node<Prefs>*> last_node, Q_Graphic_Node* node){
+	this -> rank = rank;
 
-	for(Q_Graphic_Node<Prefs>* nodeAux : last_node)
+	delete label_Rank;
+
+	QFont fonte( "Arial", 15 );
+
+	fonte.setBold( true );
+
+	label_Rank = label_name -> scene( ) -> addText( QString::number( rank ), fonte );
+
+	label_Rank -> setDefaultTextColor( Qt::red );
+	label_Rank -> setZValue( label_name -> zValue( ) );
+	label_Rank -> setPos( label_Rank -> pos( ).rx( ), ( label_Rank -> boundingRect( ).height( ) + label_Rank -> pos( ).ry( ) ) );
+}
+
+template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop( std::vector<Q_Graphic_Node<Prefs>*> last_node, Q_Graphic_Node* node ){
+
+	for( Q_Graphic_Node<Prefs>* nodeAux : last_node )
 
 		if( nodeAux == node)
 
@@ -385,54 +422,5 @@ template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop(std::vector<Q_Grap
 
 	return false;
 }
-
-template<typename Prefs> void Q_Graphic_Node<Prefs>::update( ){	moveNode( ); }
-
-template<typename Prefs> int Q_Graphic_Node<Prefs>::get_Steps(){ return steps; }
-
-template<typename Prefs> void Q_Graphic_Node<Prefs>::set_Rank( int rank ){
-
-	this->rank = rank;
-
-	delete label_Rank;
-
-	QFont fonte( "Arial", 15 );
-
-	fonte.setBold(true);
-
-	label_Rank = label_name -> scene() -> addText( QString::number( rank ), fonte );
-
-	label_Rank -> setDefaultTextColor( Qt::red );
-
-	label_Rank -> setZValue( label_name -> zValue() );
-
-	label_Rank -> setPos( label_Rank -> pos() . rx(), label_Rank -> boundingRect() . height() + label_Rank -> pos() . ry() );
-}
-
-template<typename Prefs> int Q_Graphic_Node<Prefs>::get_Rank(){ return rank; }
-
-/* Operators */
-
-template<typename Prefs> Q_Graphic_Node<Prefs>& Q_Graphic_Node<Prefs>::operator=( const Q_Graphic_Node& copy_qgnode ){
-
-	edges = copy_qgnode.edges;
-	arrow = copy_qgnode.arrow;
-	next_node = copy_qgnode.next_node;
-
-	itemForm = copy_qgnode.itemForm;
-	label_name = copy_qgnode.label_name;
-
-	position = copy_qgnode.position;
-	moveVector = copy_qgnode.moveVector;
-
-	SPNode = copy_qgnode.SPNode;
-
-	strength = copy_qgnode.strength;
-	quantNodes = copy_qgnode.quantNodes;
-
-	return *this;
-}
-
-/* Helper Functions */
 
 #endif // Q_GRAPHIC_NODE_H

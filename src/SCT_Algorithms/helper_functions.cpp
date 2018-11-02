@@ -124,6 +124,8 @@ template<typename Prefs> bool pareto_principle( ){
 		// else, return false & the social preference
 
 	// else, everything is okay
+
+	return true;
 }
 
 // Checks if , for any x, y, and z, the relation between x and y is modified by
@@ -131,6 +133,7 @@ template<typename Prefs> bool pareto_principle( ){
 template<typename Prefs> bool irrelevant_alternatives( ){
 
 
+	return true;
 }
 
 // Searches for a dictator
@@ -141,4 +144,6 @@ template<typename Prefs> bool non_dictatorship( ){
 
 	// else
 		// return false, the social ordering is ok
+
+	return true;
 }
