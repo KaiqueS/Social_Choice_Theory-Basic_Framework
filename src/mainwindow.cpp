@@ -36,6 +36,7 @@ void MainWindow::on_set_dimension_button_clicked( ){
 
 	logic.clean( );
 	logic.show_graph( graph, scene );
+	logic.rank();
 }
 
 void MainWindow::update( ){

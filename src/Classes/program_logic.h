@@ -36,6 +36,7 @@ public:
 	std::vector<SocialPrefNode<Prefs>> run_project( int row, int column );
 
 	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene* scene );
+	void rank();
 	void update( bool isMagnetic );
 	void clean( );
 
@@ -153,6 +154,47 @@ template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<Soci
 			}
 		}
 	}
+}
+
+template<typename Prefs> void Program_Logic<Prefs>::rank(){
+
+	for( Q_Graphic_Node<Prefs>* node : graphic_graph ){
+
+		std::vector<Q_Graphic_Node<Prefs>*> last_nodes{};
+
+		node->walkGraph(last_nodes);
+	}
+	std::vector<Q_Graphic_Node<Prefs>*> sorted_rank;
+
+	for(std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i){
+
+		std::vector<Q_Graphic_Node<char>*>::iterator aux;
+
+		aux = sorted_rank.begin();
+
+		for( std::vector<int>::size_type j = 0; j < sorted_rank.size( ) && graphic_graph[i]->get_Steps() < sorted_rank[j]->get_Steps(); ++j, ++aux );
+
+		sorted_rank.insert(aux, graphic_graph[i]);
+	}
+
+	graphic_graph = sorted_rank;
+	int rank = 1;
+	int aux_step;
+	for(std::vector<int>::size_type i = 0, aux_step = graphic_graph[i]->get_Steps(); i < graphic_graph.size( ); ++i){
+		if( graphic_graph[i]->get_Steps() < aux_step ){
+			aux_step = graphic_graph[i]->get_Steps();
+			++rank;
+		}
+		graphic_graph[i]->set_Rank( rank );
+	}
+
+	for( Q_Graphic_Node<Prefs>* node : sorted_rank ){
+
+			std::cout << ">>Node id = " << node->getSPNode().get_id() << " steps = " << node->get_Steps() << " Rank = " << node->get_Rank() << "\n";
+	}
+
+	std::cout << std::flush;
+
 }
 
 template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){

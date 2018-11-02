@@ -46,7 +46,17 @@ public:
 
 	void calcMovement( std::vector<Q_Graphic_Node*> graph );
 
+	void walkGraph( std::vector<Q_Graphic_Node*> last_node );
+
+	bool has_loop( std::vector<Q_Graphic_Node*> last_node,  Q_Graphic_Node* node);
+
 	void update( );
+
+	int get_Steps();
+
+	void set_Rank( int rank );
+
+	int get_Rank();
 
 private:
 
@@ -56,6 +66,7 @@ private:
 
 	QGraphicsItem* itemForm{ };
 	QGraphicsTextItem* label_name{ };
+	QGraphicsTextItem* label_Rank{ };
 
 	QPointF position{ };
 	QPointF moveVector{ };
@@ -64,6 +75,8 @@ private:
 
 	double strength{ };
 	double quantNodes{ };
+	int steps{ };
+	int rank{ };
 };
 
 /* Constructors & Destructor */
@@ -76,6 +89,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( ){
 
 	itemForm = { };
 	label_name = { };
+	label_Rank = { };
 
 	position = { };
 	moveVector = { };
@@ -84,6 +98,8 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( ){
 
 	strength = { };
 	quantNodes = { };
+	steps = { };
+	rank = { };
 }
 template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF position, int size, double allNodes, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode ){
 
@@ -96,6 +112,11 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF p
 	this -> quantNodes = allNodes;
 
 	strength = ( ( quantNodes - next_node.size( ) - 1 ) / quantNodes );
+
+	steps = 0;
+
+	rank = 0;
+
 }
 template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_Node& copy_qgnode ){
 
@@ -115,7 +136,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_
 	quantNodes = copy_qgnode.quantNodes;
 }
 
-template<typename Prefs> Q_Graphic_Node<Prefs>::~Q_Graphic_Node( ){ std::cout << "Node " << SPNode.get_id( ) << " was destructed.\n\n"; }
+template<typename Prefs> Q_Graphic_Node<Prefs>::~Q_Graphic_Node( ){ std::cout << ">>Rank = " << steps << "  >>Node " << SPNode.get_id( ) << " was destructed.\n\n"; }
 
 /* Setters */
 
@@ -129,8 +150,12 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 
 	itemForm -> setPos( label_name -> pos( ) );
 
+
+	label_Rank -> setPos( position + QPointF( 0, label_name -> boundingRect().height() ) );
+
 	this -> position = QPointF( position.rx( ) + ( ( itemForm -> boundingRect( ).width( ) ) / 2 ),
 								position.ry( ) + ( ( itemForm -> boundingRect( ).height( ) ) / 2 ) );
+
 }
 
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setMoveVector( QPointF move ){ moveVector = move; }
@@ -221,11 +246,14 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int z, Q
 	label_name = scene -> addText( QString( SocialPrefNode.get_id( ) ), QFont( "Arial", size ) );
 
 	label_name -> setZValue( z + 2 );
+
 	label_name -> setFlag( QGraphicsItem::ItemIsMovable );
 
 	itemForm = scene -> addRect( label_name -> boundingRect( ), outlinePen, innerBrush );
 
 	itemForm -> setZValue( z + 1 );
+
+	label_Rank = label_name -> scene() -> addText( QString::number( -1 ), QFont( "Arial", 10 ) );
 
 	setPos( position );
 }
@@ -330,7 +358,58 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q
 
 }
 
+template<typename Prefs> void Q_Graphic_Node<Prefs>::walkGraph(std::vector<Q_Graphic_Node<Prefs>*> last_node){
+
+	for(Q_Graphic_Node<Prefs>* nextNode : next_node){
+
+		if( !has_loop( last_node, nextNode ) ){
+
+			std::vector<Q_Graphic_Node<Prefs>*> lastAux = last_node;
+
+			lastAux.push_back(this);
+
+			nextNode->walkGraph(lastAux);
+		}
+	}
+
+	++steps;
+}
+
+template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop(std::vector<Q_Graphic_Node<Prefs>*> last_node, Q_Graphic_Node* node){
+
+	for(Q_Graphic_Node<Prefs>* nodeAux : last_node)
+
+		if( nodeAux == node)
+
+			return true;
+
+	return false;
+}
+
 template<typename Prefs> void Q_Graphic_Node<Prefs>::update( ){	moveNode( ); }
+
+template<typename Prefs> int Q_Graphic_Node<Prefs>::get_Steps(){ return steps; }
+
+template<typename Prefs> void Q_Graphic_Node<Prefs>::set_Rank( int rank ){
+
+	this->rank = rank;
+
+	delete label_Rank;
+
+	QFont fonte( "Arial", 15 );
+
+	fonte.setBold(true);
+
+	label_Rank = label_name -> scene() -> addText( QString::number( rank ), fonte );
+
+	label_Rank -> setDefaultTextColor( Qt::red );
+
+	label_Rank -> setZValue( label_name -> zValue() );
+
+	label_Rank -> setPos( label_Rank -> pos() . rx(), label_Rank -> boundingRect() . height() + label_Rank -> pos() . ry() );
+}
+
+template<typename Prefs> int Q_Graphic_Node<Prefs>::get_Rank(){ return rank; }
 
 /* Operators */
 
