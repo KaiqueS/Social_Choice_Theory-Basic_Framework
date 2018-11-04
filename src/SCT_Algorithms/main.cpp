@@ -12,14 +12,14 @@
  *		 TODO: Document program_logic.h and q_graphic_node.h
  */
 
-int main(int argc, char* argv[ ] ){
+int main( int argc, char* argv[ ] ){
 
 	srand( time( NULL ) );
 
 	//	Start Widget
 	QApplication a( argc, argv );
 
-	MainWindow w;
+	MainWindow w{ };
 
 	w.show( );
 

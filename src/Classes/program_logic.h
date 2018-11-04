@@ -46,6 +46,7 @@ private:
 };
 
 /* Constructors & Destructor */
+
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( ){ graphic_graph = { }; }
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( std::vector<Q_Graphic_Node<Prefs>*> ggraph ){ graphic_graph = ggraph; }
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( const Program_Logic& copy_plogic ){ graphic_graph = copy_plogic.graphic_graph; }
@@ -182,11 +183,7 @@ template<typename Prefs> void Program_Logic<Prefs>::rank( ){
 
 	int rank{ 1 };
 
-	//signed int aux_step{ };
-
-	for( std::vector<int>::size_type i = 0 && signed int aux_step = graphic_graph[ i ] -> get_Steps( ); i < graphic_graph.size( ); ++i ){
-
-		//aux_step = graphic_graph[ i ] -> get_Steps( );
+	for( std::vector<int>::size_type i = 0, aux_step = graphic_graph[ i ] -> get_Steps( ); i < graphic_graph.size( ); ++i ){
 
 		if( graphic_graph[ i ] -> get_Steps( ) < aux_step ){
 

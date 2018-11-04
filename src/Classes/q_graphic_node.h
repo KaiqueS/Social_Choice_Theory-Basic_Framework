@@ -13,13 +13,13 @@ public:
 
 	// Constructors & Destructor
 	Q_Graphic_Node( );
-	Q_Graphic_Node( int z, QPointF position, int size, double allNodes, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode );
+	Q_Graphic_Node( int z, QPointF& position, int size, double allNodes, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode );
 	Q_Graphic_Node( const Q_Graphic_Node& copy_qgnode );
 
 	~Q_Graphic_Node( );
 
 	// Setters
-	void setRectangle( QGraphicsRectItem* value );
+	void setRectangle( QGraphicsRectItem*& value );
 	void setPosition( const QPointF& value );
 	void setPos( QPointF position );
 	void setMoveVector( QPointF move );
@@ -39,14 +39,14 @@ public:
 
 	// Helper Functions
 	void insert_node( Q_Graphic_Node* node, QGraphicsScene* scene );
-	void createGraphicItem( int z, QPointF position, int size, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode );
+	void createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode );
 	void moveNode( );
-	void calcMovement( std::vector<Q_Graphic_Node*> graph );
-	void walkGraph( std::vector<Q_Graphic_Node*> last_node );
+	void calcMovement( std::vector<Q_Graphic_Node*>& graph );
+	void walkGraph( std::vector<Q_Graphic_Node*>& last_node );
 	void update( );
 	void set_Rank( int rank );
 
-	bool has_loop( std::vector<Q_Graphic_Node*> last_node,  Q_Graphic_Node* node);
+	bool has_loop( std::vector<Q_Graphic_Node*>& last_node,  Q_Graphic_Node*& node);
 
 private:
 
@@ -91,7 +91,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( ){
 	steps = { };
 	rank = { };
 }
-template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF position, int size, double allNodes, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode ){
+template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF& position, int size, double allNodes, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode ){
 
 	SPNode = SocialPrefNode;
 
@@ -115,6 +115,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_
 
 	itemForm = copy_qgnode.itemForm;
 	label_name = copy_qgnode.label_name;
+	label_Rank = copy_qgnode.label_Rank;
 
 	position = copy_qgnode.position;
 	moveVector = copy_qgnode.moveVector;
@@ -123,13 +124,15 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_
 
 	strength = copy_qgnode.strength;
 	quantNodes = copy_qgnode.quantNodes;
+	steps = copy_qgnode.steps;
+	rank = copy_qgnode.rank;
 }
 
 template<typename Prefs> Q_Graphic_Node<Prefs>::~Q_Graphic_Node( ){ std::cout << ">>Rank = " << steps << "  >>Node " << SPNode.get_id( ) << " was destructed.\n\n"; }
 
 /* Setters */
 
-template<typename Prefs> void Q_Graphic_Node<Prefs>::setRectangle( QGraphicsRectItem* value ){ itemForm = value; }
+template<typename Prefs> void Q_Graphic_Node<Prefs>::setRectangle( QGraphicsRectItem*& value ){ itemForm = value; }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setPosition( const QPointF& value ){ position = value; }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 
@@ -176,7 +179,6 @@ template<typename Prefs> Q_Graphic_Node<Prefs>& Q_Graphic_Node<Prefs>::operator=
 
 /* Helper Functions */
 
-// TODO: Resolve issues
 template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node* node, QGraphicsScene* scene ){
 
 	next_node.push_back( node );
@@ -251,7 +253,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 
 	setPos( position );
 }
-template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int z, QPointF position, int size, QGraphicsScene* scene, SocialPrefNode<Prefs> SocialPrefNode ){
+template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode ){
 
 	QPen outlinePen( Qt::black );
 
@@ -332,7 +334,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 		edges[ i ] = pLineItem;
 	}
 }
-template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q_Graphic_Node*> graph ){
+template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q_Graphic_Node*>& graph ){
 
 	QPointF move1( 0, 0 );
 
@@ -378,7 +380,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q
 	moveVector *= 0.85;
 	moveVector += move1;
 }
-template<typename Prefs> void Q_Graphic_Node<Prefs>::walkGraph( std::vector<Q_Graphic_Node<Prefs>*> last_node ){
+template<typename Prefs> void Q_Graphic_Node<Prefs>::walkGraph( std::vector<Q_Graphic_Node<Prefs>*>& last_node ){
 
 	for( Q_Graphic_Node<Prefs>* nextNode : next_node ){
 
@@ -412,11 +414,11 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::set_Rank( int rank ){
 	label_Rank -> setPos( label_Rank -> pos( ).rx( ), ( label_Rank -> boundingRect( ).height( ) + label_Rank -> pos( ).ry( ) ) );
 }
 
-template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop( std::vector<Q_Graphic_Node<Prefs>*> last_node, Q_Graphic_Node* node ){
+template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop( std::vector<Q_Graphic_Node<Prefs>*>& last_node, Q_Graphic_Node*& node ){
 
 	for( Q_Graphic_Node<Prefs>* nodeAux : last_node )
 
-		if( nodeAux == node)
+		if( nodeAux == node )
 
 			return true;
 
