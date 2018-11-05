@@ -34,7 +34,7 @@ private:
 
 	Ui::MainWindow *ui{ };
 
-	Program_Logic<char> logic{ };
+	Program_Logic<char> *logic{ };
 
 	QTimer* fps{ };
 	QTimer* controle{ };

@@ -23,7 +23,14 @@ public:
 	Program_Logic( std::vector<Q_Graphic_Node<Prefs>*>& ggraph );
 	Program_Logic( const Program_Logic& copy_plogic );
 
-	~Program_Logic( ){ }
+	~Program_Logic( ){
+		for( Q_Graphic_Node<Prefs>* element : graphic_graph ){
+
+			delete element;
+		}
+
+		graphic_graph.clear( );
+	}
 
 	// Setters
 
@@ -38,7 +45,6 @@ public:
 	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene );
 	void rank( );
 	void update( bool isMagnetic );
-	void clean( );
 
 private:
 
@@ -225,14 +231,6 @@ template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 		graphic_graph[ i ] -> update( );
 	}
 }
-template<typename Prefs> void Program_Logic<Prefs>::clean( ){
 
-	for( Q_Graphic_Node<Prefs>* element : graphic_graph ){
-
-		delete element;
-	}
-
-	graphic_graph.clear( );
-}
 
 #endif // PROGRAM_LOGIC_H

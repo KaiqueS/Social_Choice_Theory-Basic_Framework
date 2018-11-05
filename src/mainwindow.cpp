@@ -4,6 +4,8 @@
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ){
 
+	logic = new Program_Logic<char>();
+
 	ui -> setupUi( this );
 
 	scene = new QGraphicsScene( this );
@@ -27,19 +29,23 @@ MainWindow::~MainWindow( ){
 
 void MainWindow::on_set_dimension_button_clicked( ){
 
+	delete logic;
+
+	logic = new Program_Logic<char>();
+
 	int row = ui -> row_size_input -> value( );
+
 	int column = ui -> column_size_input -> value( );
 
-	std::vector<SocialPrefNode<char>> graph = logic.run_project( row, column );
+	std::vector<SocialPrefNode<char>> graph = logic->run_project( row, column );
 
 	scene -> clear( );
 
-	logic.clean( );
-	logic.show_graph( graph, scene );
-	logic.rank();
+	logic->show_graph( graph, scene );
+	logic->rank();
 }
 
 void MainWindow::update( ){
 
-	logic.update( ui -> isMagnetic -> isChecked( ) );
+	logic->update( ui -> isMagnetic -> isChecked( ) );
 }
