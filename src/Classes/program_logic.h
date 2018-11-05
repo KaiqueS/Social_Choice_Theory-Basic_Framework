@@ -20,7 +20,7 @@ public:
 
 	// Constructors & Destructor
 	Program_Logic( );
-	Program_Logic( std::vector<Q_Graphic_Node<Prefs>*> ggraph );
+	Program_Logic( std::vector<Q_Graphic_Node<Prefs>*>& ggraph );
 	Program_Logic( const Program_Logic& copy_plogic );
 
 	~Program_Logic( ){ }
@@ -35,7 +35,7 @@ public:
 	// Helper Functions
 	std::vector<SocialPrefNode<Prefs>> run_project( int row, int column );
 
-	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene* scene );
+	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene );
 	void rank( );
 	void update( bool isMagnetic );
 	void clean( );
@@ -46,9 +46,8 @@ private:
 };
 
 /* Constructors & Destructor */
-
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( ){ graphic_graph = { }; }
-template<typename Prefs> Program_Logic<Prefs>::Program_Logic( std::vector<Q_Graphic_Node<Prefs>*> ggraph ){ graphic_graph = ggraph; }
+template<typename Prefs> Program_Logic<Prefs>::Program_Logic( std::vector<Q_Graphic_Node<Prefs>*>& ggraph ){ graphic_graph = ggraph; }
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( const Program_Logic& copy_plogic ){ graphic_graph = copy_plogic.graphic_graph; }
 
 /* Setters */
@@ -124,7 +123,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 		return graph;
 }
 
-template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene* scene ){
+template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene ){
 
 	int z{ 0 };
 
