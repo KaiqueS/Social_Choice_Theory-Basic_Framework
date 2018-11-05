@@ -10,10 +10,6 @@ A Social Choice Theory educational software. Intended to be used as a study comp
 
 In order to represent the above definitions, the following data structures were implemented:
 
-ID and Preferences may be obvious. In SCT, for a set X of alternatives and an indexed set S of agents, ID represents any agent s<sub> i </sub> of S, while Preferences represents s<sub> i </sub>'s ranking of every x <span>&#8714;</span> X..
-
-Preferences will be externaly given, i.e, agents cannot propose "new alternatives", but [ the agents ] will be able to modify them.
-
 <p><li><strong>Options</strong></li>
 
 Those are the alternatives which will be passed as arguments to the Social Decision Procedures. To guarantee Universal Domain,
