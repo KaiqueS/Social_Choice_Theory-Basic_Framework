@@ -12,7 +12,12 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 
 	ui -> screen -> setScene( scene );
 
+	ui->actionLoad->setToolTip(tr("Load contacts from a file"));
+
+	ui->actionSave->setToolTip(tr("Save contacts to a file"));
+
 	fps = new QTimer( this );
+
 
 	controle = new QTimer( this );
 
@@ -55,7 +60,10 @@ void MainWindow::update( ){
 
 void MainWindow::on_actionSave_triggered()
 {
-	QString filename = "st.txt";
+
+	QString filename = QFileDialog::getSaveFileName(this,
+	tr("Save Address Book"), "",
+	tr("Address Book (*.csv);;All Files (*)"));
 	QFile file(filename);
 
 	if(!file.open(QIODevice::WriteOnly))
@@ -91,12 +99,16 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionLoad_triggered()
 {
+
 	delete logic;
 
 	logic = new Program_Logic<char>();
 
 
-	QString filename = "st.txt";
+	QString filename = QFileDialog::getOpenFileName(this,
+	tr("Open Address Book"), "",
+	tr("Address Book (*.csv);;All Files (*)"));
+
 	QFile file(filename);
 
 	if(!file.open(QIODevice::ReadOnly))

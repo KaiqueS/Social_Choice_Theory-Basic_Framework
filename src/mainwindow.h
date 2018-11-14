@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <iostream>
 #include <QTreeWidget>
+#include <QFileDialog>
 #include "Classes/program_logic.h"
 
 namespace Ui{
