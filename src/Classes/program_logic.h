@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <vector>
+#include <QFile>
 #include "Classes/preferencematrix.h"
 #include "Classes/agent.h"
 #include "SCT_Algorithms/SCTheory.cpp"
@@ -32,23 +33,29 @@ public:
 		graphic_graph.clear( );
 	}
 
+
+
 	// Setters
 
 	// Getters
-
+	std::vector<Agent<Prefs>> get_list_of_agents();
 	// Operators
 	std::vector<Q_Graphic_Node<Prefs>*>& operator=( const Program_Logic& plogic );
 
 	// Helper Functions
 	std::vector<SocialPrefNode<Prefs>> run_project( int row, int column );
+	std::vector<SocialPrefNode<Prefs>> run_project(std::vector<Agent<Prefs> > listofagents);
 
 	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene );
 	void rank( );
 	void update( bool isMagnetic );
 
+	void setListofagents(const std::vector<Agent<Prefs> >& value);
+
 private:
 
 	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph{ };
+	std::vector<Agent<Prefs>> listofagents;
 };
 
 /* Constructors & Destructor */
@@ -56,10 +63,12 @@ template<typename Prefs> Program_Logic<Prefs>::Program_Logic( ){ graphic_graph =
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( std::vector<Q_Graphic_Node<Prefs>*>& ggraph ){ graphic_graph = ggraph; }
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( const Program_Logic& copy_plogic ){ graphic_graph = copy_plogic.graphic_graph; }
 
+
+
 /* Setters */
 
 /* Getters */
-
+template<typename Prefs> std::vector<Agent<Prefs>> Program_Logic<Prefs>::get_list_of_agents(){ return listofagents; }
 /* Operators */
 
 template<typename Prefs> std::vector<Q_Graphic_Node<Prefs>*>& Program_Logic<Prefs>::operator=( const Program_Logic& plogic ){
@@ -87,6 +96,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
 			listofagents[ i ].set_id( std::to_string( i ) );
+
 			listofagents[ i ].set_preferences( newmtx );
 		}
 
@@ -97,6 +107,8 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 		std::vector<SocialPrefNode<Prefs>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
 
 		condorcet_paradox( listofagents, rank, graph );
+
+		this -> listofagents = listofagents;
 
 		std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
 
@@ -129,13 +141,55 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 		return graph;
 }
 
+template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>::run_project(std::vector<Agent<Prefs>> listofagents ){
+
+		std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
+
+		std::vector<SocialPrefNode<Prefs>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
+
+		condorcet_paradox( listofagents, rank, graph );
+
+		this -> listofagents = listofagents;
+
+		std::cout << "\n\n___________________DEBUG_PREFS______________________\n\n";
+
+		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+
+			std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
+
+			for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
+
+				std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
+				std::cout << listofagents[ i ].get_preferences()[ j ].get_value( ) << " ) ";
+			}
+
+			std::cout << "\n";
+		}
+
+		std::cout << "\n";
+
+		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
+
+			listofagents[i].print_rank( );
+
+			std::cout << "\n";
+		}
+
+		std::cout << "____________________________________________________";
+
+		std::cout << "\n\n" << std::flush;
+
+		return graph;
+}
+
+
 template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene ){
 
 	int z{ 0 };
 
 	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
-		QPointF position = QPointF( std::rand( ) % 500,std::rand( ) % 200 );
+		QPointF position = QPointF( 100 - std::rand( ) % 200, 100 - std::rand( ) % 200 );
 
 		graphic_graph.push_back( new Q_Graphic_Node<Prefs>( ++z, position, 10, graph.size( ), scene, graph[ i ] ) );
 	}
@@ -208,14 +262,20 @@ template<typename Prefs> void Program_Logic<Prefs>::rank( ){
 
 	std::cout << std::flush;
 }
+
 template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
+
+	QPointF center = QPoint(0,0);
 
 	if( isMagnetic ){
 
 		for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
 
 			graphic_graph[ i ] -> calcMovement( graphic_graph );
+
+			center -= graphic_graph[i] -> getPosition();
 		}
+		center/=graphic_graph.size( );
 	}
 
 	else{
@@ -227,10 +287,12 @@ template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 	}
 
 	for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
-
+		graphic_graph[ i ] -> setPosition(center);
 		graphic_graph[ i ] -> update( );
 	}
 }
+
+template<typename Prefs> void Program_Logic<Prefs>::setListofagents(const std::vector<Agent<Prefs> >& value){ listofagents = value;}
 
 
 #endif // PROGRAM_LOGIC_H

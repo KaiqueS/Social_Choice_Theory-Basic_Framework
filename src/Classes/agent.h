@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <random>
+#include <QDataStream>
 #include "options.h"
 #include "preferencematrix.h"
 
@@ -25,6 +26,8 @@ public:
 
 	void set_id( std::string name ){ id = name; }
 
+	void setPreferences(const std::vector<Options<Prefs> >& value);
+
 	// Getters
 	std::vector<Options<Prefs>> get_preferences( ){ return preferences; }
 
@@ -33,6 +36,7 @@ public:
 	std::string get_id( ){ return id; }
 
 	// Operators
+
 	Agent& operator=( const Agent<Prefs>& one );
 
 	Options<Prefs>& operator[ ]( const int& index ){ return preferences[ index ]; }
@@ -41,6 +45,7 @@ public:
 
     void print_prefs( );
     void print_rank( );
+
 
 private:
 
@@ -194,5 +199,7 @@ template<typename Prefs> void Agent<Prefs>::print_rank( ){
 
 	std::cout << "] ";
 }
+
+template<typename Prefs> void Agent<Prefs>::setPreferences(const std::vector<Options<Prefs> >& value){preferences = value;}
 
 #endif // AGENT_H

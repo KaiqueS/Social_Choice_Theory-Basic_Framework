@@ -7,6 +7,7 @@
 #include <QGraphicsItem>
 #include <QTimer>
 #include <iostream>
+#include <QTreeWidget>
 #include "Classes/program_logic.h"
 
 namespace Ui{
@@ -21,20 +22,29 @@ class MainWindow : public QMainWindow{
 
 public:
 
+	Program_Logic<char> *logic{ };
 	explicit MainWindow( QWidget* parent = nullptr );
 
 	~MainWindow( );
+
+
 
 private slots:
 
 	void on_set_dimension_button_clicked( );
 	void update( );
 
+	void on_actionSave_triggered();
+
+	void on_actionLoad_triggered();
+
 private:
+
+
+
 
 	Ui::MainWindow *ui{ };
 
-	Program_Logic<char> *logic{ };
 
 	QTimer* fps{ };
 	QTimer* controle{ };

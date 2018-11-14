@@ -141,7 +141,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 	itemForm -> setPos( label_name -> pos( ) );
 
 
-	label_Rank -> setPos( position + QPointF( 0, label_name -> boundingRect().height() ) );
+	label_Rank -> setPos( position );
 
 	this -> position = QPointF( position.rx( ) + ( ( itemForm -> boundingRect( ).width( ) ) / 2 ),
 								position.ry( ) + ( ( itemForm -> boundingRect( ).height( ) ) / 2 ) );
@@ -237,7 +237,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 
 	strength = ( ( quantNodes - next_node.size( ) - 1 ) / quantNodes );
 
-	QBrush innerBrush( QColor( 245 - ( 20 * strength ), 245 - ( 100 * strength ), 245 - ( 100 * strength ) ) );
+	QBrush innerBrush( QColor( 240 - ( 20 * strength ), 200 - ( 100 * strength ), 200 - ( 100 * strength ) ) );
 
 	QPen outlinePen( Qt::black );
 
@@ -261,7 +261,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, 
 
 	outlinePen.setWidth( 2 );
 
-	label_name = scene -> addText( QString( SocialPrefNode.get_id( ) ), QFont( "Arial", size ) );
+	label_name = scene -> addText( QString( "\n " ) + QString( SocialPrefNode.get_id( ) ) +  QString( " " ), QFont( "Arial", size ) );
 
 	label_name -> setZValue( z + 2 );
 	label_name -> setFlag( QGraphicsItem::ItemIsMovable );
@@ -275,6 +275,8 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, 
 	setPos( position );
 }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
+
+	label_name -> setPos(label_name -> pos() + position);
 
 	setPos( label_name -> pos( ) + moveVector );
 
@@ -403,15 +405,15 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::set_Rank( int rank ){
 
 	delete label_Rank;
 
-	QFont fonte( "Arial", 15 );
+	QFont fonte = label_name->font();
 
 	fonte.setBold( true );
 
-	label_Rank = label_name -> scene( ) -> addText( QString::number( rank ), fonte );
+	label_Rank = label_name -> scene( ) -> addText( QString::number( rank ) + QString("º"), fonte);
 
-	label_Rank -> setDefaultTextColor( Qt::red );
+	label_Rank -> setDefaultTextColor( Qt::white );
 	label_Rank -> setZValue( label_name -> zValue( ) );
-	label_Rank -> setPos( label_Rank -> pos( ).rx( ), ( label_Rank -> boundingRect( ).height( ) + label_Rank -> pos( ).ry( ) ) );
+	label_Rank -> setPos( label_Rank -> pos( ).rx( ),  label_Rank -> pos( ).ry( ) );
 }
 
 template<typename Prefs> bool Q_Graphic_Node<Prefs>::has_loop( std::vector<Q_Graphic_Node<Prefs>*>& last_node, Q_Graphic_Node*& node ){
