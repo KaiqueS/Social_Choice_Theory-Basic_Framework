@@ -9,6 +9,9 @@
 #include <iostream>
 #include <QTreeWidget>
 #include <QFileDialog>
+#include <QBuffer>
+#include <iostream>
+#include <fstream>
 #include "Classes/program_logic.h"
 
 namespace Ui{
@@ -38,6 +41,10 @@ private slots:
 	void on_actionSave_triggered();
 
 	void on_actionLoad_triggered();
+
+	void on_actionimport_triggered();
+
+	void on_actionExport_triggered();
 
 private:
 
