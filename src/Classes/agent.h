@@ -19,7 +19,7 @@ public:
 	Agent( std::vector<Options<Prefs>> list, std::string name );
 	Agent( const Agent& copy );
 
-	~Agent( ){ std::cout << "Agent " << id << " destructed.\n\n"; }
+	~Agent( ){ /*std::cout << "Agent " << id << " destructed.\n\n";*/ }
 
 	// Setters
 	void set_preferences( Preferencematrix<Prefs>& prefmatrix );

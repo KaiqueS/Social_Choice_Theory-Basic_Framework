@@ -124,7 +124,7 @@ void MainWindow::on_actionLoad_triggered()
 	std::vector<Agent<char>> listofagents;
 	int sizeList;
 	in >> sizeList;
-
+	int prefSize=0;
 	for(int i = 0; i<sizeList; i++){
 
 		QString id;
@@ -141,11 +141,15 @@ void MainWindow::on_actionLoad_triggered()
 			Options<char> opt((char)alt, val);
 			preferences.push_back(opt);
 		}
+		if(prefSize<preferences.size())
+			prefSize=preferences.size();
 		listofagents.push_back(Agent<char> ( preferences, id.toStdString()));
 	}
 
 	std::vector<SocialPrefNode<char>> graph = logic->run_project(listofagents);
 	logic->setListofagents(listofagents);
+	ui->row_size_input->setValue(listofagents.size());
+	ui->column_size_input->setValue(prefSize);
 	file.close();
 
 
@@ -185,43 +189,44 @@ void MainWindow::on_actionimport_triggered(){
 	while(!in.atEnd()){
 		int size;
 		size = in.readRawData(buffer,bufferSize);
-		std::cout << buffer << "  <= " << size << "\n" << std::flush;
 		if(size<bufferSize)
 			for(int i=size;i<bufferSize;i++)
 				buffer[i] = 0;
 		entrada += QString(buffer);
 	}
-	std::cout <<  ">>  \n" << entrada.toStdString() << "\n" << std::flush;
 
 	QStringList listStringNode = entrada.split(QString("\n"));
 	QStringList listStringHeader = listStringNode.at(0).split(QString(";"));
 
 	std::vector<Options<char>> preferences;
+	int prefSize = 0;
 	for(int i = 1; i<listStringNode.size()-1 ; i++){
 
 		QString stringNode = listStringNode.at(i);
 		QStringList listStringOpts = stringNode.split(QString(";"));
 		QString id = listStringOpts.at(0);
 
-		std::cout << "\t____idAgent = " << id.toStdString() << "\n" << std::flush;
 		std::vector<Options<char>> preferences;
 		for(int j = 1; j<listStringOpts.size() ; j++){
 			char id = '_';
 			if(j<listStringHeader.size())
 			 id = listStringHeader.at(j).toStdString()[0];
 			int val = listStringOpts.at(j).toInt();
-			std::cout << "\t\t____opt = " << id << "  -- val = " << val << "\n" << std::flush;
 
 
 			Options<char> opt(id, val);
 			preferences.push_back(opt);
 		}
-
+		if(prefSize<preferences.size())
+			prefSize=preferences.size();
 		listofagents.push_back(Agent<char> ( preferences, id.toStdString()));
 	}
 
 	std::vector<SocialPrefNode<char>> graph = logic->run_project(listofagents);
 	logic->setListofagents(listofagents);
+
+	ui->row_size_input->setValue(listofagents.size());
+	ui->column_size_input->setValue(prefSize);
 
 	file.close();
 
@@ -252,7 +257,7 @@ void MainWindow::on_actionExport_triggered()
 	std::vector<Agent<char>> listofagents;
 	std::string saida("");
 	std::vector<Agent<char>> listAgent = logic->get_list_of_agents();
-	saida += "id";
+	saida += "idAgents\\idOptions";
 	std::vector<Options<char>> preferencesaux;
 	for(Options<char> opt : listAgent.at(0).get_preferences()){
 		saida += ";";
@@ -268,10 +273,9 @@ void MainWindow::on_actionExport_triggered()
 		}
 	}
 
-	myfile << saida <<"\n";
+	myfile << saida << "\n";
 
 
-	std::cout << "saida :\n" << saida << std::flush;
 	myfile.close();
 
 }
