@@ -279,3 +279,86 @@ void MainWindow::on_actionExport_triggered()
 	myfile.close();
 
 }
+
+void MainWindow::on_actionAgents_triggered(){
+
+	if(window!=NULL)
+		delete window;
+
+	window = new QWidget();
+
+	window->resize(320, 240);
+
+	window->setWindowTitle("Agents");
+
+	window->show();
+
+	QVBoxLayout *layout = new QVBoxLayout;
+
+	window->setLayout(layout);
+
+	tree = new TreeWidget(window,2);
+
+	layout -> addWidget(tree->getTree());
+
+	for( Agent<char> a: logic->get_list_of_agents()){
+
+		QTreeWidgetItem * agentItem = tree->addTreeRoot( QString::fromStdString(a.get_id()) , "Agent" );
+
+		for( Options<char> opt : a.get_sorted_preferences() ){
+			std::string alternId{ opt.get_alternatives() };
+			QTreeWidgetItem * optionItem = tree->addTreeChild( agentItem , QString::fromStdString(alternId) , "Alternative");
+			tree->addTreeChild( optionItem , QString::number(opt.get_value()) , "Value" );
+		}
+	}
+}
+
+
+void MainWindow::on_actionSocial_Preferencies_triggered(){
+
+	if(window!=NULL)
+		delete window;
+
+	window = new QWidget();
+
+	window->resize(320, 240);
+
+	window->setWindowTitle("Social Preferences");
+
+	window->show();
+
+	QVBoxLayout *layout = new QVBoxLayout;
+
+	window->setLayout(layout);
+
+	tree = new TreeWidget(window,2);
+
+	layout -> addWidget(tree->getTree());
+	if(logic->getSocialPrefGraph())
+		for( SocialPrefNode<char> opt: *(logic->getSocialPrefGraph())){
+
+			std::string alternId{ opt.get_id() };
+			QTreeWidgetItem * optItem = tree->addTreeRoot( QString::fromStdString(alternId) , "Alternative" );
+
+			QTreeWidgetItem * prefItem = tree->addTreeChild( optItem , "Preferred" , "Relation");
+
+			for( SocialPrefNode<char> * preferred : logic->spnGetFromList(opt.get_preferences()) ){
+				std::string alternIdAux{ preferred->get_id() };
+				tree->addTreeChild( prefItem , QString::fromStdString(alternIdAux) , "Alternative");
+			}
+
+			QTreeWidgetItem * worseItem = tree->addTreeChild( optItem , "Worse" , "Relation");
+
+			for( SocialPrefNode<char> * worse : logic->spnGetFromList(opt.get_worse()) ){
+				std::string alternIdAux{ worse->get_id() };
+				tree->addTreeChild( worseItem , QString::fromStdString(alternIdAux) , "Alternative");
+			}
+
+			QTreeWidgetItem * equalItem = tree->addTreeChild( optItem , "Equal" , "Relation");
+
+			for( SocialPrefNode<char> * equal : logic->spnGetFromList(opt.get_indiff()) ){
+				std::string alternIdAux{ equal->get_id() };
+				tree->addTreeChild( equalItem , QString::fromStdString(alternIdAux) , "Alternative");
+			}
+		}
+}

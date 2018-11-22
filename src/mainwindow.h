@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include "Classes/program_logic.h"
+#include "treewidget.h"
 
 namespace Ui{
 
@@ -31,8 +32,6 @@ public:
 
 	~MainWindow( );
 
-
-
 private slots:
 
 	void on_set_dimension_button_clicked( );
@@ -45,6 +44,10 @@ private slots:
 	void on_actionimport_triggered();
 
 	void on_actionExport_triggered();
+
+	void on_actionAgents_triggered();
+
+	void on_actionSocial_Preferencies_triggered();
 
 private:
 
@@ -60,6 +63,9 @@ private:
 	QGraphicsScene* scene{ };
 	QGraphicsEllipseItem* ellipse{ };
 	QGraphicsRectItem* rectangle{ };
+
+	TreeWidget *tree{ };
+	QWidget * window{ };
 };
 
 #endif // MAINWINDOW_H

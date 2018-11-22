@@ -30,7 +30,8 @@ SOURCES += \
     SCT_Algorithms/aggregation_rules.cpp \
     SCT_Algorithms/helper_functions.cpp \
     SCT_Algorithms/main.cpp \
-    SCT_Algorithms/SCTheory.cpp
+    SCT_Algorithms/SCTheory.cpp \
+    treewidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +44,8 @@ HEADERS += \
     Classes/preferencematrix.h \
     Classes/socialprefnode.h\
     Classes/program_logic.h \
-    Classes/q_graphic_node.h
+    Classes/q_graphic_node.h \
+    treewidget.h
 
 FORMS += \
         mainwindow.ui

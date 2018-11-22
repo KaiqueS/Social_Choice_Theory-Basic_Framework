@@ -39,6 +39,7 @@ public:
 
 	// Getters
 	std::vector<Agent<Prefs>> get_list_of_agents();
+	std::vector<SocialPrefNode<Prefs> >* getSocialPrefGraph();
 	// Operators
 	std::vector<Q_Graphic_Node<Prefs>*>& operator=( const Program_Logic& plogic );
 
@@ -46,16 +47,19 @@ public:
 	std::vector<SocialPrefNode<Prefs>> run_project( int row, int column );
 	std::vector<SocialPrefNode<Prefs>> run_project(std::vector<Agent<Prefs> > listofagents);
 
+
 	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene );
 	void rank( );
 	void update( bool isMagnetic );
 
 	void setListofagents(const std::vector<Agent<Prefs> >& value);
 
+	std::vector<SocialPrefNode<Prefs>*> spnGetFromList(std::vector<SocialPrefNode<Prefs>*> preferences);
 private:
 
 	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph{ };
-	std::vector<Agent<Prefs>> listofagents;
+	std::vector<Agent<Prefs>> listofagents{ };
+	std::vector<SocialPrefNode<Prefs>> *socialPrefGraph{ };
 };
 
 /* Constructors & Destructor */
@@ -104,9 +108,9 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
 
-		std::vector<SocialPrefNode<Prefs>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
+		socialPrefGraph = new std::vector<SocialPrefNode<Prefs>>( listofagents[ 0 ].get_preferences( ).size( ) );
 
-		condorcet_paradox( listofagents, rank, graph );
+		condorcet_paradox( listofagents, rank, *socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -138,16 +142,17 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		std::cout << "\n\n" << std::flush;
 
-		return graph;
+
+		return *socialPrefGraph;
 }
 
 template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>::run_project(std::vector<Agent<Prefs>> listofagents ){
 
 		std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
 
-		std::vector<SocialPrefNode<Prefs>> graph( listofagents[ 0 ].get_preferences( ).size( ) );
+		socialPrefGraph = new std::vector<SocialPrefNode<Prefs>>( listofagents[ 0 ].get_preferences( ).size( ) );
 
-		condorcet_paradox( listofagents, rank, graph );
+		condorcet_paradox( listofagents, rank, *socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -179,11 +184,38 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		std::cout << "\n\n" << std::flush;
 
-		return graph;
+		return *socialPrefGraph;
+}
+
+template<typename Prefs> std::vector<SocialPrefNode<Prefs>*> Program_Logic<Prefs>::spnGetFromList( std::vector<SocialPrefNode<Prefs>*> preferences){
+
+	std::vector<SocialPrefNode<Prefs>*> listAux{ };
+
+	std::cout << ">prefSizee = " << preferences.size() << "\n" << std::flush ;
+	for( SocialPrefNode<Prefs>* node : preferences ){
+
+		std::cout << ">node = " << node->get_id() << "\n" << std::flush ;
+		unsigned int aux = 0;
+
+		for( std::vector<int>::size_type j = 0; j < socialPrefGraph->size( ) &&
+			 node -> get_id( ) != (*socialPrefGraph)[ j ].get_id ( ); ++j ){
+
+			aux++;
+		}
+
+		if( aux < (*socialPrefGraph).size( ) ){
+
+			listAux.push_back(&(*socialPrefGraph)[ aux ]);
+		}
+	}
+
+	return listAux;
+
 }
 
 
 template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene ){
+
 
 	int z{ 0 };
 
@@ -293,6 +325,9 @@ template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 }
 
 template<typename Prefs> void Program_Logic<Prefs>::setListofagents(const std::vector<Agent<Prefs> >& value){ listofagents = value;}
+
+template<typename Prefs> std::vector<SocialPrefNode<Prefs>>* Program_Logic<Prefs>::getSocialPrefGraph(){	return socialPrefGraph; }
+
 
 
 #endif // PROGRAM_LOGIC_H

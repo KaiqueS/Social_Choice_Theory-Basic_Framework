@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>498</width>
-    <height>492</height>
+    <width>488</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -332,7 +332,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>498</width>
+     <width>488</width>
      <height>21</height>
     </rect>
    </property>
@@ -342,19 +342,19 @@
     </property>
     <addaction name="actionSave"/>
     <addaction name="actionLoad"/>
+    <addaction name="separator"/>
     <addaction name="actionimport"/>
     <addaction name="actionExport"/>
    </widget>
+   <widget class="QMenu" name="menuview">
+    <property name="title">
+     <string>view</string>
+    </property>
+    <addaction name="actionAgents"/>
+    <addaction name="actionSocial_Preferencies"/>
+   </widget>
    <addaction name="menuFile"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="separator"/>
+   <addaction name="menuview"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionSave">
@@ -375,6 +375,16 @@
   <action name="actionExport">
    <property name="text">
     <string>Export</string>
+   </property>
+  </action>
+  <action name="actionAgents">
+   <property name="text">
+    <string>Agents</string>
+   </property>
+  </action>
+  <action name="actionSocial_Preferencies">
+   <property name="text">
+    <string>Social Preferences</string>
    </property>
   </action>
  </widget>

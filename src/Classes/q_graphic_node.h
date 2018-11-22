@@ -48,6 +48,7 @@ public:
 
 	bool has_loop( std::vector<Q_Graphic_Node*>& last_node,  Q_Graphic_Node*& node);
 
+	void insert_nodes(std::vector<Q_Graphic_Node*> nodes, QGraphicsScene* scene);
 private:
 
 	std::vector<QGraphicsLineItem*> edges{ };
@@ -178,6 +179,13 @@ template<typename Prefs> Q_Graphic_Node<Prefs>& Q_Graphic_Node<Prefs>::operator=
 }
 
 /* Helper Functions */
+
+template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_nodes( std::vector<Q_Graphic_Node*> nodes, QGraphicsScene* scene ){
+
+	for(Q_Graphic_Node* node: nodes)
+		insert_node(node, scene);
+}
+
 
 template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node* node, QGraphicsScene* scene ){
 
