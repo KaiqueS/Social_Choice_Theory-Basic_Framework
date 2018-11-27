@@ -3,15 +3,10 @@
 #ifndef PROGRAM_LOGIC_H
 #define PROGRAM_LOGIC_H
 
-#include <iostream>
-#include <vector>
 #include <QFile>
-#include "Classes/preferencematrix.h"
-#include "Classes/agent.h"
+#include "preferencematrix.h"
+#include "q_graphic_node.h"
 #include "SCT_Algorithms/SCTheory.cpp"
-#include "Classes/pairwiserank.h"
-#include "Classes/socialprefnode.h"
-#include "Classes/q_graphic_node.h"
 
 // TODO: Use RAII in class design
 
@@ -24,42 +19,33 @@ public:
 	Program_Logic( std::vector<Q_Graphic_Node<Prefs>*>& ggraph );
 	Program_Logic( const Program_Logic& copy_plogic );
 
-	~Program_Logic( ){
-		for( Q_Graphic_Node<Prefs>* element : graphic_graph ){
-
-			delete element;
-		}
-
-		graphic_graph.clear( );
-	}
-
-
+	~Program_Logic( );
 
 	// Setters
 
 	// Getters
-	std::vector<Agent<Prefs>> get_list_of_agents();
-	std::vector<SocialPrefNode<Prefs> >* getSocialPrefGraph();
+	std::vector<Agent> get_list_of_agents( );
+	std::vector<SocialPrefNode>* getSocialPrefGraph( );
 	// Operators
 	std::vector<Q_Graphic_Node<Prefs>*>& operator=( const Program_Logic& plogic );
 
 	// Helper Functions
-	std::vector<SocialPrefNode<Prefs>> run_project( int row, int column );
-	std::vector<SocialPrefNode<Prefs>> run_project(std::vector<Agent<Prefs> > listofagents);
+	std::vector<SocialPrefNode> run_project( int row, int column );
+	std::vector<SocialPrefNode> run_project( std::vector<Agent> listofagents );
 
-
-	void show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene );
+	void show_graph( std::vector<SocialPrefNode>& graph, QGraphicsScene*& scene );
 	void rank( );
 	void update( bool isMagnetic );
 
-	void setListofagents(const std::vector<Agent<Prefs> >& value);
+	void setListofagents(const std::vector<Agent>& value);
 
-	std::vector<SocialPrefNode<Prefs>*> spnGetFromList(std::vector<SocialPrefNode<Prefs>*> preferences);
+	std::vector<SocialPrefNode*> spnGetFromList( std::vector<SocialPrefNode*> preferences );
+
 private:
 
 	std::vector<Q_Graphic_Node<Prefs>*> graphic_graph{ };
-	std::vector<Agent<Prefs>> listofagents{ };
-	std::vector<SocialPrefNode<Prefs>> *socialPrefGraph{ };
+	std::vector<Agent> listofagents{ };
+	std::vector<SocialPrefNode>* socialPrefGraph{ };
 };
 
 /* Constructors & Destructor */
@@ -67,12 +53,20 @@ template<typename Prefs> Program_Logic<Prefs>::Program_Logic( ){ graphic_graph =
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( std::vector<Q_Graphic_Node<Prefs>*>& ggraph ){ graphic_graph = ggraph; }
 template<typename Prefs> Program_Logic<Prefs>::Program_Logic( const Program_Logic& copy_plogic ){ graphic_graph = copy_plogic.graphic_graph; }
 
+template<typename Prefs> Program_Logic<Prefs>::~Program_Logic( ){
 
+	for( Q_Graphic_Node<Prefs>* element : graphic_graph ){
+
+		delete element;
+	}
+
+	graphic_graph.clear( );
+}
 
 /* Setters */
 
 /* Getters */
-template<typename Prefs> std::vector<Agent<Prefs>> Program_Logic<Prefs>::get_list_of_agents(){ return listofagents; }
+template<typename Prefs> std::vector<Agent> Program_Logic<Prefs>::get_list_of_agents( ){ return listofagents; }
 /* Operators */
 
 template<typename Prefs> std::vector<Q_Graphic_Node<Prefs>*>& Program_Logic<Prefs>::operator=( const Program_Logic& plogic ){
@@ -84,18 +78,18 @@ template<typename Prefs> std::vector<Q_Graphic_Node<Prefs>*>& Program_Logic<Pref
 
 /* Helper Functions */
 
-template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>::run_project( int row, int column ){
+template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_project( int row, int column ){
 
 		Program_Logic( );
 
 		//	Run project
-		Preferencematrix<Prefs> newmtx{ };
+		Preferencematrix newmtx{ };
 
-		newmtx.set_matrix( row, column );
+        newmtx.set_matrix( static_cast<std::vector<int>::size_type>( row ), static_cast<std::vector<int>::size_type>( column ) );
 
-		std::vector<Agent<Prefs>> listofagents( newmtx.get_matrix( ).size( ) );
+		std::vector<Agent> listofagents( newmtx.get_matrix( ).size( ) );
 
-		newmtx.print_mtx( );
+		std::cout << newmtx;
 
 		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
@@ -106,11 +100,13 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		std::cout << "\n\n";
 
-		std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
+		std::vector<PairWiseRank> rank = rank_generation( listofagents );
 
-		socialPrefGraph = new std::vector<SocialPrefNode<Prefs>>( listofagents[ 0 ].get_preferences( ).size( ) );
+		std::vector<SocialPrefNode> socialPrefGraph{ };
 
-		condorcet_paradox( listofagents, rank, *socialPrefGraph );
+		make_graph( listofagents, rank, socialPrefGraph );
+
+		condorcet_paradox( rank, socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -118,12 +114,12 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-			std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
+			std::cout << "Agent " << listofagents[ i ].get_id( ) << " pref. : ";
 
 			for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
 
-				std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
-				std::cout << listofagents[ i ].get_preferences()[ j ].get_value( ) << " ) ";
+				std::cout << "( " << listofagents[ i ].get_preferences( )[ j ].get_opt( ) << " , ";
+				std::cout << listofagents[ i ].get_preferences( )[ j ].get_value( ) << " ) ";
 			}
 
 			std::cout << "\n";
@@ -143,16 +139,18 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 		std::cout << "\n\n" << std::flush;
 
 
-		return *socialPrefGraph;
+		return socialPrefGraph;
 }
 
-template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>::run_project(std::vector<Agent<Prefs>> listofagents ){
+template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_project( std::vector<Agent> listofagents ){
 
-		std::vector<PairWiseRank<Prefs>> rank = rank_generation( listofagents );
+		std::vector<PairWiseRank> rank = rank_generation( listofagents );
 
-		socialPrefGraph = new std::vector<SocialPrefNode<Prefs>>( listofagents[ 0 ].get_preferences( ).size( ) );
+		std::vector<SocialPrefNode> socialPrefGraph{ };
 
-		condorcet_paradox( listofagents, rank, *socialPrefGraph );
+		make_graph( listofagents, rank, socialPrefGraph );
+
+		condorcet_paradox( rank, socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -162,10 +160,10 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 			std::cout << "Agent " << listofagents[ i ].get_id() << " pref. : ";
 
-			for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences().size(); ++j ){
+			for( std::vector<int>::size_type j = 0; j < listofagents[ i ].get_preferences( ).size( ); ++j ){
 
-				std::cout << "( " << listofagents[ i ].get_preferences()[ j ].get_alternatives() << " , ";
-				std::cout << listofagents[ i ].get_preferences()[ j ].get_value( ) << " ) ";
+				std::cout << "( " << listofagents[ i ].get_preferences( )[ j ].get_opt( ) << " , ";
+				std::cout << listofagents[ i ].get_preferences( )[ j ].get_value( ) << " ) ";
 			}
 
 			std::cout << "\n";
@@ -175,7 +173,7 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-			listofagents[i].print_rank( );
+			listofagents[ i ].print_rank( );
 
 			std::cout << "\n";
 		}
@@ -184,28 +182,30 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>> Program_Logic<Prefs>
 
 		std::cout << "\n\n" << std::flush;
 
-		return *socialPrefGraph;
+		return socialPrefGraph;
 }
 
-template<typename Prefs> std::vector<SocialPrefNode<Prefs>*> Program_Logic<Prefs>::spnGetFromList( std::vector<SocialPrefNode<Prefs>*> preferences){
+template<typename Prefs> std::vector<SocialPrefNode*> Program_Logic<Prefs>::spnGetFromList( std::vector<SocialPrefNode*> preferences){
 
-	std::vector<SocialPrefNode<Prefs>*> listAux{ };
+	std::vector<SocialPrefNode*> listAux{ };
 
-	std::cout << ">prefSizee = " << preferences.size() << "\n" << std::flush ;
-	for( SocialPrefNode<Prefs>* node : preferences ){
+	std::cout << ">prefSizee = " << preferences.size( ) << "\n" << std::flush ;
 
-		std::cout << ">node = " << node->get_id() << "\n" << std::flush ;
+	for( SocialPrefNode* node : preferences ){
+
+		std::cout << ">node = " << node -> get_id( ) << "\n" << std::flush ;
+
 		unsigned int aux = 0;
 
-		for( std::vector<int>::size_type j = 0; j < socialPrefGraph->size( ) &&
-			 node -> get_id( ) != (*socialPrefGraph)[ j ].get_id ( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < socialPrefGraph -> size( ) &&
+			 node -> get_id( ) != ( *socialPrefGraph)[ j ].get_id( ); ++j ){
 
 			aux++;
 		}
 
-		if( aux < (*socialPrefGraph).size( ) ){
+		if( aux < ( *socialPrefGraph ).size( ) ){
 
-			listAux.push_back(&(*socialPrefGraph)[ aux ]);
+			listAux.push_back( &( *socialPrefGraph )[ aux ] );
 		}
 	}
 
@@ -214,23 +214,22 @@ template<typename Prefs> std::vector<SocialPrefNode<Prefs>*> Program_Logic<Prefs
 }
 
 
-template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode<Prefs>>& graph, QGraphicsScene*& scene ){
-
+template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<SocialPrefNode>& graph, QGraphicsScene*& scene ){
 
 	int z{ 0 };
 
 	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
-		QPointF position = QPointF( 100 - std::rand( ) % 200, 100 - std::rand( ) % 200 );
+		QPointF position = QPointF( ( 100 - std::rand( ) ) % 200, ( 100 - std::rand( ) ) % 200 );
 
 		graphic_graph.push_back( new Q_Graphic_Node<Prefs>( ++z, position, 10, graph.size( ), scene, graph[ i ] ) );
 	}
 
 	for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
 
-		std::vector<SocialPrefNode<Prefs>*> preferences = graphic_graph[ i ] -> getSPNode( ).get_preferences( );
+		std::vector<SocialPrefNode*> preferences = graphic_graph[ i ] -> getSPNode( ).get_preferences( );
 
-		for( SocialPrefNode<Prefs>* node : preferences ){
+		for( SocialPrefNode* node : preferences ){
 
 			unsigned int aux = 0;
 
@@ -247,6 +246,7 @@ template<typename Prefs> void Program_Logic<Prefs>::show_graph( std::vector<Soci
 		}
 	}
 }
+
 template<typename Prefs> void Program_Logic<Prefs>::rank( ){
 
 	for( Q_Graphic_Node<Prefs>* node : graphic_graph ){
@@ -276,7 +276,7 @@ template<typename Prefs> void Program_Logic<Prefs>::rank( ){
 
 	for( std::vector<int>::size_type i = 0, aux_step = graphic_graph[ i ] -> get_Steps( ); i < graphic_graph.size( ); ++i ){
 
-		if( graphic_graph[ i ] -> get_Steps( ) < aux_step ){
+        if( graphic_graph[ i ] -> get_Steps( ) < aux_step ){
 
 			aux_step = graphic_graph[ i ] -> get_Steps( );
 
@@ -297,7 +297,7 @@ template<typename Prefs> void Program_Logic<Prefs>::rank( ){
 
 template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 
-	QPointF center = QPoint(0,0);
+	QPointF center = QPoint( 0,0 );
 
 	if( isMagnetic ){
 
@@ -305,7 +305,7 @@ template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 
 			graphic_graph[ i ] -> calcMovement( graphic_graph );
 
-			center -= graphic_graph[i] -> getPosition();
+			center -= graphic_graph[ i ] -> getPosition( );
 		}
 		center/=graphic_graph.size( );
 	}
@@ -319,14 +319,15 @@ template<typename Prefs> void Program_Logic<Prefs>::update( bool isMagnetic ){
 	}
 
 	for( std::vector<int>::size_type i = 0; i < graphic_graph.size( ); ++i ){
+
 		graphic_graph[ i ] -> setPosition(center);
 		graphic_graph[ i ] -> update( );
 	}
 }
 
-template<typename Prefs> void Program_Logic<Prefs>::setListofagents(const std::vector<Agent<Prefs> >& value){ listofagents = value;}
+template<typename Prefs> void Program_Logic<Prefs>::setListofagents(const std::vector<Agent>& value){ listofagents = value;}
 
-template<typename Prefs> std::vector<SocialPrefNode<Prefs>>* Program_Logic<Prefs>::getSocialPrefGraph(){	return socialPrefGraph; }
+template<typename Prefs> std::vector<SocialPrefNode>* Program_Logic<Prefs>::getSocialPrefGraph( ){ return socialPrefGraph; }
 
 
 

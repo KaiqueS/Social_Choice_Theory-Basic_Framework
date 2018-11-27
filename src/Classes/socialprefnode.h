@@ -5,153 +5,93 @@
 
 #include <vector>
 #include <iostream>
-#include <QGraphicsView>
-#include <QGraphicsItem>
 
-// TODO: Document this
-
-template<typename Prefs> class SocialPrefNode{
+template <typename T, typename Parameter> class NamedType{
 
 public:
 
-	// Constructors & Destructor
-	SocialPrefNode( );
-	SocialPrefNode( char self, std::vector<SocialPrefNode*> pref );
-	SocialPrefNode( const SocialPrefNode& copy );
+    // Constructors & Destructor
+    explicit NamedType( T const& value ) : value_( value ){ }
+    explicit NamedType( T&& value ) : value_( std::move( value ) ){ }
 
-	~SocialPrefNode( );
+    ~NamedType( ){ }
 
-	// Setters
-	void set_id( char self );
-
-	void set_pref( std::vector<SocialPrefNode*> prefs );
-	void set_pref( SocialPrefNode& prefs );
-
-	void set_worse( std::vector<SocialPrefNode*> wrs );
-	void set_worse( SocialPrefNode& wrs );
-
-	void set_indiff( std::vector<SocialPrefNode*> indiff );
-	void set_indiff( SocialPrefNode& indiff );
-
-	// Getters
-	char get_id( ){ return id; }
-
-	std::vector<SocialPrefNode*> get_preferences( ){ return preferences; }
-	std::vector<SocialPrefNode*> get_worse( ){ return worsethan; }
-	std::vector<SocialPrefNode*> get_indiff( ){ return indifference; }
-
-	// Operators
-	SocialPrefNode& operator=( const SocialPrefNode& copy );
+    // Getters
+    T& get( ) { return value_; }
+    T const& get( ) const { return value_; }
 
 private:
 
-	char id{ };
-
-	std::vector<SocialPrefNode*> preferences{ };
-	std::vector<SocialPrefNode*> worsethan{ };
-	std::vector<SocialPrefNode*> indifference{ };
+    T value_{ };
 };
 
-/* Constructors & Destructor */
+class SocialPrefNode{
 
-// Default constructor. Initializes members to its default values
-template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( ){
+public:
 
-	id = '0';
+    // Constructors & Destructor
+    SocialPrefNode( );
+    SocialPrefNode( std::string self, int ind, int link, bool stack, std::vector<SocialPrefNode*> pref,
+					std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff );
+    SocialPrefNode( const SocialPrefNode& copy );
 
-	preferences = { };
-}
+    ~SocialPrefNode( );
 
-// Parameterized constructor.
-template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( char self, std::vector<SocialPrefNode*> pref ){
+    // Setters
+    void set_id( std::string self );
 
-	id = self;
+	void set_index( int ind );
+	void set_lowlink( int link );
 
-	preferences = pref;
-}
+	void set_onstack( bool stack );
 
-// Copy constructor
-template<typename Prefs> SocialPrefNode<Prefs>::SocialPrefNode( const SocialPrefNode& copy ){
+    void set_pref( std::vector<SocialPrefNode*> prefs );
+    void set_pref( SocialPrefNode& prefs );
 
-	id = copy.id;
+    void set_worse( std::vector<SocialPrefNode*> wrs );
+    void set_worse( SocialPrefNode& wrs );
 
-	preferences = copy.preferences;
-}
+    void set_indiff( std::vector<SocialPrefNode*> indiff );
+    void set_indiff( SocialPrefNode& indiff );
 
-// Destructor
-template<typename Prefs> SocialPrefNode<Prefs>::~SocialPrefNode( ){ }
+    // Getters
+    std::string get_id( ){ return id; }
 
-/* Setters */
+	int get_index( ){ return index; }
+	int get_lowlink( ){ return lowlink; }
 
-// Sets SocialPreferenceNodes's id
-template<typename Prefs> void SocialPrefNode<Prefs>::set_id( char self ){
+	bool get_onstack( ){ return onstack; }
 
-	if( !self ) // checking for nullptr
+    std::vector<SocialPrefNode*> get_preferences( ){ return preferences; }
+    std::vector<SocialPrefNode*> get_worse( ){ return worsethan; }
+    std::vector<SocialPrefNode*> get_indiff( ){ return indifference; }
 
-		self = '0';
+    // Operators
+    SocialPrefNode& operator=( const SocialPrefNode& copy );
 
-	id = self;
-}
+    using preferences_index = NamedType<std::ptrdiff_t, struct preferences_Parameter>;
+    using worsethan_index = NamedType<std::ptrdiff_t, struct worsethan_Parameter>;
+    using indifference_index = NamedType<std::ptrdiff_t, struct indifference_Parameter>;
 
-// Gets a vector of pointers to SocialPrefNodes, sets PREFERENCES to the latter
-template<typename Prefs> void SocialPrefNode<Prefs>::set_pref( std::vector<SocialPrefNode*> prefs ){ preferences = prefs; }
+    // One operator[ ] for each array index type
+    SocialPrefNode* operator[ ]( preferences_index i ){ return preferences[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
+    SocialPrefNode* operator[ ]( worsethan_index i ){ return worsethan[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
+    SocialPrefNode* operator[ ]( indifference_index i ){ return indifference[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
 
-// Gets an address to a SocialPrefNode, puts it into PREFERENCES vector
-template<typename Prefs> void SocialPrefNode<Prefs>::set_pref( SocialPrefNode& prefs ){ preferences.push_back( &prefs ); }
+private:
 
-// Gets a vector of pointers to SocialPrefNodes, sets WORSETHAN to the latter
-template<typename Prefs> void SocialPrefNode<Prefs>::set_worse( std::vector<SocialPrefNode*> wrs ){ worsethan = wrs; }
+    std::string id{ };
 
-// Gets an address to a SocialPrefNode, puts it into WORSETHAN vector
-template<typename Prefs> void SocialPrefNode<Prefs>::set_worse( SocialPrefNode& wrs ){ worsethan.push_back( &wrs ); }
+	int index{ };
+	int lowlink{ };
 
-// Gets a vector of pointers to SocialPrefNodes, sets INDIFFERENCE to the latter
-template<typename Prefs> void SocialPrefNode<Prefs>::set_indiff( std::vector<SocialPrefNode*> indiff ){ indifference = indiff; }
+	bool onstack{ };
 
-// Gets an address to a SocialPrefNode, puts it into INDIFFERENCE vector
-template<typename Prefs> void SocialPrefNode<Prefs>::set_indiff( SocialPrefNode& indiff ){ indifference.push_back( &indiff ); }
+    std::vector<SocialPrefNode*> preferences{ };
+    std::vector<SocialPrefNode*> worsethan{ };
+    std::vector<SocialPrefNode*> indifference{ };
+};
 
-/* Getters */
-
-/* Operators */
-
-// Overloaded assignment operator
-template<typename Prefs> SocialPrefNode<Prefs>& SocialPrefNode<Prefs>::operator=( const SocialPrefNode& copy ){
-
-	id = copy.id;
-
-	preferences = copy.preferences;
-
-	return *this;
-}
-
-// Overloaded ostream operator
-template<typename Prefs> std::ostream& operator<<( std::ostream& os, SocialPrefNode<Prefs>& node ){
-
-	os << "Node " << node.get_id() << "\nIs preferred to nodes: ";
-
-	for( std::vector<int>::size_type i = 0; i < node.get_preferences( ).size( ); ++i ){
-
-		os << "[ " << node.get_preferences( )[ i ] -> get_id( ) << " ] ";
-	}
-
-	os << "\nIs worse than nodes: ";
-
-	for( std::vector<int>::size_type i = 0; i < node.get_worse( ).size( ); ++i ){
-
-		os << "[ " << node.get_worse( )[ i ] -> get_id( ) << " ] ";
-	}
-
-	os << "\nIs equal to nodes: ";
-
-	for( std::vector<int>::size_type i = 0; i < node.get_indiff( ).size( ); ++i ){
-
-		os << "[ " << node.get_indiff( )[ i ] -> get_id( ) << " ] ";
-	}
-
-	os << "\n\n";
-
-	return os;
-}
+std::ostream& operator<<( std::ostream& os, SocialPrefNode& node );
 
 #endif // SOCIALPREFNODE_H

@@ -1,0 +1,16 @@
+INPUT(
+./debug\agent.o
+./debug\cycle.o
+./debug\exceptionhandler.o
+./debug\main.o
+./debug\nodeopt.o
+./debug\options.o
+./debug\pairsofopts.o
+./debug\pairwiserank.o
+./debug\preferencematrix.o
+./debug\sctheory.o
+./debug\socialprefnode.o
+./debug\mainwindow.o
+./debug\treewidget.o
+./debug\moc_mainwindow.o
+);

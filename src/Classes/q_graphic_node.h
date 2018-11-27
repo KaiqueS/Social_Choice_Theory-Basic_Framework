@@ -1,11 +1,16 @@
+#pragma once
+
 #ifndef Q_GRAPHIC_NODE_H
 #define Q_GRAPHIC_NODE_H
 
 #include <QGraphicsItem>
-#include <Classes/socialprefnode.h>
 #include <QVector2D>
 #include <QtMath>
 #include <typeinfo>
+#include <QPen>
+#include <QLabel>
+#include <QString>
+#include "socialprefnode.h"
 
 template<typename Prefs> class Q_Graphic_Node{
 
@@ -13,7 +18,7 @@ public:
 
 	// Constructors & Destructor
 	Q_Graphic_Node( );
-	Q_Graphic_Node( int z, QPointF& position, int size, double allNodes, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode );
+    Q_Graphic_Node( int z, QPointF& position, int size, double allNodes, QGraphicsScene*& scene, SocialPrefNode& SocialPrefNode );
 	Q_Graphic_Node( const Q_Graphic_Node& copy_qgnode );
 
 	~Q_Graphic_Node( );
@@ -29,7 +34,7 @@ public:
 
 	QPointF getPosition( ){ return position; }
 
-	SocialPrefNode<Prefs> getSPNode( ){ return SPNode; }
+    SocialPrefNode getSPNode( ){ return SPNode; }
 
 	int get_Steps( ){ return steps; }
 	int get_Rank( ){ return rank; }
@@ -39,7 +44,7 @@ public:
 
 	// Helper Functions
 	void insert_node( Q_Graphic_Node* node, QGraphicsScene* scene );
-	void createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode );
+    void createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode& SocialPrefNode );
 	void moveNode( );
 	void calcMovement( std::vector<Q_Graphic_Node*>& graph );
 	void walkGraph( std::vector<Q_Graphic_Node*>& last_node );
@@ -62,7 +67,7 @@ private:
 	QPointF position{ };
 	QPointF moveVector{ };
 
-	SocialPrefNode<Prefs> SPNode{ };
+    SocialPrefNode SPNode{ };
 
 	double strength{ };
 	double quantNodes{ };
@@ -92,7 +97,7 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( ){
 	steps = { };
 	rank = { };
 }
-template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF& position, int size, double allNodes, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode ){
+template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF& position, int size, double allNodes, QGraphicsScene*& scene, SocialPrefNode& SocialPrefNode ){
 
 	SPNode = SocialPrefNode;
 
@@ -140,7 +145,6 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 	label_name -> setPos( position.rx( ), position.ry( ) );
 
 	itemForm -> setPos( label_name -> pos( ) );
-
 
 	label_Rank -> setPos( position );
 
@@ -261,7 +265,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 
 	setPos( position );
 }
-template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode<Prefs>& SocialPrefNode ){
+template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode& SocialPrefNode ){
 
 	QPen outlinePen( Qt::black );
 
@@ -269,7 +273,9 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, 
 
 	outlinePen.setWidth( 2 );
 
-	label_name = scene -> addText( QString( "\n " ) + QString( SocialPrefNode.get_id( ) ) +  QString( " " ), QFont( "Arial", size ) );
+	QString str = QString::fromStdString( SocialPrefNode.get_id( ) );
+
+	label_name = scene -> addText( QString( "\n " ) + str +  QString( " " ), QFont( "Arial", size ) );
 
 	label_name -> setZValue( z + 2 );
 	label_name -> setFlag( QGraphicsItem::ItemIsMovable );
@@ -278,13 +284,13 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, 
 
 	itemForm -> setZValue( z + 1 );
 
-	label_Rank = label_name -> scene() -> addText( QString::number( -1 ), QFont( "Arial", 10 ) );
+	label_Rank = label_name -> scene( ) -> addText( QString::number( -1 ), QFont( "Arial", 10 ) );
 
 	setPos( position );
 }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 
-	label_name -> setPos(label_name -> pos() + position);
+    label_name -> setPos( label_name -> pos( ) + position );
 
 	setPos( label_name -> pos( ) + moveVector );
 
@@ -351,7 +357,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q
 	int sizeAux = graph.size( );
 
 	qreal velMax = 3 / ( strength + 1 );
-	qreal velMin = velMax / 10;
+	qreal velMin = ( velMax / 10 );
 
 	double edgeMaxLength = 90 * sqrt( sizeAux );
 	qreal edgeMinLength = 80;
@@ -365,7 +371,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q
 			// Static casting QVector2D distance length into q real, removes implicit conversion on if statement belw
 			qreal vecdistance = static_cast<qreal>( distance.length( ) );
 
-			QVector2D moveAux( distance - ( distance.normalized( ) * edgeMaxLength ) );
+			QVector2D moveAux( distance - ( distance.normalized( ) * static_cast<float>( edgeMaxLength )  ) );
 
 			if( vecdistance > edgeMaxLength || vecdistance < edgeMinLength )
 
@@ -413,7 +419,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::set_Rank( int rank ){
 
 	delete label_Rank;
 
-	QFont fonte = label_name->font();
+    QFont fonte = label_name -> font( );
 
 	fonte.setBold( true );
 

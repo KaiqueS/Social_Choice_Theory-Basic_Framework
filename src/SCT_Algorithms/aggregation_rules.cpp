@@ -1,44 +1,79 @@
-#include <vector>
-#include "Classes/agent.h"
-#include "Classes/options.h"
-#include "Classes/pairsofopts.h"
-#include "Classes/socialprefnode.h"
 #include "Classes/pairwiserank.h"
-#include "Classes/cycle.h"
+#include "Classes/socialprefnode.h"
 
-// Correct this, get the element with the greatest preferences size
-template<typename Prefs> Options<Prefs> majority_rule( std::vector<SocialPrefNode<Prefs>>& graph ){
+// Majority rule using Social Choice Graph
+Options majority_rule( std::vector<SocialPrefNode>& graph ){
 
-	Options<Prefs> winner{ };
+    std::vector<Options> winnerset{ };
 
-	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+    // Get every element that satisfies the majority rule
+    for( SocialPrefNode node : graph ){
 
-		for( std::vector<int>::size_type j = 0; j < graph.size( ); ++j ){
+        Options holder{ };
 
-			if( graph[ i ].get_preferences( ).size( ) > graph[ j ].get_preferences( ).size( ) ){
+        if( node.get_preferences( ).size( ) > ( graph.size( ) / 2 ) ){
 
-				if( graph[ i ].get_preferences( ).size( ) > ( graph.size( ) ) / 2 ){
+            holder.set_opt( node.get_id( ) );
+            holder.set_value( static_cast<int>( node.get_preferences( ).size( ) ) );
 
-					winner.set_alternatives( graph[ i ].get_id( ) );
-					winner.set_value( graph[ i ].get_preferences( ).size( ) );
-				}
-			}
+            winnerset.push_back( holder );
+        }
+    }
 
-			else{
+    Options winner{ };
 
-				if( graph[ j ].get_preferences( ).size( ) > ( graph.size( ) ) / 2 ){
+    // Select the greatest among those
+    if( !winnerset.empty( ) ){
 
-					winner.set_alternatives( graph[ j ].get_id( ) );
-					winner.set_value( graph[ j ].get_preferences( ).size( ) );
-				}
-			}
-		}
-	}
+        for( Options leftopt : winnerset ){
 
-	return winner;
+            for( Options rightopt : winnerset ){
+
+                if( leftopt.get_value( ) > rightopt.get_value( ) )
+
+                    winner = leftopt;
+
+                else if( leftopt.get_value( ) < rightopt.get_value( ) )
+
+                    winner = rightopt;
+
+                else if( leftopt.get_value( ) == rightopt.get_value( ) )
+
+                    winner = leftopt;
+            }
+        }
+
+        return winner;
+    }
+
+    else{
+
+        winner.set_opt( "N" );
+        winner.set_value( -1 );
+
+        return winner;
+    }
 }
 
-template<typename Prefs> void borda_count( std::vector<PairWiseRank<Prefs>>& rank ){
+// Majority rule using Pairwise Rank
+Options majority_rule( std::vector<PairWiseRank>& rank ){
+
+    // how to contabilize the total amount of votes?
+    std::vector<Options> winnerset{ };
+
+    int totalvotes{ };
+
+    for( PairWiseRank pairs : rank ){
+
+        if( pairs.get_xval( ) > pairs.get_yval( ) ){
+
+        }
+    }
+
+	return winnerset[ 1 ];
+}
+
+void borda_count( std::vector<PairWiseRank>& rank ){
 
 
 }
