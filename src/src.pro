@@ -22,7 +22,6 @@ SOURCES += \
     SCT_Algorithms/pairwiserank.cpp \
     SCT_Algorithms/preferencematrix.cpp \
     SCT_Algorithms/SCTheory.cpp \
-    SCT_Algorithms/sctheory.cpp \
     SCT_Algorithms/socialprefnode.cpp \
     mainwindow.cpp \
     treewidget.cpp
