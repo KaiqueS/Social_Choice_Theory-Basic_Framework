@@ -1,8 +1,11 @@
-#include "Classes/pairwiserank.h"
-#include "Classes/socialprefnode.h"
+
+#include "Classes/aggregation_rules.h"
+
+
+
 
 // Majority rule using Social Choice Graph
-Options majority_rule( std::vector<SocialPrefNode>& graph ){
+Options Aggregation_rules::majority_rule( std::vector<SocialPrefNode>& graph ){
 
     std::vector<Options> winnerset{ };
 
@@ -56,7 +59,7 @@ Options majority_rule( std::vector<SocialPrefNode>& graph ){
 }
 
 // Majority rule using Pairwise Rank
-Options majority_rule( std::vector<PairWiseRank>& rank ){
+Options Aggregation_rules::majority_rule( std::vector<PairWiseRank>& rank ){
 
     // how to contabilize the total amount of votes?
     std::vector<Options> winnerset{ };
@@ -73,7 +76,9 @@ Options majority_rule( std::vector<PairWiseRank>& rank ){
 	return winnerset[ 1 ];
 }
 
-void borda_count( std::vector<PairWiseRank>& rank ){
+void Aggregation_rules::borda_count( std::vector<PairWiseRank>& rank ){
 
 
 }
+
+

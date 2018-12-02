@@ -43,7 +43,10 @@ HEADERS += \
     Classes/q_graphic_node.h \
     Classes/socialprefnode.h \
     mainwindow.h \
-    treewidget.h
+    treewidget.h \
+    Classes/aggregation_rules.h \
+    Classes/helper_functions.h \
+    Classes/sctheory.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

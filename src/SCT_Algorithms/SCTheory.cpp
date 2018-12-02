@@ -1,11 +1,10 @@
-#include "helper_functions.cpp"
-#include "aggregation_rules.cpp"
+#include "Classes/sctheory.h"
 
 // Checks if the pareto principle is violated or not - Working(?) - TODO: Check for transitivity problems
-bool pareto_principle( std::vector<SocialPrefNode>& graph ,std::vector<PairWiseRank>& rank ){
+bool SCTheory::pareto_principle( std::vector<SocialPrefNode>& graph ,std::vector<PairWiseRank>& rank ){
 
     // Ordered social rank. Decreasing order
-    std::vector<Options> socialorder = make_social_order( graph );
+	std::vector<Options> socialorder = Helper_functions::make_social_order( graph );
 
     bool validity{ true };
 
@@ -85,7 +84,7 @@ bool pareto_principle( std::vector<SocialPrefNode>& graph ,std::vector<PairWiseR
 
 // Checks if , for any x, y, and z, the relation between x and y is modified by
 // the relation between x and z in the social ranking
-bool irrelevant_alternatives( std::vector<Agent> people, std::vector<SocialPrefNode>& graph ){
+bool SCTheory::irrelevant_alternatives( std::vector<Agent> people, std::vector<SocialPrefNode>& graph ){
 
     // generate a second profile R' of preferences
     // if it is the case that, for any two alternatives x and y, and for every person i
@@ -97,7 +96,7 @@ bool irrelevant_alternatives( std::vector<Agent> people, std::vector<SocialPrefN
 }
 
 // Searches for a dictator
-bool non_dictatorship( std::vector<Agent> people, std::vector<SocialPrefNode>& graph ){
+bool SCTheory::non_dictatorship( std::vector<Agent> people, std::vector<SocialPrefNode>& graph ){
 
     // if there is a dictator
         // return false, and the dictator
@@ -108,9 +107,9 @@ bool non_dictatorship( std::vector<Agent> people, std::vector<SocialPrefNode>& g
     return true;
 }
 
-void condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
+void SCTheory::condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
-    Options winner = majority_rule( graph );
+	Options winner = Aggregation_rules::majority_rule( graph );
 
     // Check for cycles
     // std::vector<Cycle<Prefs>> paths = check_cycle( graph );
@@ -122,7 +121,7 @@ void condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefN
     std::cout << winner.get_opt( ) << " is the winner.\n";
 }
 
-void arrow_impossibility( std::vector<Agent>& listofagents, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
+void SCTheory::arrow_impossibility( std::vector<Agent>& listofagents, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
     // Checks if all the below conditions are satisfied simultaneously
         // Universal/Unrestricted Domain - granted by the definition of PreferenceMatrix

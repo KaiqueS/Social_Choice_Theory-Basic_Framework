@@ -1,8 +1,5 @@
-#include "Classes/agent.h"
-#include "Classes/socialprefnode.h"
-#include "Classes/cycle.h"
-#include "Classes/pairwiserank.h"
-#include "Classes/pairsofopts.h"
+#include "Classes/helper_functions.h"
+
 
 /* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
  *						   order agent's orderings according to alternatives' values - enables
@@ -11,7 +8,7 @@
 
 /* Initialization Functions */
 
-void initialize_graph( std::vector<Agent>& listofagents, std::vector<SocialPrefNode>& graph ){
+void Helper_functions::initialize_graph( std::vector<Agent>& listofagents, std::vector<SocialPrefNode>& graph ){
 
 	int castsize = static_cast<int>( listofagents.size( ) );
 
@@ -29,7 +26,7 @@ void initialize_graph( std::vector<Agent>& listofagents, std::vector<SocialPrefN
 		graph[ i ].set_id( listofagents[ index ].get_preferences( )[ i ].get_opt( ) );
 }
 
-void initialize_opts( std::vector<Agent>& listofagents, std::vector<Options>& opts ){
+void Helper_functions::initialize_opts( std::vector<Agent>& listofagents, std::vector<Options>& opts ){
 
     std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
 
@@ -45,7 +42,7 @@ void initialize_opts( std::vector<Agent>& listofagents, std::vector<Options>& op
 
 /* Printing Functions */
 
-void print_graph( std::vector<SocialPrefNode>& graph ){
+void Helper_functions::print_graph( std::vector<SocialPrefNode>& graph ){
 
     for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
@@ -55,7 +52,7 @@ void print_graph( std::vector<SocialPrefNode>& graph ){
 
 /* Data Structures Modifying Functions */
 
-void strong_connect( SocialPrefNode& v, std::vector<SocialPrefNode>& s, int& index ){
+void Helper_functions::strong_connect( SocialPrefNode& v, std::vector<SocialPrefNode>& s, int& index ){
 
 	v.set_index( index );
 	v.set_lowlink( index );
@@ -109,7 +106,7 @@ void strong_connect( SocialPrefNode& v, std::vector<SocialPrefNode>& s, int& ind
 	}
 }
 
-std::vector<SocialPrefNode> tarjan( std::vector<SocialPrefNode>& graph ){
+std::vector<SocialPrefNode> Helper_functions::tarjan( std::vector<SocialPrefNode>& graph ){
 
 	int index = 0;
 
@@ -136,7 +133,7 @@ std::vector<SocialPrefNode> tarjan( std::vector<SocialPrefNode>& graph ){
 }
 
 // Checkes for cycles in graph GRAPH - Isso aqui tá claramente dando boxta
-std::vector<Cycle> check_cycle( std::vector<SocialPrefNode>& graph ){
+std::vector<Cycle> Helper_functions::check_cycle( std::vector<SocialPrefNode>& graph ){
 
     // Start by following the path of a given node
     // stores each node of path in a vector
@@ -179,7 +176,7 @@ std::vector<Cycle> check_cycle( std::vector<SocialPrefNode>& graph ){
 }
 
 // Makes a social order from a Pairwise Rank of alternatives
-std::vector<Options> make_social_order( std::vector<Agent>& listofagt, std::vector<PairWiseRank>& rank ){
+std::vector<Options> Helper_functions::make_social_order( std::vector<Agent>& listofagt, std::vector<PairWiseRank>& rank ){
 
     std::vector<Options> orderedrank{ };
 
@@ -219,7 +216,7 @@ std::vector<Options> make_social_order( std::vector<Agent>& listofagt, std::vect
 }
 
 // Makes a social order from a Social Graph of alternatives
-std::vector<Options> make_social_order( std::vector<SocialPrefNode>& socialgraph ){
+std::vector<Options> Helper_functions::make_social_order( std::vector<SocialPrefNode>& socialgraph ){
 
     std::vector<Options> orderedrank{ };
 
@@ -245,7 +242,7 @@ std::vector<Options> make_social_order( std::vector<SocialPrefNode>& socialgraph
 }
 
 // Generates, without repetition, all combinations of pairs of alternatives
-std::vector<PairsOfOpts> pair_generation( std::vector<Agent>& listofagents ){
+std::vector<PairsOfOpts> Helper_functions::pair_generation( std::vector<Agent>& listofagents ){
 
     PairsOfOpts compairs;
 
@@ -276,7 +273,7 @@ std::vector<PairsOfOpts> pair_generation( std::vector<Agent>& listofagents ){
 /* Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
  * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
  * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives */
-std::vector<PairWiseRank> rank_generation( std::vector<Agent>& listofagents ){
+std::vector<PairWiseRank> Helper_functions::rank_generation( std::vector<Agent>& listofagents ){
 
     // Holder for a pair of options
     PairsOfOpts compairs{ };
@@ -341,7 +338,7 @@ std::vector<PairWiseRank> rank_generation( std::vector<Agent>& listofagents ){
  * ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
  * that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
  * x.indifference */
-void make_graph( std::vector<Agent>& listofagents, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
+void Helper_functions::make_graph( std::vector<Agent>& listofagents, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
     if( graph.empty( ) ){
 
@@ -442,7 +439,7 @@ void make_graph( std::vector<Agent>& listofagents, std::vector<PairWiseRank>& ra
 }
 
 // Hamiltonian Paths for each node in GRAPH
-Cycle make_paths( std::vector<SocialPrefNode> graph ){ // returns a vector of cycles
+Cycle Helper_functions::make_paths( std::vector<SocialPrefNode> graph ){ // returns a vector of cycles
 
     Cycle pathway{ };
 

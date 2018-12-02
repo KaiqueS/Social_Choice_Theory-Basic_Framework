@@ -6,7 +6,7 @@
 #include <QFile>
 #include "preferencematrix.h"
 #include "q_graphic_node.h"
-#include "SCT_Algorithms/SCTheory.cpp"
+#include "Classes/sctheory.h"
 
 // TODO: Use RAII in class design
 
@@ -100,13 +100,13 @@ template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_p
 
 		std::cout << "\n\n";
 
-		std::vector<PairWiseRank> rank = rank_generation( listofagents );
+		std::vector<PairWiseRank> rank = Helper_functions::rank_generation( listofagents );
 
 		std::vector<SocialPrefNode> socialPrefGraph{ };
 
-		make_graph( listofagents, rank, socialPrefGraph );
+		Helper_functions::make_graph( listofagents, rank, socialPrefGraph );
 
-		condorcet_paradox( rank, socialPrefGraph );
+		SCTheory().condorcet_paradox( rank, socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -144,13 +144,13 @@ template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_p
 
 template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_project( std::vector<Agent> listofagents ){
 
-		std::vector<PairWiseRank> rank = rank_generation( listofagents );
+		std::vector<PairWiseRank> rank = Helper_functions::rank_generation( listofagents );
 
 		std::vector<SocialPrefNode> socialPrefGraph{ };
 
-		make_graph( listofagents, rank, socialPrefGraph );
+		Helper_functions::make_graph( listofagents, rank, socialPrefGraph );
 
-		condorcet_paradox( rank, socialPrefGraph );
+		SCTheory().condorcet_paradox( rank, socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
