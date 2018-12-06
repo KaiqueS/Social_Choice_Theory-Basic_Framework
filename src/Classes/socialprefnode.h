@@ -62,7 +62,7 @@ public:
 
 	bool get_onstack( ){ return onstack; }
 
-    std::vector<SocialPrefNode*> get_preferences( ){ return preferences; }
+	std::vector<SocialPrefNode*> get_preferences( ){ return preferences; }
     std::vector<SocialPrefNode*> get_worse( ){ return worsethan; }
     std::vector<SocialPrefNode*> get_indiff( ){ return indifference; }
 

@@ -8,9 +8,11 @@ class TreeWidget{
 
 public:
 
-    TreeWidget( QWidget* parent, int columns );
+	TreeWidget( QWidget* parent, QStringList columnNames );
 
-    ~TreeWidget( );
+	TreeWidget( QWidget* parent, int column );
+
+	~TreeWidget( );
 
     QTreeWidgetItem* addTreeRoot( QString name, QString description );
 

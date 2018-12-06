@@ -107,7 +107,7 @@ bool SCTheory::non_dictatorship( std::vector<Agent> people, std::vector<SocialPr
     return true;
 }
 
-void SCTheory::condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
+void SCTheory::condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode> graph ){
 
 	Options winner = Aggregation_rules::majority_rule( graph );
 

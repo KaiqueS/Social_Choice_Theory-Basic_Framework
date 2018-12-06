@@ -168,7 +168,7 @@ std::vector<Cycle> Helper_functions::check_cycle( std::vector<SocialPrefNode>& g
                 // Do this until a repeated node is reached
 
 
-    int index = 0;
+	int index = 0;
 
     std::vector<char> way{ };
 
@@ -297,9 +297,11 @@ std::vector<PairWiseRank> Helper_functions::rank_generation( std::vector<Agent>&
             for( std::vector<int>::size_type k = 0; k < listofagents[ j ].get_preferences( ).size( ); ++ k ){
 
                 // Search for x in agent's preferences
-                if( listofagents[ j ].get_preferences( )[ k ].get_opt( ) == compairs.xpref.get_opt( ) )
+				if( listofagents[ j ].get_preferences( )[ k ].get_opt( ) == compairs.xpref.get_opt( ) ){
 
                     paircomp.set_optx( listofagents[ j ].get_preferences( )[ k ] );
+
+				}
 
                 // Search for y in agent's preferences
                 if( listofagents[ j ].get_preferences( )[ k ].get_opt( ) == compairs.ypref.get_opt( ) )
@@ -328,7 +330,8 @@ std::vector<PairWiseRank> Helper_functions::rank_generation( std::vector<Agent>&
 
         // Resets the tuple for a new ranking
         paircomp = { };
-    }
+	}
+
 
     // returns a vector of quintuples
     return ranking;
@@ -340,102 +343,109 @@ std::vector<PairWiseRank> Helper_functions::rank_generation( std::vector<Agent>&
  * x.indifference */
 void Helper_functions::make_graph( std::vector<Agent>& listofagents, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
-    if( graph.empty( ) ){
+	if( graph.empty( ) ){
 
         std::cout << "Graph has no nodes! Initializing it.\n\n";
 
-        initialize_graph( listofagents, graph );
-    }
+		initialize_graph( listofagents, graph );
+	}
 
-    else{
+	int randagt = rand( ) % listofagents.size( );
+	//int randindx = rand( ) % listofagents[ randagt ].get_preferences( ).size( );
 
-        // Checks how alternatives are related. Links them accordingly to their relation
-        for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
+	// Initializes nodes' ids. Take as argument the ids from an agent
+	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
-            for( std::vector<int>::size_type j = 0; j < graph.size( ); ++j ){
+		graph[ i ].set_id( listofagents[ randagt ].get_preferences( )[ i ].get_opt() );
+	}
+	// Checks how alternatives are related. Links them accordingly to their relation
+	for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
 
-                // if x > y
-                if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) ){
+		for( std::vector<int>::size_type j = 0; j < graph.size( ); ++j ){
 
-                    // If graph[ j ] == x, set preferredto = y, i.e., x is preferred to y
-                    if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
 
-                        for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+			// if x > y
+			if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) ){
 
-                            if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) )
+				// If graph[ j ] == x, set preferredto = y, i.e., x is preferred to y
+				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
 
-                                graph[ j ].set_pref( graph[ k ] );
-                        }
-                    }
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
-                    // Else if graph[ j ] == y, set worse = x, i.e., y is worse than x
-                    else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
+						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) )
 
-                        for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+							graph[ j ].set_pref( graph[ k ] );
+					}
+				}
 
-                            if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
+				// Else if graph[ j ] == y, set worse = x, i.e., y is worse than x
+				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
 
-                                graph[ j ].set_worse( graph[ k ] );
-                        }
-                    }
-            }
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
-                // if x < y
-                else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) ){
+						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
 
-                    // If graph[ j ] == x, set worsethan = y
-                    if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
+							graph[ j ].set_worse( graph[ k ] );
+					}
+				}
+			}
 
-                        for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+			// if x < y
+			else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) ){
 
-                            if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) )
+				// If graph[ j ] == x, set worsethan = y
+				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
 
-                                graph[ j ].set_worse( graph[ k ] );
-                        }
-                    }
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
-                // Else if scgraph[ j ] == y, set preferences = y
-                else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
+						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) )
 
-                    for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+							graph[ j ].set_worse( graph[ k ] );
+					}
+				}
 
-                        if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
+			// Else if scgraph[ j ] == y, set preferences = y
+			else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
 
-                            graph[ j ].set_pref( graph[ k ] );
-                    }
-                }
-            }
+				for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
-                // if x == y
-                else if( rank[ i ].get_xval( ) == rank[ i ].get_yval( ) ){
+					if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
 
-                    // If scgraph[ j ] == x, set indiff = y
-                    if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
+						graph[ j ].set_pref( graph[ k ] );
+				}
+			}
+		}
 
-                        for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+			// if x == y
+			else if( rank[ i ].get_xval( ) == rank[ i ].get_yval( ) ){
 
-                            if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
+				// If scgraph[ j ] == x, set indiff = y
+				if( graph[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
 
-                                graph[ k ].set_indiff( graph[ j ] );
-                            }
-                        }
-                    }
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
 
-                    // Else if scgraph[ j ] == y, set indiff = x
-                    else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
+						if( graph[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
 
-                        for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+							graph[ k ].set_indiff( graph[ j ] );
+						}
+					}
+				}
 
-                            if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
+				// Else if scgraph[ j ] == y, set indiff = x
+				else if( graph[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
 
-                                graph[ k ].set_indiff( graph[ j ] );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+					for( std::vector<int>::size_type k = 0; k < graph.size( ); ++k ){
+
+						if( graph[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
+
+							graph[ k ].set_indiff( graph[ j ] );
+						}
+					}
+				}
+			}
+		}
+	}
+
 }
 
 // Hamiltonian Paths for each node in GRAPH

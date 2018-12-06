@@ -9,7 +9,7 @@ public:
 	bool pareto_principle(std::vector<SocialPrefNode>& graph, std::vector<PairWiseRank>& rank);
 	bool irrelevant_alternatives(std::vector<Agent> people, std::vector<SocialPrefNode>& graph);
 	bool non_dictatorship(std::vector<Agent> people, std::vector<SocialPrefNode>& graph);
-	void condorcet_paradox(std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph);
+	void condorcet_paradox(std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode> graph);
 	void arrow_impossibility(std::vector<Agent>& listofagents, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph);
 };
 

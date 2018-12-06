@@ -85,7 +85,7 @@ template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_p
 		//	Run project
 		Preferencematrix newmtx{ };
 
-        newmtx.set_matrix( static_cast<std::vector<int>::size_type>( row ), static_cast<std::vector<int>::size_type>( column ) );
+		newmtx.set_matrix( static_cast<std::vector<int>::size_type>( row ), static_cast<std::vector<int>::size_type>( column ) );
 
 		std::vector<Agent> listofagents( newmtx.get_matrix( ).size( ) );
 
@@ -93,20 +93,21 @@ template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_p
 
 		for( std::vector<int>::size_type i = 0; i < listofagents.size( ); ++i ){
 
-			listofagents[ i ].set_id( std::to_string( i ) );
+			listofagents[ i ].set_id( "Agent " + std::to_string( i ) );
 
 			listofagents[ i ].set_preferences( newmtx );
+
 		}
 
 		std::cout << "\n\n";
 
 		std::vector<PairWiseRank> rank = Helper_functions::rank_generation( listofagents );
 
-		std::vector<SocialPrefNode> socialPrefGraph{ };
+		socialPrefGraph = new std::vector<SocialPrefNode>( listofagents[ 0 ].get_preferences( ).size( ) );
 
-		Helper_functions::make_graph( listofagents, rank, socialPrefGraph );
+		Helper_functions::make_graph( listofagents, rank, *socialPrefGraph );
 
-		SCTheory().condorcet_paradox( rank, socialPrefGraph );
+		SCTheory().condorcet_paradox( rank, *socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -138,19 +139,18 @@ template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_p
 
 		std::cout << "\n\n" << std::flush;
 
-
-		return socialPrefGraph;
+		return *socialPrefGraph;
 }
 
 template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_project( std::vector<Agent> listofagents ){
 
 		std::vector<PairWiseRank> rank = Helper_functions::rank_generation( listofagents );
 
-		std::vector<SocialPrefNode> socialPrefGraph{ };
+		socialPrefGraph = new std::vector<SocialPrefNode>( listofagents[ 0 ].get_preferences( ).size( ) );
 
-		Helper_functions::make_graph( listofagents, rank, socialPrefGraph );
+		Helper_functions::make_graph( listofagents, rank, *socialPrefGraph );
 
-		SCTheory().condorcet_paradox( rank, socialPrefGraph );
+		SCTheory().condorcet_paradox( rank, *socialPrefGraph );
 
 		this -> listofagents = listofagents;
 
@@ -182,23 +182,20 @@ template<typename Prefs> std::vector<SocialPrefNode> Program_Logic<Prefs>::run_p
 
 		std::cout << "\n\n" << std::flush;
 
-		return socialPrefGraph;
+		return *socialPrefGraph;
 }
 
 template<typename Prefs> std::vector<SocialPrefNode*> Program_Logic<Prefs>::spnGetFromList( std::vector<SocialPrefNode*> preferences){
 
 	std::vector<SocialPrefNode*> listAux{ };
 
-	std::cout << ">prefSizee = " << preferences.size( ) << "\n" << std::flush ;
-
 	for( SocialPrefNode* node : preferences ){
-
-		std::cout << ">node = " << node -> get_id( ) << "\n" << std::flush ;
 
 		unsigned int aux = 0;
 
 		for( std::vector<int>::size_type j = 0; j < socialPrefGraph -> size( ) &&
 			 node -> get_id( ) != ( *socialPrefGraph)[ j ].get_id( ); ++j ){
+
 
 			aux++;
 		}

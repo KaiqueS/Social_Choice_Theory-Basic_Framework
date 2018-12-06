@@ -16,20 +16,12 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 
 	std::vector<Options> setofalts( colsz );
 
-	int aux{ 30 };
+	int aux=0;
 
 	// Sets alternatives' id's
 	for( std::vector<int>::size_type i = 0; i < setofalts.size( ); ++i ){
 
-        while( !isalnum( aux ) )
-
-			++aux;
-
-        char id = static_cast<char>( aux );
-
-        std::string subs = std::to_string( id );
-
-        setofalts[ i ].set_opt( std::to_string( id ) );
+		setofalts[ i ].set_opt( "opt " + std::to_string( aux ) );
 
 		++aux;
 	}

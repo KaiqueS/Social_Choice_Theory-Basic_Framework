@@ -35,7 +35,9 @@ MainWindow::~MainWindow( ){
 void MainWindow::on_set_dimension_button_clicked( ){
 
 	delete logic;
-
+	if( window!= nullptr ){
+		window->close();
+	}
 	logic = new Program_Logic<char>();
 
 	int row = ui -> row_size_input -> value( );
@@ -103,6 +105,9 @@ void MainWindow::on_actionSave_triggered( ){
 
 void MainWindow::on_actionLoad_triggered( ){
 
+	if( window!= nullptr ){
+		window->close();
+	}
 	delete logic;
 
 	logic = new Program_Logic<char>( );
@@ -143,14 +148,13 @@ void MainWindow::on_actionLoad_triggered( ){
 		in >> sizePref;
 
 		for( int i = 0; i < sizePref; i++ ){
-
-			int alt{ };
+			QString alt{ };
 			int val{ };
 
 			in >> alt;
 			in >> val;
 
-			Options opt( std::to_string( alt ), val );
+			Options opt( alt.toStdString() , val );
 
 			preferences.push_back( opt );
 		}
@@ -181,6 +185,9 @@ void MainWindow::on_actionLoad_triggered( ){
 
 void MainWindow::on_actionimport_triggered( ){
 
+	if( window!= nullptr ){
+		window->close();
+	}
 	delete logic;
 
 	logic = new Program_Logic<char>( );
@@ -243,15 +250,16 @@ void MainWindow::on_actionimport_triggered( ){
 
 		for( int j = 1; j < listStringOpts.size( ) ; j++ ){
 
-			char id = '_';
+			std::string id = "_";
 
 			if( j < listStringHeader.size( ) )
 
-				id = listStringHeader.at( j ).toStdString( )[ 0 ];
-
+				id = listStringHeader.at( j ).toStdString( );
+			if(j == listStringOpts.size( )-1)
+				id.resize(id.size()-1);
 			int val = listStringOpts.at( j ).toInt( );
 
-			Options opt( std::to_string( id ), val );
+			Options opt( id, val );
 
 			preferences.push_back( opt );
 		}
@@ -338,9 +346,9 @@ void MainWindow::on_actionExport_triggered( ){
 
 void MainWindow::on_actionAgents_triggered( ){
 
-	if( window != nullptr )
-
+	if( window!= nullptr ){
 		delete window;
+	}
 
 	window = new QWidget( );
 
@@ -354,30 +362,34 @@ void MainWindow::on_actionAgents_triggered( ){
 	window -> setLayout( layout );
 
 	// Check for DELETE
-	tree = new TreeWidget( window, 2 );
+
+	QStringList columnNames;
+
+	columnNames << "Name" << "Value";
+
+	tree = new TreeWidget( window, columnNames );
 
 	layout -> addWidget( tree -> getTree( ) );
 
 	for( Agent a: logic -> get_list_of_agents( ) ){
 
-		QTreeWidgetItem* agentItem = tree -> addTreeRoot( QString::fromStdString( a.get_id( ) ) , "Agent" );
+		QTreeWidgetItem* agentItem = tree -> addTreeRoot( QString::fromStdString( a.get_id( ) ) , "" );
 
 		for( Options opt : a.get_sorted_preferences( ) ){
 
 			std::string alternId{ opt.get_opt( ) };
 
-			QTreeWidgetItem* optionItem = tree -> addTreeChild( agentItem , QString::fromStdString( alternId ) , "Alternative" );
+			tree -> addTreeChild( agentItem , QString::fromStdString( alternId ) , QString::number( opt.get_value( ) ) );
 
-			tree -> addTreeChild( optionItem , QString::number( opt.get_value( ) ) , "Value" );
 		}
 	}
 }
 
 void MainWindow::on_actionSocial_Preferencies_triggered( ){
 
-	if( window!= nullptr )
-
+	if( window!= nullptr ){
 		delete window;
+	}
 
 	window = new QWidget( );
 
@@ -392,42 +404,45 @@ void MainWindow::on_actionSocial_Preferencies_triggered( ){
 
 	window -> setLayout( layout );
 
-	tree = new TreeWidget( window, 2 );
+	QStringList columnNames;
+
+	columnNames << "Name" << "Value";
+
+	tree = new TreeWidget( window, columnNames );
 
 	layout -> addWidget( tree -> getTree( ) );
 
 	if( logic -> getSocialPrefGraph( ) )
-
+	{
+		QBrush brush_green(Qt::green);
+		QBrush brush_blue(Qt::blue);
+		QBrush brush_red(Qt::red);
 		for( SocialPrefNode opt: *( logic -> getSocialPrefGraph( ) ) ){
 
-			std::string alternId{ opt.get_id( ) };
+			std::string alternId = opt.get_id();
 
-			QTreeWidgetItem* optItem = tree -> addTreeRoot( QString::fromStdString( alternId ) , "Alternative" );
-			QTreeWidgetItem* prefItem = tree -> addTreeChild( optItem , "Preferred" , "Relation" );
+			QTreeWidgetItem* optItem = tree -> addTreeRoot( QString::fromStdString( alternId ) , "" );
 
 			for( SocialPrefNode* preferred : logic -> spnGetFromList( opt.get_preferences( ) ) ){
 
 				std::string alternIdAux{ preferred->get_id() };
 
-				tree -> addTreeChild( prefItem , QString::fromStdString( alternIdAux ) , "Alternative" );
+				tree -> addTreeChild( optItem , QString::fromStdString(preferred->get_id()) , "Preferred" )->setBackground(0, brush_green);
 			}
-
-			QTreeWidgetItem* worseItem = tree -> addTreeChild( optItem , "Worse" , "Relation" );
 
 			for( SocialPrefNode* worse : logic -> spnGetFromList( opt.get_worse( ) ) ){
 
 				std::string alternIdAux{ worse->get_id( ) };
 
-				tree -> addTreeChild( worseItem , QString::fromStdString( alternIdAux ) , "Alternative" );
+				tree -> addTreeChild( optItem , QString::fromStdString(worse->get_id()) , "Worse" )->setBackground(0, brush_red);
 			}
-
-			QTreeWidgetItem* equalItem = tree -> addTreeChild( optItem , "Equal" , "Relation" );
 
 			for( SocialPrefNode* equal : logic -> spnGetFromList( opt.get_indiff( ) ) ){
 
 				std::string alternIdAux{ equal -> get_id( ) };
 
-				tree -> addTreeChild( equalItem , QString::fromStdString( alternIdAux ) , "Alternative" );
+				tree -> addTreeChild( optItem , QString::fromStdString(equal->get_id()) , "Equal" )->setBackground(0, brush_blue);
 			}
 		}
+	}
 }

@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow{
 
 public:
 
-    Program_Logic<char>* logic{ };
+	Program_Logic<char>* logic{ };
 	explicit MainWindow( QWidget* parent = nullptr );
 
 	~MainWindow( );
