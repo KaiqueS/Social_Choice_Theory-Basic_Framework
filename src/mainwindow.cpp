@@ -108,9 +108,6 @@ void MainWindow::on_actionLoad_triggered( ){
 	if( window!= nullptr ){
 		window->close();
 	}
-	delete logic;
-
-	logic = new Program_Logic<char>( );
 
 	QString filename = QFileDialog::getOpenFileName( this, tr( "Open Address Book" ), " ", tr( "Address Book( *.sctb );; All Files( * )" ) );
 
@@ -132,8 +129,15 @@ void MainWindow::on_actionLoad_triggered( ){
 	int sizeList{ };
 
 	in >> sizeList;
+	if( sizeList == 0 ){
+		file.close( );
+		return;
+	}
+	delete logic;
 
+	logic = new Program_Logic<char>( );
 	int prefSize = 0;
+
 
 	for( int i = 0; i < sizeList; i++ ){
 
@@ -188,9 +192,7 @@ void MainWindow::on_actionimport_triggered( ){
 	if( window!= nullptr ){
 		window->close();
 	}
-	delete logic;
 
-	logic = new Program_Logic<char>( );
 
 	QString filename = QFileDialog::getOpenFileName( this, tr( "Open Address Book" ), " ", tr( "Address Book( *.csv );; All Files( * )" ) );
 
@@ -230,62 +232,67 @@ void MainWindow::on_actionimport_triggered( ){
 
 		entrada += QString( buffer );
 	}
+	if(entrada.size()>0){
 
-	QStringList listStringNode = entrada.split( QString( "\n" ) );
-	QStringList listStringHeader = listStringNode.at( 0 ).split( QString( ";" ) );
+		delete logic;
 
-	std::vector<Options> preferences{ };
+		logic = new Program_Logic<char>( );
 
-	int prefSize{ 0 };
-
-	for( int i = 1; i < listStringNode.size( ) - 1; i++ ){
-
-		QString stringNode = listStringNode.at( i );
-
-		QStringList listStringOpts = stringNode.split( QString( ";" ) );
-
-		QString id = listStringOpts.at( 0 );
+		QStringList listStringNode = entrada.split( QString( "\n" ) );
+		QStringList listStringHeader = listStringNode.at( 0 ).split( QString( ";" ) );
 
 		std::vector<Options> preferences{ };
 
-		for( int j = 1; j < listStringOpts.size( ) ; j++ ){
+		int prefSize{ 0 };
 
-			std::string id = "_";
+		for( int i = 1; i < listStringNode.size( ) - 1; i++ ){
 
-			if( j < listStringHeader.size( ) )
+			QString stringNode = listStringNode.at( i );
 
-				id = listStringHeader.at( j ).toStdString( );
-			if(j == listStringOpts.size( )-1)
-				id.resize(id.size()-1);
-			int val = listStringOpts.at( j ).toInt( );
+			QStringList listStringOpts = stringNode.split( QString( ";" ) );
 
-			Options opt( id, val );
+			QString id = listStringOpts.at( 0 );
 
-			preferences.push_back( opt );
+			std::vector<Options> preferences{ };
+
+			for( int j = 1; j < listStringOpts.size( ) ; j++ ){
+
+				std::string id = "_";
+
+				if( j < listStringHeader.size( ) )
+
+					id = listStringHeader.at( j ).toStdString( );
+				if(j == listStringOpts.size( )-1)
+					id.resize(id.size()-1);
+				int val = listStringOpts.at( j ).toInt( );
+
+				Options opt( id, val );
+
+				preferences.push_back( opt );
+			}
+
+			if( prefSize < static_cast<int>( preferences.size( ) ) )
+
+				prefSize = static_cast<int>( preferences.size( ) );
+
+			listofagents.push_back( Agent( preferences, id.toStdString( ) ) );
 		}
 
-		if( prefSize < static_cast<int>( preferences.size( ) ) )
+		std::vector<SocialPrefNode> graph = logic -> run_project( listofagents );
 
-			prefSize = static_cast<int>( preferences.size( ) );
+		logic -> setListofagents( listofagents );
 
-		listofagents.push_back( Agent( preferences, id.toStdString( ) ) );
+		ui -> row_size_input -> setValue( static_cast<int>( listofagents.size( ) ) );
+		ui -> column_size_input -> setValue( prefSize );
+
+
+		scene -> clear( );
+
+		logic -> show_graph( graph, scene );
+
+		logic -> rank( );
 	}
-
-	std::vector<SocialPrefNode> graph = logic -> run_project( listofagents );
-
-	logic -> setListofagents( listofagents );
-
-	ui -> row_size_input -> setValue( static_cast<int>( listofagents.size( ) ) );
-	ui -> column_size_input -> setValue( prefSize );
-
 	file.close( );
-
-	scene -> clear( );
-
-	logic -> show_graph( graph, scene );
-
-	logic -> rank( );
-
 }
 
 void MainWindow::on_actionExport_triggered( ){
@@ -315,32 +322,32 @@ void MainWindow::on_actionExport_triggered( ){
 	std::vector<Agent> listAgent = logic -> get_list_of_agents( );
 
 	saida += "idAgents\\idOptions";
+	if(listAgent.size()>0){
+		std::vector<Options> preferencesaux{ };
 
-	std::vector<Options> preferencesaux{ };
-
-	for( Options opt : listAgent.at( 0 ).get_preferences( ) ){
-
-		saida += ";";
-		saida += opt.get_opt( );
-	}
-
-	for( Agent agent : listAgent ){
-
-		saida += "\n";
-
-		std::string str = agent.get_id( );
-
-		saida += str;
-
-		for( Options opt : agent.get_preferences( ) ){
+		for( Options opt : listAgent.at( 0 ).get_preferences( ) ){
 
 			saida += ";";
-			saida += QString::number( opt.get_value( ) ).toStdString( );
+			saida += opt.get_opt( );
 		}
+
+		for( Agent agent : listAgent ){
+
+			saida += "\n";
+
+			std::string str = agent.get_id( );
+
+			saida += str;
+
+			for( Options opt : agent.get_preferences( ) ){
+
+				saida += ";";
+				saida += QString::number( opt.get_value( ) ).toStdString( );
+			}
+		}
+
+		myfile << saida << "\n";
 	}
-
-	myfile << saida << "\n";
-
 	myfile.close( );
 }
 
