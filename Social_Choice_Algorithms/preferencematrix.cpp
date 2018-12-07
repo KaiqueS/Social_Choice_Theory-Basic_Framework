@@ -51,6 +51,7 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 
 	int aux{ 30 };
 
+    // Maps int into chars, store in a stack, assign it to a string
 	// Sets alternatives' id's
 	for( std::vector<int>::size_type i = 0; i < setofalts.size( ); ++i ){
 

@@ -11,7 +11,7 @@ NodeOpt::NodeOpt( ){
 }
 NodeOpt::NodeOpt( char option, int link ){
 
-    opt = option;
+    id = option;
 
     lowlink = link;
 }

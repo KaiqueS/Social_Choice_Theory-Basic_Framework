@@ -35,6 +35,7 @@ public:
     std::vector<int>::size_type get_rowsz( ){ return rowsize; }
     std::vector<int>::size_type get_columnsz( ){ return columnsize; }
 
+    // Return a reference instead?
 	std::vector<std::vector<Options>> get_matrix( ){ return matrix; }
 
 	// Operators

@@ -31,8 +31,6 @@ public:
     // Getters
     std::vector<Options> get_preferences( ){ return preferences; }
 
-    std::vector<Options> get_sorted_preferences( );
-
     std::string get_id( ){ return id; }
 
     // Operators
@@ -41,6 +39,9 @@ public:
     Options& operator[ ]( const std::vector<int>::size_type& index ){ return preferences[ index ]; }
 
     // Helpers
+
+    void sort_preferences( );
+
     void print_rank( );
 
 private:

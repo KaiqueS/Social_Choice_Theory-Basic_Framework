@@ -85,10 +85,8 @@ bool pareto_principle( std::vector<SocialPrefNode>& graph ,std::vector<PairWiseR
 }
 
 // Checks if , for any x, y, and z, the relation between x and y is modified by
-// the relation between x and z in the social ranking
+// the relation between x and z or y and z in the social ranking
 bool irrelevant_alternatives( Preferencematrix& mtx, std::vector<Agent>& people, std::vector<SocialPrefNode>& graph ){
-
-    bool validity{ true };
 
     // generate a second profile R' of preferences
     Preferencematrix primeMtx( mtx.get_rowsz( ), mtx.get_columnsz( ) );
@@ -97,28 +95,131 @@ bool irrelevant_alternatives( Preferencematrix& mtx, std::vector<Agent>& people,
 
     initialize_agents( population, primeMtx );
 
+    // To optmize: search for the way to falsify the axiom -> check for the case where
+    // the condition is true, but the consequence is false
+
+    // Sort agents preferences according to value, will make things here easier
+    for( std::vector<int>::size_type i = 0; i < people.size( ) && population.size( ); ++i ){
+
+        people[ i ].sort_preferences( );
+        population[ i ].sort_preferences( );
+    }
+
     // if it is the case that, for any two alternatives x and y, and for every person i
     // xRiy iff xR'iy
-        // then, generate a social order for each profile and check if x and y are ranked
-        // in the same way with respect to each other
-            // make_social_order( mtx )
-            // make_social_order( primemtx )
-            // check if both orderings are the same
+    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
 
+        for( std::vector<int>::size_type j = 0; j < population.size( ); ++j ){
 
-    return validity;
+            if( people[ i ].get_preferences( ) != population[ j ].get_preferences( ) ){
+
+                return true;
+            }
+
+            else
+
+                continue;
+        }
+    }
+
+    std::vector<PairWiseRank> rank{ rank_generation( people ) };
+    std::vector<PairWiseRank> primerank{ rank_generation( population ) };
+
+    // then, generate a social order for each profile and check if x and y are ranked equally in both profiles
+    if( make_social_order( people, rank ) == make_social_order( population, rank ) )
+
+        // If that is the case, the axiom is not being violated, return true
+        return true;
+
+    // Else, the axiom is being violated, return false
+    else
+
+        return false;
 }
 
 // Searches for a dictator
-bool non_dictatorship( std::vector<Agent>& people, std::vector<SocialPrefNode>& graph ){
+// Find an agent that, whenever ONLY HER prefers x to y, the social order becomes xPy
+// If is that the case that another person also prefers x to y, then the clause is not
+// valid
+bool non_dictatorship( std::vector<Agent>& people, std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
-    // if there is a dictator
-        // return false, and the dictator
+    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i )
 
-    // else
-        // return true, the social ordering is ok
+        people[ i ].sort_preferences( );
 
-    return true;
+    //const std::vector<int>::size_type numofalts = people[ static_cast<std::vector<int>::size_type>( rand( ) ) % people.size( ) ].get_preferences( ).size( );
+
+    std::vector<Options> dictatedopts{ };
+
+    std::vector<Agent> dictators{ };
+
+    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
+
+        // if only one person prefers x to y
+        if( rank[ i ].get_xval( ) == 1 ){
+
+            dictatedopts.push_back( rank[ i ].get_optx( ) );
+        }
+
+        else if( rank[ i ].get_yval( ) == 1 ){
+
+            dictatedopts.push_back( rank[ i ].get_optx( ) );
+        }
+    }
+
+    if( !dictatedopts.empty( ) ){
+
+        for( Options opt : dictatedopts ){
+
+            for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
+
+                for( std::vector<int>::size_type j = 0; j < people[ i ].get_preferences( ).size( ); ++j ){
+
+                    for( std::vector<int>::size_type k = 0; k < people[ i ].get_preferences( ).size( ) && k != j; ++k ){
+
+                        if( opt.get_opt( ) == people[ i ][ j ].get_opt( ) ){
+
+                            if( people[ i ][ j ].get_value( ) > people[ i ][ k ].get_value( ) ){
+
+                                dictators.push_back( people[ i ] );
+                            }
+
+                            else if( people[ i ][ j ].get_value( ) < people[ i ][ k ].get_value( )  ){
+
+                                dictators.push_back( people[ i ] );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if( dictators.size( ) > 1 ){
+
+        std::cout << "There is more than one dictator. Axiom not violated, return true.\n";
+
+        return true;
+    }
+
+    else if( dictators.size( ) == 1 ){
+
+        std::cout << "There is a dictator: " << dictators.begin( ).base( ) -> get_id( ) << ". Axiom violated, return false.\n";
+
+        return false;
+    }
+
+    else if( dictators.empty( ) ){
+
+        std::cout << "There are not dictators. Axiom not violated, return true.\n";
+
+        return true;
+    }
+        // If it is the case that, for one agent i, only i have xPiy
+            // Check the social order
+                // If it is the case that xPy in the social order
+                    // Return false and the agent i is a dictator
+                // Else, return true
 }
 
 void condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
@@ -135,17 +236,30 @@ void condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefN
     std::cout << winner.get_opt( ) << " is the winner.\n";
 }
 
-void arrow_impossibility( std::vector<Agent>& listofagents, Preferencematrix& mtx ,std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
+// If not true: analyze the profiles of preferences, both individual and social, then search for some kind of structure,
+// i.e., single peakedness degree, individual impact on social profile, etc.
+// If true, search for single peakedness or known structures/feats that causes the truthness
+bool arrow_impossibility( std::vector<Agent>& listofagents, Preferencematrix& mtx ,std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
     // Checks if all the below conditions are satisfied simultaneously
 		// Universal/Unrestricted Domain - granted by the definition of PreferenceMatrix
 
-        // Pareto Principle
-        pareto_principle( graph, rank );
+    // If it is the case that every conditions is satisfied, then, check the structure of the preferences for single-
+    // peakedness or anything that might have made it possible for the result to hold
 
-        // Independence of Irrelevant Alternatives
-        irrelevant_alternatives( mtx, listofagents, graph );
+    // Else, check which axiom was violated, along with the alternative or individual that made the violation possible
 
-        // Non-dictatorship
-        non_dictatorship( listofagents, graph );
+    if( pareto_principle( graph, rank ) && irrelevant_alternatives( mtx, listofagents, graph ) && non_dictatorship( listofagents, rank, graph ) ){
+
+        std::cout << "Arrow fully satisfied, no axiom violated. YASSSSS!.\n";
+
+        return true;
+    }
+
+    else{
+
+        std::cout << "SHITE.\n";
+
+        return false;
+    }
 }

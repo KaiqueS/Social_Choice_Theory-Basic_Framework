@@ -10,6 +10,8 @@
 // TODO: template function to deal with lambdas -> Check for type, then use an appropriate lambda
 // MODIFY: PreferenceMatrix: remove options, use string instead, no value for each alternative
 //         Agent: agents will set their own values, instead of taking from the matrix
+// TODO: create a test for irrelevant alts. Case -> two identical profiles
+// MODIFY: Remember to change Options operator==. Check only for id, because of Irrelevant Alts
 
 int main( ){
 
@@ -17,7 +19,7 @@ int main( ){
 
     Preferencematrix newmtx{ };
 
-    newmtx.set_matrix( 5, 5 );
+    newmtx.set_matrix( 4, 4 );
 
     std::vector<Agent> listofagents( newmtx.get_matrix( ).size( ) );
 
