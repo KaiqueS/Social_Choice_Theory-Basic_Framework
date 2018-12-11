@@ -51,9 +51,11 @@ Implement Indifference relation: done.
 
 Implement Condorcert Paradox - almost done, needs cycle-checking algorithm 
 
-Implement Arrow's Impossibility Theorem - working on it
+Implement Arrow's Impossibility Theorem - nearly done, needs revision.
 
 Implement GUI - almost there
+
+Release ver 1.0 - after GUI and Arrow
 
 Implement Gibbard-Sattertwaite Theorem - after GUI.
 
