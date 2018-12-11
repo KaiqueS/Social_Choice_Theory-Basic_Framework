@@ -21,7 +21,7 @@ public:
     Agent( std::vector<Options> list, std::string tag );
     Agent( const Agent& copy );
 
-    ~Agent( ){ std::cout << "Agent " << id << " destructed.\n\n"; }
+    ~Agent( ){ /*std::cout << "Agent " << id << " destructed.\n\n";*/ }
 
     // Setters
     void set_preferences( Preferencematrix& prefmatrix );

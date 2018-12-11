@@ -23,7 +23,7 @@ public:
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<std::vector<Options>> mtx );
     Preferencematrix( const Preferencematrix& copymatrix );
 
-	~Preferencematrix( ){ std::cout << "Matrix destructed.\n\n"; }
+    ~Preferencematrix( ){ /*std::cout << "Matrix destructed.\n\n";*/ }
 
 	// Setters
     void set_rowsz( std::vector<int>::size_type row );

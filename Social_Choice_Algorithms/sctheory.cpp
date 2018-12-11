@@ -220,11 +220,16 @@ bool non_dictatorship( std::vector<Agent>& people, std::vector<PairWiseRank>& ra
                 // If it is the case that xPy in the social order
                     // Return false and the agent i is a dictator
                 // Else, return true
+    else
+
+        return true;
 }
 
 void condorcet_paradox( std::vector<PairWiseRank>& rank, std::vector<SocialPrefNode>& graph ){
 
     Options winner = majority_rule( graph );
+
+
 
     // Check for cycles
     // std::vector<Cycle<Prefs>> paths = check_cycle( graph );
