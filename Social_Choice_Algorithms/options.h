@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 
+// TODO: create a < operator
+
 class Options{
 
 public:

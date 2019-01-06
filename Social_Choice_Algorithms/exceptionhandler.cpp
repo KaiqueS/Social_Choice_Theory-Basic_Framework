@@ -1,4 +1,4 @@
-#include "exceptionhandler.h"
+#include "exceptionhandler.hpp"
 
 ExceptionHandler::ExceptionHandler()
 {

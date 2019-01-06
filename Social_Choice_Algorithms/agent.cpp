@@ -1,4 +1,4 @@
-#include "agent.h"
+#include "agent.hpp"
 
 /* Constructors */
 
@@ -43,30 +43,6 @@ void Agent::set_id( std::string tag ){ id = tag; }
 
 /* Getters */
 
-// Checks if two different preferences have the same value. If they do, the agent is
-// indifferent between then.
-std::vector<Options> Agent::get_sorted_preferences( ){
-
-    //Returns a vector of options sorted by the value
-    std::vector<Options> indiff{ };
-
-    for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ){
-
-        std::vector<Options>::iterator aux{ indiff.begin( ) };
-
-        int iValue = preferences[ i ].get_value( );
-
-        for( std::vector<int>::size_type j = 0; j < indiff.size( ) && iValue <= indiff[ j ].get_value( ); ++j ){
-
-            aux++;
-        }
-
-        indiff.insert( aux, preferences[ i ] );
-    }
-
-    return indiff;
-}
-
 /* Operators */
 
 // Overloaded assignment operator.
@@ -104,29 +80,15 @@ bool operator!=( Agent& one, Agent& two ){
 
 /* Helpers */
 
-// Prints options that have the same value
-void Agent::print_rank( ){
+// Sorts an agent's preferences in decreasing order, according to an option's value
+void Agent::sort_preferences( ){
 
-    //Prints the rank of preferences
-    std::cout << "Agent " << id << " Rank alternatives \t";
+    auto order = [ ]( Options& left, Options& right ){
 
-    int aux = get_sorted_preferences( )[ 0 ].get_value( );
+        return left.get_value( ) > right.get_value( );
+    };
 
-    std::cout << "[ ";
-
-    for( std::vector<int>::size_type i = 0; i < get_sorted_preferences( ).size( ); ++i ){
-
-        if( get_sorted_preferences( )[ i ].get_value( ) != aux){
-
-            std::cout << "] > [ ";
-
-            aux = get_sorted_preferences( )[ i ].get_value( );
-        }
-
-        std::cout << get_sorted_preferences( )[ i ].get_opt( ) << " ";
-    }
-
-    std::cout << "] ";
+    std::sort( preferences.begin( ), preferences.end( ), order );
 }
 
 std::ostream& operator<<( std::ostream& os, Agent& agt ){
@@ -138,4 +100,15 @@ std::ostream& operator<<( std::ostream& os, Agent& agt ){
         os << "( " << opt << " )";
 
     return os;
+}
+
+void initialize_agents( std::vector<Agent>& listofagents, Preferencematrix newmtx ){
+
+    std::vector<int>::size_type listsize = listofagents.size( );
+
+    for( std::vector<int>::size_type i = 0; i < listsize; ++i ){
+
+        listofagents[ i ].set_id( std::to_string( i ) );
+        listofagents[ i ].set_preferences( newmtx );
+    }
 }

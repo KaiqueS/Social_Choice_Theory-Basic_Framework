@@ -47,7 +47,7 @@ template<typename Prefs> std::ostream& operator<<( std::ostream& os, Cycle& path
 
     os << path.get_id( ) << ": ";
 
-    for( int i = 0; i < path.get_path( ).size( ); ++i )
+    for( std::vector<int>::size_type i = 0; i < path.get_path( ).size( ); ++i )
 
         os << path.get_path( )[ i ] << " ";
 

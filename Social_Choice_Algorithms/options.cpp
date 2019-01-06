@@ -1,4 +1,4 @@
-#include "options.h"
+#include "options.hpp"
 
 /* Constructors & Destructor */
 
@@ -7,13 +7,17 @@ Options::Options( ){
 
     opt = "NULL";
 
+    status = false;
+
     value = -1;
 }
 
 // Parameterized constructor. Initializes private properties based on the arguments passed by
-Options::Options( std::string alts, int val ){
+Options::Options( std::string alts, bool stats, int val ){
 
 	opt = alts;
+
+    status = stats;
 
 	value = val;
 }
@@ -23,6 +27,8 @@ Options::Options( const Options& copy ){
 
 	opt = copy.opt;
 
+    status = copy.status;
+
 	value = copy.value;
 }
 
@@ -30,6 +36,8 @@ Options::Options( const Options& copy ){
 
 // Sets alternatives according to the argument passed through
 void Options::set_opt( std::string newalt ){ opt = newalt; }
+
+void Options::set_status( bool value  ){ status = value; }
 
 // Sets values according to value passed as parameter
 void Options::set_value( int val ){ value = val; }
@@ -40,6 +48,8 @@ void Options::set_value( int val ){ value = val; }
 Options& Options::operator=( const Options& copy ){
 
 	opt = copy.opt;
+
+    status = copy.status;
 
 	value = copy.value;
 
@@ -66,6 +76,12 @@ bool Options::operator==( const Options& rhs ) const{
 		return false;
 }
 
+// Check for correctness later
+bool Options::operator<( const Options& rhs ){
+
+    return value < rhs.value;
+}
+
 // Prints option
 std::ostream& operator<<( std::ostream& os, Options& opt ){
 
@@ -73,3 +89,4 @@ std::ostream& operator<<( std::ostream& os, Options& opt ){
 
     return os;
 }
+
