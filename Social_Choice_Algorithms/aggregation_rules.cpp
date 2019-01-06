@@ -1,87 +1,58 @@
-#include "pairwiserank.h"
-#include "socialprefnode.h"
-#include <algorithm>
+#include "aggregation_rules.hpp"
 
-// Majority rule using Social Choice Graph
-Options majority_rule( std::vector<SocialPrefNode> graph ){
+// ATTENTION: every procedure should have the same return type
 
-    // Lambda. Compares preferences size, returns the greatest
-    auto order = [ ]( SocialPrefNode& left, SocialPrefNode& right ){
+// Return: a vector composed only by the elements that satisfies the conditions
+// OR a vector with every element flagged true if they satisfy, or false if
+// they do not? - refer to BIG QUESTION
 
-        return left.get_preferences( ).size( ) > right.get_preferences( ).size( );
-    };
+/// Majority Rules
 
-    // Sort according to preferences' size. Decreasing order
-    std::sort( graph.begin( ), graph.end( ), order );
 
-    // If the greatest element has size greater than the total number of options divided by two
-    if( graph.begin( ).base( ) -> get_preferences( ).size( ) > ( graph.size( ) / 2 ) ){
+std::vector<Options> qualified_majority_rule( Graph& graph ){
 
-        Options winner( graph.begin( ).base( ) -> get_id( ),
-                        static_cast<int>( graph.begin( ).base( ) -> get_preferences().size( ) ) );
+    std::vector<Options> winnerset{ };
 
-        // Return it as the winner
-        return winner;
+    for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+
+        if( graph[ i ].get_preferences( ).size( ) >= ( graph.size( ) / 2 ) )
+
+            winnerset.push_back( Options( graph[ i ].get_id( ), true, static_cast<int>( graph[ i ].get_preferences( ).size( ) ) ) );
     }
 
-    // Else, if its size is not greater than, return NULL: no option wins
-    else
+    auto order = [ ]( Options& left, Options& right ){
 
-        return Options( "NULL", -1 );
+        return left.get_value( ) > right.get_value( );
+    };
+
+    std::sort( winnerset.begin( ), winnerset.end( ), order );
+
+    return winnerset;
+}
+
+std::vector<Options> qualified_majority_rule( Rank& rank ){
+
+
 }
 
 // Majority rule using Pairwise Rank
-Options majority_rule( std::vector<PairWiseRank> rank ){
+std::vector<Options> simple_majority_rule( Rank rank ){
 
-    // PROBLEM HERE: values not being modified
-    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
 
-        rank[ i ].get_optx( ).set_value( 0 );
-        rank[ i ].get_opty( ).set_value( 0 );
-    }
-
-    // The same here
-    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
-
-        if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) )
-
-            ++rank[ i ].get_optx( );
-
-        else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) )
-
-            ++rank[ i ].get_opty( );
-    }
-
-    // This is just bullshit
-//    auto comparison = [ ]( PairWiseRank& left, PairWiseRank right ){
-
-//        if( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) > ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) )
-
-//            return left;
-
-//        else if( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) < ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) )
-
-//            return right;
-//    };
-
-    // This might work when the bullshit above start working properly
-    std::sort( rank.begin( ), rank.end( ) );
-
-    // This WOULD BE fine if the aforementioned shit actually worked
-    if( rank.begin( ).base( ) -> get_optx( ).get_value( ) > rank.begin( ).base( ) -> get_opty( ).get_value( ) )
-
-        return rank.begin( ).base( ) -> get_optx( );
-
-    else if( rank.begin( ).base( ) -> get_optx( ).get_value( ) < rank.begin( ).base( ) -> get_opty( ).get_value( ) )
-
-        return rank.begin( ).base( ) -> get_opty( );
-
-    else
-
-        return Options( "NULL", -1 );
 }
 
-void borda_count( std::vector<PairWiseRank>& rank ){
 
+/// Counting Rules
+std::vector<Options> borda_count( Rank rank ){
 
+    std::vector<Options> winnerset{ };
+
+    return winnerset;
+}
+
+std::vector<Options> borda_count( Graph& graph ){
+
+    std::vector<Options> winnerset{ };
+
+    return winnerset;
 }

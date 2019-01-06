@@ -1,5 +1,8 @@
 #include <iostream>
+#include "sct_algos.hpp"
 #include "sctheory.cpp"
+#include "sctgraph.hpp"
+#include "sctrank.hpp"
 
 // TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
 //       for emptiness
@@ -12,6 +15,13 @@
 //         Agent: agents will set their own values, instead of taking from the matrix
 // TODO: create a test for irrelevant alts. Case -> two identical profiles
 // MODIFY: Remember to change Options operator==. Check only for id, because of Irrelevant Alts
+// TODO: Revise Non-Dic
+// TRY: creating a SCT namespace to hold sctheory.cpp functions and aggregation_rules.cpp functions
+//      see if this solves the problem of multiple definitions when integrating the GUI to the proj
+// CONSIDER: .cpp files for graph algorithms and rank algorithms
+// BIG QUESTION: what should SCF return? Alternatives or profiles? If the latter, are they composed
+// by only the alternatives that satisfies the aggregation procedure, or are they composed by every
+// alternative, sorted according to wheter they satisfy or not the procedure?
 
 int main( ){
 
@@ -19,7 +29,7 @@ int main( ){
 
     Preferencematrix newmtx{ };
 
-    newmtx.set_matrix( 4, 4 );
+    newmtx.set_matrix( 10, 10 );
 
     std::vector<Agent> listofagents( newmtx.get_matrix( ).size( ) );
 
@@ -33,9 +43,11 @@ int main( ){
 
     std::cout << "\n";
 
-    std::vector<PairWiseRank> rank = rank_generation( listofagents );
+    Rank rank{ };
 
-    for( PairWiseRank item : rank ){
+    rank.generate_ranking( listofagents );
+
+    for( PairWiseRank item : rank.get_rank( ) ){
 
         std::cout << item << "\n";
     }
@@ -44,33 +56,40 @@ int main( ){
 
     std::cout << "\n";
 
-	std::vector<SocialPrefNode> graph{ };
+    Graph graph{ };
 
-	initialize_graph( listofagents, graph );
+    graph.initialize_graph( newmtx );
 
-	make_graph( listofagents, rank, graph );
+    graph.make_graph( newmtx, rank );
+
+    //graph.make_graph( newmtx, rank.get_rank( ) );
 
     //std::cout << graph[ 0 ][ SocialPrefNode::worsethan_index{ 0 } ] -> get_id( ) << '\n';
 
     print_graph( graph );
 
-    majority_rule( graph );
+
+
+    //qualified_majority_rule( graph );
 
     // Problem here: value > number of opts
-    make_social_order( listofagents, rank );
-
-    // TRETA
-    /*std::vector<SocialPrefNode> connected{ tarjan( graph ) };
-
-    for( SocialPrefNode node : connected )
-
-        std::cout << node.get_id( ) << "\t"*/;
+    //make_social_order( listofagents, rank );
 
     std::cout << "\n";
 
-    condorcet_paradox( rank, graph );
+    //condorcet_paradox( rank, graph );
 
     std::cout << "\n";
 
-    arrow_impossibility( listofagents, newmtx, rank, graph );
+    // Allow for the user to select which procedure does he wants to use
+
+    /* std::cin >> procedure
+     * pass procedure as argument to arrow function
+    */
+
+    std::vector<Options> result = qualified_majority_rule( graph );
+
+    arrow_impossibility( listofagents, newmtx, rank, graph, result );
+
+    std::cout << "\n\n";
 }

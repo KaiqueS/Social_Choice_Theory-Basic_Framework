@@ -1,4 +1,4 @@
-#include "preferencematrix.h"
+#include "preferencematrix.hpp"
 
 /* Constructors */
 
@@ -105,13 +105,17 @@ bool Preferencematrix::operator==( const Preferencematrix& rhs ) const{
 
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
 
+    std::vector<int>::size_type rowsz = matrix.get_matrix( ).size( );
+    std::vector<int>::size_type colsz = matrix[ static_cast<std::vector<int>::size_type>( rand( ) ) % rowsz ].size( );
+
+
     os << "Preference Matrix\n\n" << "\t\t\tOptions/Alternatives Columns\n\n";
 
-    for( std::vector<int>::size_type i = 0; i < matrix.get_matrix( ).size( ); ++i ){
+    for( std::vector<int>::size_type i = 0; i < rowsz; ++i ){
 
         os << "Row vector id number: " << i << "| ";
 
-        for( std::vector<int>::size_type j = 0; j < matrix[ i ].size( ); ++j ){
+        for( std::vector<int>::size_type j = 0; j < colsz; ++j ){
 
             os << "( " << matrix[ i ][ j ].get_opt( )
                << ", " << matrix[ i ][ j ].get_value( ) << " ) ";

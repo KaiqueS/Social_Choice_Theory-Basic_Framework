@@ -1,4 +1,4 @@
-#include "agent.h"
+#include "agent.hpp"
 
 /* Constructors */
 
@@ -91,33 +91,6 @@ void Agent::sort_preferences( ){
     std::sort( preferences.begin( ), preferences.end( ), order );
 }
 
-// Prints options that have the same value
-void Agent::print_rank( ){
-
-    //Prints the rank of preferences
-    std::cout << "Agent " << id << " Rank alternatives \t";
-
-    sort_preferences( );
-
-    int aux = preferences.begin( ).base( ) -> get_value( );
-
-    std::cout << "[ ";
-
-    for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ){
-
-        if( preferences[ i ].get_value( ) != aux){
-
-            std::cout << "] > [ ";
-
-            aux = preferences[ i ].get_value( );
-        }
-
-        std::cout << preferences[ i ].get_opt( ) << " ";
-    }
-
-    std::cout << "] ";
-}
-
 std::ostream& operator<<( std::ostream& os, Agent& agt ){
 
     os << agt.get_id( ) << " preferences: ";
@@ -127,4 +100,15 @@ std::ostream& operator<<( std::ostream& os, Agent& agt ){
         os << "( " << opt << " )";
 
     return os;
+}
+
+void initialize_agents( std::vector<Agent>& listofagents, Preferencematrix newmtx ){
+
+    std::vector<int>::size_type listsize = listofagents.size( );
+
+    for( std::vector<int>::size_type i = 0; i < listsize; ++i ){
+
+        listofagents[ i ].set_id( std::to_string( i ) );
+        listofagents[ i ].set_preferences( newmtx );
+    }
 }

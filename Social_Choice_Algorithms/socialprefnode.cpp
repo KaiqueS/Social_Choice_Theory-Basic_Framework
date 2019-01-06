@@ -1,5 +1,5 @@
 #include <typeinfo>
-#include "socialprefnode.h"
+#include "socialprefnode.hpp"
 
 /* Constructors & Destructor */
 
@@ -113,6 +113,8 @@ SocialPrefNode& SocialPrefNode::operator=( const SocialPrefNode& copy ){
 
     return *this;
 }
+
+bool SocialPrefNode::operator<( const SocialPrefNode& rhs ){ return rhs.preferences.size( ) < preferences.size( ); }
 
 // Overloaded ostream operator
 std::ostream& operator<<( std::ostream& os, SocialPrefNode& node ){

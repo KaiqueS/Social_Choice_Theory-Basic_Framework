@@ -1,4 +1,4 @@
-#include "pairsofopts.h"
+#include "pairsofopts.hpp"
 
 /* Constructors & Destructor */
 
@@ -33,3 +33,5 @@ PairsOfOpts& PairsOfOpts::operator=( const PairsOfOpts& copy ){
 
     return *this;
 }
+
+

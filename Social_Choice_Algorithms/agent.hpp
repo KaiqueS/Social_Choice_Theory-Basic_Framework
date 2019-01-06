@@ -7,10 +7,8 @@
 #include <vector>
 #include <random>
 #include <string>
-#include "options.h"
-#include "preferencematrix.h"
-
-// Changes: modified set_preferences -> Removed passing by reference
+#include "options.hpp"
+#include "preferencematrix.hpp"
 
 class Agent{
 
@@ -50,5 +48,7 @@ private:
 };
 
 std::ostream& operator<<( std::ostream& os, Agent& agt );
+
+void initialize_agents( std::vector<Agent>& listofagents, Preferencematrix newmtx );
 
 #endif // AGENT_H
