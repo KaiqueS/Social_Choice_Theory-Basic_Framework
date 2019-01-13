@@ -66,6 +66,9 @@ private:
 
 	QPointF position{ };
 	QPointF moveVector{ };
+	QPen basiclinePen{ };
+	QPen looserlinePen{ };
+	QPen winnerlinePen{ };
 
     SocialPrefNode SPNode{ };
 
@@ -91,7 +94,9 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( ){
 	moveVector = { };
 
 	SPNode = { };
-
+	looserlinePen = { };
+	winnerlinePen = { };
+	basiclinePen = { };
 	strength = { };
 	quantNodes = { };
 	steps = { };
@@ -112,6 +117,13 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( int z, QPointF& 
 	steps = 0;
 
 	rank = 0;
+
+	basiclinePen = QPen ( Qt::black );
+	looserlinePen = QPen ( Qt::red );
+	winnerlinePen = QPen ( Qt::green );
+	basiclinePen.setWidth( 1 );
+	looserlinePen.setWidth( 2 );
+	winnerlinePen.setWidth( 2 );
 }
 template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_Node& copy_qgnode ){
 
@@ -132,6 +144,13 @@ template<typename Prefs> Q_Graphic_Node<Prefs>::Q_Graphic_Node( const Q_Graphic_
 	quantNodes = copy_qgnode.quantNodes;
 	steps = copy_qgnode.steps;
 	rank = copy_qgnode.rank;
+
+	basiclinePen = QPen ( Qt::black );
+	looserlinePen = QPen ( Qt::red );
+	winnerlinePen = QPen ( Qt::green );
+	basiclinePen.setWidth( 1 );
+	looserlinePen.setWidth( 2 );
+	winnerlinePen.setWidth( 2 );
 }
 
 template<typename Prefs> Q_Graphic_Node<Prefs>::~Q_Graphic_Node( ){ std::cout << ">>Rank = " << steps << "  >>Node " << SPNode.get_id( ) << " was destructed.\n\n"; }
@@ -150,6 +169,12 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::setPos( QPointF position ){
 
 	this -> position = QPointF( position.rx( ) + ( ( itemForm -> boundingRect( ).width( ) ) / 2 ),
 								position.ry( ) + ( ( itemForm -> boundingRect( ).height( ) ) / 2 ) );
+	basiclinePen = QPen ( Qt::black );
+	looserlinePen = QPen ( Qt::red );
+	winnerlinePen = QPen ( Qt::green );
+	basiclinePen.setWidth( 1 );
+	looserlinePen.setWidth( 2 );
+	winnerlinePen.setWidth( 2 );
 
 }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::setMoveVector( QPointF move ){ moveVector = move; }
@@ -231,19 +256,33 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 	Triangle.append( v1 + QPointF( xvAuxMiddle, yvAuxMiddle ) );
 	Triangle.append( v2 + QPointF( xvAuxMiddle, yvAuxMiddle ) );
 
+
 	// Add the triangle & line polygon to the scene
-	QGraphicsPolygonItem* pTriangleItem = scene -> addPolygon( Triangle );
+	QGraphicsPolygonItem* pTriangleItem = scene -> addPolygon( Triangle, basiclinePen);
 
-	QGraphicsLineItem* pLineItem = scene -> addLine( position.rx( ),
-													 position.ry( ),
-													 node -> getPosition( ).rx( ),
-													 node -> getPosition( ).ry( ) );
+	QGraphicsLineItem* pLineBasicItem = scene -> addLine( position.rx( ),
+														   position.ry( ),
+														   node -> getPosition( ).rx( ),
+														   node -> getPosition( ).ry( ),
+														   basiclinePen);
 
-	pLineItem -> setZValue( -1 );
-
+	QGraphicsLineItem* pLineLooserItem = scene -> addLine( position.rx( ),
+														   position.ry( ),
+														   node -> getPosition( ).rx( ),
+														   node -> getPosition( ).ry( ),
+														   looserlinePen);
+	QGraphicsLineItem* pLineWinnerItem = scene -> addLine( position.rx( ),
+														   position.ry( ),
+														   node -> getPosition( ).rx( ),
+														   node -> getPosition( ).ry( ),
+														   looserlinePen);
+	pLineWinnerItem -> setZValue( -1 );
+	pLineLooserItem -> setZValue( -1 );
 	pTriangleItem -> setZValue( -1 );
 
-	edges.push_back( pLineItem );
+	edges.push_back( pLineBasicItem );
+	edges.push_back( pLineLooserItem );
+	edges.push_back( pLineWinnerItem );
 
 	arrow.push_back( pTriangleItem );
 
@@ -251,15 +290,11 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 
 	QBrush innerBrush( QColor( 240 - ( 20 * strength ), 200 - ( 100 * strength ), 200 - ( 100 * strength ) ) );
 
-	QPen outlinePen( Qt::black );
-
-	outlinePen.setWidth( 2 );
-
 	int zValue = itemForm -> zValue( );
 
 	delete itemForm;
 
-	itemForm = scene -> addRect( label_name -> boundingRect( ), outlinePen, innerBrush );
+	itemForm = scene -> addRect( label_name -> boundingRect( ), basiclinePen, innerBrush );
 
 	itemForm -> setZValue( zValue );
 
@@ -267,11 +302,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::insert_node( Q_Graphic_Node
 }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, QPointF& position, int& size, QGraphicsScene*& scene, SocialPrefNode& SocialPrefNode ){
 
-	QPen outlinePen( Qt::black );
-
 	QBrush innerBrush( QColor( 255, 130, 130 ) );
-
-	outlinePen.setWidth( 2 );
 
 	QString str = QString::fromStdString( SocialPrefNode.get_id( ) );
 
@@ -280,7 +311,7 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::createGraphicItem( int& z, 
 	label_name -> setZValue( z + 2 );
 	label_name -> setFlag( QGraphicsItem::ItemIsMovable );
 
-	itemForm = scene -> addRect( label_name -> boundingRect( ), outlinePen, innerBrush );
+	itemForm = scene -> addRect( label_name -> boundingRect( ), basiclinePen, innerBrush );
 
 	itemForm -> setZValue( z + 1 );
 
@@ -334,20 +365,39 @@ template<typename Prefs> void Q_Graphic_Node<Prefs>::moveNode( ){
 		QGraphicsScene* scene = arrow[ i ] -> scene( );
 
 		// Add the triangle & line polygon to the scene
-		QGraphicsPolygonItem* pTriangleItem = scene -> addPolygon( Triangle );
+		QGraphicsPolygonItem* pTriangleItem = scene -> addPolygon( Triangle, basiclinePen);
 
-		QGraphicsLineItem* pLineItem = scene -> addLine( position.rx( ),
+		qreal mNextX = (( next_node[ i ] -> getPosition( ).rx( ) - position.rx( ) )/2);
+		qreal mNextY = (( next_node[ i ] -> getPosition( ).ry( ) - position.ry( ) )/2);
+
+		QGraphicsLineItem* pLineLooserItem = scene -> addLine( position.rx( ),
 														 position.ry( ),
+														 mNextX+position.rx( ),
+														 mNextY+position.ry( ),
+														 looserlinePen);
+		QGraphicsLineItem* pLineWinnerItem = scene -> addLine( mNextX+position.rx( ),
+														 mNextY+position.ry( ),
 														 next_node[ i ] -> getPosition( ).rx( ),
-														 next_node[ i ] -> getPosition( ).ry( ) );
+														 next_node[ i ] -> getPosition( ).ry( ),
+														 winnerlinePen);
+		QGraphicsLineItem* pLineBasicItem = scene -> addLine( position.rx( ),
+															  position.ry( ),
+															  next_node[ i ] -> getPosition( ).rx( ),
+															  next_node[ i ] -> getPosition( ).ry( ),
+															  basiclinePen);
+
 
 		delete arrow[ i ];
 
 		arrow[ i ] = pTriangleItem;
 
-		delete edges[ i ];
+		delete edges[ i*3 ];
+		delete edges[ i*3  + 1 ];
+		delete edges[ i*3  + 2 ];
 
-		edges[ i ] = pLineItem;
+		edges[ i*3 ] = pLineBasicItem;
+		edges[ i*3 + 1 ] = pLineLooserItem;
+		edges[ i*3 + 2 ] = pLineWinnerItem;
 	}
 }
 template<typename Prefs> void Q_Graphic_Node<Prefs>::calcMovement( std::vector<Q_Graphic_Node*>& graph ){
