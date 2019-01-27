@@ -41,7 +41,7 @@ x and y, if it is true that x is socially preferred to y, then, there is an Dire
 it is the case that in the Social Profile x is indifferent to y, then, a bidirectional edge will link x and y, i.e., e = ( x, y )
 and e' = ( y, x ).
 
-Bonus: cycles are easily spotted with graphs!
+Bonus: cycles are easier to spot on graphs!
 
 # About: Algorithms
 
@@ -49,11 +49,11 @@ Bonus: cycles are easily spotted with graphs!
 
 Implement Indifference relation: done.
 
-Implement Condorcert Paradox - almost done, needs cycle-checking algorithm 
+Implement Condorcert Paradox - done, but needs improvement. 
 
-Implement Arrow's Impossibility Theorem - nearly done, needs revision.
+Implement Arrow's Impossibility Theorem - under revision.
 
-Implement GUI - almost there
+Implement GUI - almost done, adding analytical features.
 
 Release ver 1.0 - after GUI and Arrow
 
