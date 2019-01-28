@@ -71,6 +71,8 @@ public:
 
     bool operator<( const SocialPrefNode& rhs );
 
+    void operator+=( const int val );
+
     using preferences_index = NamedType<std::ptrdiff_t, struct preferences_Parameter>;
     using worsethan_index = NamedType<std::ptrdiff_t, struct worsethan_Parameter>;
     using indifference_index = NamedType<std::ptrdiff_t, struct indifference_Parameter>;

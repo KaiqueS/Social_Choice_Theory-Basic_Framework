@@ -82,10 +82,12 @@ bool Options::operator<( const Options& rhs ){
     return value < rhs.value;
 }
 
+void Options::operator+=( const int val ){ value += val; }
+
 // Prints option
 std::ostream& operator<<( std::ostream& os, Options& opt ){
 
-    os << opt.get_opt( ) << ", " << opt.get_value( );
+    os << "[" << opt.get_opt( ) << ", " << opt.get_value( ) << "]" ;
 
     return os;
 }

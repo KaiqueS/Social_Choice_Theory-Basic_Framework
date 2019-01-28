@@ -8,7 +8,7 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
-#include "options.hpp"
+#include <profile.hpp>
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
 // The outermost vector represents the rows, while the innermost vector represents the
@@ -20,7 +20,7 @@ public:
 	// Constructors & Destructor
 	Preferencematrix( );
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
-    Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<std::vector<Options>> mtx );
+    Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx );
     Preferencematrix( const Preferencematrix& copymatrix );
 
     ~Preferencematrix( ){ /*std::cout << "Matrix destructed.\n\n";*/ }
@@ -36,10 +36,10 @@ public:
     std::vector<int>::size_type get_columnsz( ){ return columnsize; }
 
     // Return a reference instead?
-	std::vector<std::vector<Options>> get_matrix( ){ return matrix; }
+    std::vector<Profile> get_matrix( ){ return matrix; }
 
 	// Operators
-	std::vector<Options>& operator[ ]( const std::vector<int>::size_type& position ){ return matrix[ position ]; }
+    Profile& operator[ ]( const std::vector<int>::size_type& position ){ return matrix[ position ]; }
 
 	Preferencematrix& operator=( const Preferencematrix& copy );
 
@@ -48,12 +48,14 @@ public:
 	// Helpers
 	void delete_row( int rowindex );
 
+    std::vector<int>::size_type size( ){ return matrix.size( ); }
+
 private:
 
     std::vector<int>::size_type rowsize{ };
     std::vector<int>::size_type columnsize{ };
 
-	std::vector<std::vector<Options>> matrix{ };
+    std::vector<Profile> matrix{ };
 };
 
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix );

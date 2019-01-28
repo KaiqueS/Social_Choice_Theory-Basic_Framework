@@ -8,7 +8,7 @@
 /// Initialization Functions
 
 // Generates, without repetition, all combinations of pairs of alternatives
-std::vector<PairsOfOpts> pair_generation( std::vector<Agent>& listofagents ){
+std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
 
     PairsOfOpts compairs{ };
 
@@ -39,13 +39,13 @@ std::vector<PairsOfOpts> pair_generation( std::vector<Agent>& listofagents ){
     return paircomp;
 }
 
-void initialize_opts( std::vector<Agent>& listofagents, std::vector<Options>& opts ){
+void initialize_opts( Population& listofagents, Profile& opts ){
 
     std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
 
     if( !listofagents[ randagt ].get_preferences( ).empty( ) ){
 
-        opts = listofagents[ randagt ].get_preferences( );
+        opts = listofagents[ randagt ].get_preferences( ).get_alternatives( );
 
         for( std::vector<int>::size_type i = 0; i < opts.size( ); ++i )
 
@@ -62,7 +62,7 @@ void initialize_opts( std::vector<Agent>& listofagents, std::vector<Options>& op
 
 /// Data Structures Modifying Functions
 
-void circuits( Graph& graph ){
+/*void circuits( Graph& graph ){
 
 
 }
@@ -70,14 +70,21 @@ void circuits( Graph& graph ){
 void johnson( Graph& graph ){
 
 
+}*/
+
+Profile make_social_order( Population& population ){
+
+    Profile result{ };
+
+    return result;
 }
 
 // Makes a social order from a Pairwise Rank of alternatives
-std::vector<Options> make_social_order( std::vector<Agent>& listofagt, Rank& rank ){
+Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank ){
 
-    std::vector<Options> orderedrank{ };
+    Profile orderedrank{ };
 
-    initialize_opts( listofagt, orderedrank );
+    //initialize_opts( listofagt, orderedrank );
 
     // Check for emptyness - I really should make a exception class to handle this
     if( !orderedrank.empty( ) )
@@ -118,9 +125,9 @@ std::vector<Options> make_social_order( std::vector<Agent>& listofagt, Rank& ran
 }
 
 // Makes a social order from a Social Graph of alternatives
-std::vector<Options> make_social_order( Graph& socialgraph ){
+/*Profile make_social_order( Graph& socialgraph ){
 
-    std::vector<Options> orderedrank{ };
+    Profile orderedrank{ };
 
     for( std::vector<int>::size_type i = 0; i < socialgraph.size( ); ++i ){
 
@@ -141,4 +148,4 @@ std::vector<Options> make_social_order( Graph& socialgraph ){
     }
 
     return orderedrank;
-}
+}*/

@@ -3,6 +3,7 @@
 #include "sctheory.cpp"
 #include "sctgraph.hpp"
 #include "sctrank.hpp"
+#include "population.hpp"
 
 // TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
 //       for emptiness
@@ -22,14 +23,16 @@
 // BIG QUESTION: what should SCF return? Alternatives or profiles? If the latter, are they composed
 // by only the alternatives that satisfies the aggregation procedure, or are they composed by every
 // alternative, sorted according to wheter they satisfy or not the procedure?
+// TODO: allow choosing between a pure graph, i.e., graph not based on any aggregation procedure and
+// a graph based on procedures
 
 int main( ){
 
     srand( static_cast<unsigned int>( time( nullptr ) ) );
 
-    Preferencematrix newmtx{ };
+    /*Preferencematrix newmtx{ };
 
-    newmtx.set_matrix( 10, 10 );
+    newmtx.set_matrix( 5, 5 );
 
     std::vector<Agent> listofagents( newmtx.get_matrix( ).size( ) );
 
@@ -68,8 +71,6 @@ int main( ){
 
     print_graph( graph );
 
-
-
     //qualified_majority_rule( graph );
 
     // Problem here: value > number of opts
@@ -77,19 +78,60 @@ int main( ){
 
     std::cout << "\n";
 
-    //condorcet_paradox( rank, graph );
-
-    std::cout << "\n";
-
     // Allow for the user to select which procedure does he wants to use
 
     /* std::cin >> procedure
      * pass procedure as argument to arrow function
-    */
 
     std::vector<Options> result = qualified_majority_rule( graph );
 
     arrow_impossibility( listofagents, newmtx, rank, graph, result );
+
+    std::cout << "\n\n";
+    */
+
+    Graph graph{ };
+
+    Preferencematrix mtx{ };
+
+    Rank rank{ };
+
+    mtx.set_matrix( 4, 4 );
+
+	Population population( mtx.get_matrix( ).size( ) );
+
+	population.initialize_population( mtx );
+
+    rank.generate_ranking( population );
+
+    graph.initialize_graph( mtx );
+
+    graph.make_graph( mtx, rank );
+
+	sct::Qualified_majority_rule maj{ };
+
+    sct::Borda_count count{ };
+
+    //sct::Procedure newproc = { sct::Qualified_majority_rule( ) };
+
+    Profile result = maj( rank );
+
+    Graph newgraph{ };
+
+    Profile newres = count( population );
+
+    std::cout << "The borda winner is: " << std::max_element( newres.begin( ), newres.end( ) ) -> get_opt( ) << "\n\n";
+
+    for( std::vector<int>::size_type i = 0; i < result.size( ); ++i ){
+
+        std::cout << result[ i ] << " ";
+    }
+
+    //std::string res = sct::qualified_majority( graph );
+
+    std::cout << "\n\n";
+
+    //std::cout << res;
 
     std::cout << "\n\n";
 }

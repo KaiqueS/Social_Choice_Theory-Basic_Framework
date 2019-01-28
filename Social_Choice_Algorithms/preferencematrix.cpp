@@ -13,11 +13,14 @@ Preferencematrix::Preferencematrix( ){
 
 Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col ){
 
+    rowsize = row;
+    columnsize = col;
+
     set_matrix( row, col );
 }
 
 // Parameterized constructor
-Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<std::vector<Options>> mtx ){
+Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ){
 
     rowsize = row;
     columnsize = col;
@@ -47,7 +50,7 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
     rowsize = rowsz;
     columnsize = colsz;
 
-	std::vector<Options> setofalts( colsz );
+    Profile setofalts( colsz );
 
 	int aux{ 30 };
 

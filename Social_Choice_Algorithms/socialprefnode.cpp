@@ -116,6 +116,8 @@ SocialPrefNode& SocialPrefNode::operator=( const SocialPrefNode& copy ){
 
 bool SocialPrefNode::operator<( const SocialPrefNode& rhs ){ return rhs.preferences.size( ) < preferences.size( ); }
 
+void SocialPrefNode::operator+=( const int val ){ index += val; }
+
 // Overloaded ostream operator
 std::ostream& operator<<( std::ostream& os, SocialPrefNode& node ){
 

@@ -40,6 +40,8 @@ public:
 
     bool operator<( const Options& rhs );
 
+    void operator+=( const int val );
+
 private:
 
     std::string opt{ "NULL" };

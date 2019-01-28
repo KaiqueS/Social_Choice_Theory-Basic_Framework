@@ -3,10 +3,9 @@
 /// Constructors & Destructor
 
 // Default constructor
-Graph::Graph( ){
+Graph::Graph( ){ nodes = { }; }
 
-    nodes = { };
-}
+Graph::Graph( SocialPrefNode node ){ nodes.push_back( node ); }
 
 // Parameterized constructor
 Graph::Graph( std::vector<SocialPrefNode> vertices ){
@@ -80,6 +79,16 @@ std::ostream& operator<<( std::ostream& os, Graph& graph ){
 }
 
 /// Helpers
+
+void Graph::initialize_graph( Population& population ){
+
+    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % population.size( );
+
+    for( std::vector<int>::size_type i = 0; i < population[ randagt ].get_preferences( ).size( ); ++i ){
+
+        nodes.push_back( SocialPrefNode( population[ randagt ][ i ].get_opt( ), { }, { }, { }, { }, { }, { } ) );
+    }
+}
 
 void Graph::initialize_graph( Preferencematrix& mtx ){
 
@@ -195,6 +204,17 @@ void Graph::make_graph( Preferencematrix& mtx, Rank& rank ){
             }
         }
     }
+}
+
+bool Graph::empty( ){
+
+    if( nodes.empty( ) )
+
+        return true;
+
+    else
+
+        return false;
 }
 
 void print_graph( Graph& graph ){

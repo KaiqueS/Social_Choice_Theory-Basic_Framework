@@ -7,7 +7,6 @@
 #include <vector>
 #include <random>
 #include <string>
-#include "options.hpp"
 #include "preferencematrix.hpp"
 
 class Agent{
@@ -27,7 +26,7 @@ public:
     void set_id( std::string tag );
 
     // Getters
-    std::vector<Options> get_preferences( ){ return preferences; }
+    Profile get_preferences( ){ return preferences; }
 
     std::string get_id( ){ return id; }
 
@@ -42,7 +41,7 @@ public:
 private:
 
     // A row of the preferencematrix class. One row for each agent
-    std::vector<Options> preferences{ };
+    Profile preferences{ };
 
     std::string id{ }; // must be constant
 };

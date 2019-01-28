@@ -22,7 +22,7 @@ void Rank::set_rank( std::vector<PairWiseRank> order ){ ranking = order; }
  * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
  * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives
  */
-void Rank::generate_ranking( std::vector<Agent>& listofagents ){
+void Rank::generate_ranking( Population& listofagents ){
 
     // Holder for a pair of options
     PairsOfOpts compairs{ };
@@ -129,3 +129,14 @@ PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
 }
 
 /// Helpers
+
+bool Rank::empty( ){
+
+	if( ranking.empty( ) )
+
+		return true;
+
+	else
+
+		return false;
+}

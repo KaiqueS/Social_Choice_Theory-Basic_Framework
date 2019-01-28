@@ -5,7 +5,7 @@
 
 #include <vector>
 #include "pairwiserank.hpp"
-#include "agent.hpp"
+#include "population.hpp"
 
 class Rank{
 
@@ -16,12 +16,12 @@ public:
     Rank( std::vector<PairWiseRank> ordering );
     Rank( const Rank& copy );
 
-    ~Rank( ){ }
+	~Rank( ){ ranking.clear( ); }
 
     // Setters
     void set_rank( PairWiseRank pair );
     void set_rank( std::vector<PairWiseRank> order );
-    void generate_ranking( std::vector<Agent>& listofagents );
+	void generate_ranking( Population& listofagents );
 
     // Getters
     std::vector<PairWiseRank> get_rank( ){ return ranking; }
@@ -34,13 +34,16 @@ public:
     PairWiseRank& operator[ ]( const std::vector<int>::size_type index  );
 
     // Helpers
+	std::vector<PairWiseRank, std::allocator<PairWiseRank>>::iterator begin( ){ return ranking.begin( ); }
+	std::vector<PairWiseRank, std::allocator<PairWiseRank>>::iterator end( ){ return ranking.end( ); }
 
-    PairWiseRank* begin( ){ return ranking.begin( ).base( ); }
-    PairWiseRank* end( ){ return ranking.end( ).base( ); }
+	bool empty( );
+
+	void push_back( PairWiseRank& rank ){ ranking.push_back( rank ); }
 
 private:
 
-        std::vector<PairWiseRank> ranking{ };
+    std::vector<PairWiseRank> ranking{ };
 };
 
 #endif // SCTRANK_H

@@ -4,18 +4,22 @@
 #define HELPER_FUNCTIONS_H
 
 #include "pairsofopts.hpp"
-#include "sctgraph.hpp"
+#include "sctrank.hpp"
+#include "population.hpp"
+//#include "sctgraph.hpp"
 
-std::vector<PairsOfOpts> pair_generation( std::vector<Agent>& listofagents );
+std::vector<PairsOfOpts> pair_generation( Population& listofagents );
 
-void initialize_opts( std::vector<Agent>& listofagents, std::vector<Options>& opts );
+void initialize_opts( Population& listofagents, Profile& opts );
 
-void circuits( Graph& graph );
+//void circuits( Graph& graph );
 
-void johnson( Graph& graph );
+//void johnson( Graph& graph );
 
-std::vector<Options> make_social_order( std::vector<Agent>& listofagt, Rank& rank );
+Profile make_social_order( Population& population );
 
-std::vector<Options> make_social_order( Graph& socialgraph );
+Profile make_social_order( Rank& rank );
+
+//Profile make_social_order( Graph& socialgraph );
 
 #endif // HELPER_FUNCTIONS_H

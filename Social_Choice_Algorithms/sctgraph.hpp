@@ -4,7 +4,7 @@
 #define SCTGRAPH_H
 
 #include "socialprefnode.hpp"
-#include "agent.hpp"
+#include "population.hpp"
 #include "sctrank.hpp"
 #include "preferencematrix.hpp"
 
@@ -14,10 +14,11 @@ public:
 
     // Constructors & Destructor
     Graph( );
+    Graph( SocialPrefNode node );
     Graph( std::vector<SocialPrefNode> vertices );
     Graph( const Graph& copy );
 
-    ~Graph( ){ }
+	~Graph( ){ nodes.clear( ); }
 
     // Setters
     void set_graph( std::vector<SocialPrefNode> vertices );
@@ -27,17 +28,23 @@ public:
     // Getters
     std::vector<SocialPrefNode> get_graph( ){ return nodes; }
 
-    std::vector<int>::size_type size( ){ return nodes.size( ); }
-
     // Operators
     Graph& operator=( const Graph& copy );
 
     SocialPrefNode& operator[ ]( const std::vector<int>::size_type index );
 
     // Helpers
+    void initialize_graph( Population& population );
     void initialize_graph( Preferencematrix& mtx );
-
     void make_graph( Preferencematrix& mtx, Rank& rank );
+    void push_back( SocialPrefNode& node ){ nodes.push_back( node ); }
+
+    std::vector<int>::size_type size( ){ return nodes.size( ); }
+
+    bool empty( );
+
+    std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator begin( ){ return nodes.begin( ); }
+    std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); }
 
 private:
 
