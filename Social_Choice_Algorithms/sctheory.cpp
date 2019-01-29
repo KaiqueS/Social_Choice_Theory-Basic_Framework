@@ -2,7 +2,7 @@
 
 // Checks if the pareto principle is violated or not - Working(?) - TODO: Check for transitivity problems
 // TODO: overload pareto principle so that it only deals with graph or rank, but not both
-bool pareto_principle( Graph& graph , Rank& rank, std::vector<Options>& procedure ){
+bool pareto_principle( Graph& graph , Rank& rank, Profile& procedure ){
 
     Options pareto{ };
 
@@ -387,14 +387,21 @@ bool is_singlePeaked( Rank& rank, Graph& graph ){
 // If not true: analyze the profiles of preferences, both individual and social, then search for some kind of structure,
 // i.e., single peakedness degree, individual impact on social profile, etc.
 // If true, search for single peakedness or known structures/feats that causes the truthness
-bool arrow_impossibility( std::vector<Agent>& listofagents, Preferencematrix& mtx , Rank& rank, Graph& graph, std::vector<Options>& procedure ){
+bool arrow_impossibility( std::vector<Agent>& listofagents, Preferencematrix& mtx , Rank& rank, Graph& graph, sct::Procedure& procedure( Population& agts ) ){
 
     bool validity{ true };
 
+    Population pop = listofagents;
+
+    sct::Borda_count borda{};
+
+    borda( pop );
+
+    Profile newprof = borda( pop );
     // If it is the case that every conditions is satisfied, then, check the structure of the preferences for single-
     // peakedness or anything that might have made it possible for the result to hold
 
-    if( pareto_principle( graph, rank, procedure ) == false ){
+    if( pareto_principle( graph, rank, newprof ) == false ){
 
         validity = false;
 

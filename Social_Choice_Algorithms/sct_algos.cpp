@@ -78,6 +78,8 @@ Profile& sct::Borda_count::operator( )( Population& population ){
         }
     }
 
+    std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
+
     // TODO: make graph according to borda count before returning graph
 
     return winnerset;

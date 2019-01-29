@@ -58,6 +58,31 @@ void initialize_opts( Population& listofagents, Profile& opts ){
     }
 }
 
+void initialize_opts( Rank& rank, Profile& profile ){
+
+    // Get all possible options
+    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
+
+        profile.push_back( Options( rank[ i ].get_optx( ).get_opt( ), false, 0 ) );
+        profile.push_back( Options( rank[ i ].get_opty( ).get_opt( ), false, 0 ) );
+    }
+
+    // Remove repeated options
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
+
+        for( std::vector<int>::size_type j = 0; j < profile.size( ); ++j ){
+
+            if( i != j ){
+
+                if( profile[ i ].get_opt( ) == profile[ j ].get_opt( ) ){
+
+                    profile.erase( static_cast<int>( j ) );
+                }
+            }
+        }
+    }
+}
+
 /// Printing Functions
 
 /// Data Structures Modifying Functions
@@ -84,7 +109,7 @@ Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank ){
 
     Profile orderedrank{ };
 
-    //initialize_opts( listofagt, orderedrank );
+    initialize_opts( rank, orderedrank );
 
     // Check for emptyness - I really should make a exception class to handle this
     if( !orderedrank.empty( ) )

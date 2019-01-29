@@ -45,6 +45,8 @@ public:
 
     void insert( std::vector<Options>::iterator pos, Options& opt ){ alternatives.insert( pos, opt ); }
 
+    void erase( const int index ){ alternatives.erase( begin( ) + index ); }
+
 private:
 
     std::vector<Options> alternatives{ };

@@ -25,6 +25,8 @@
 // alternative, sorted according to wheter they satisfy or not the procedure?
 // TODO: allow choosing between a pure graph, i.e., graph not based on any aggregation procedure and
 // a graph based on procedures
+// TODO: modify arrow -> Allow for a procedure to be passed as an argument, use the profile resulted
+// from the procedure in the axioms
 
 int main( ){
 
@@ -80,7 +82,7 @@ int main( ){
 
     // Allow for the user to select which procedure does he wants to use
 
-    /* std::cin >> procedure
+     std::cin >> procedure
      * pass procedure as argument to arrow function
 
     std::vector<Options> result = qualified_majority_rule( graph );
@@ -119,6 +121,8 @@ int main( ){
     Graph newgraph{ };
 
     Profile newres = count( population );
+
+    std::cout << "The majority winner is: " << std::max_element( result.begin( ), result.end( ) ) -> get_opt( ) << "\n\n";
 
     std::cout << "The borda winner is: " << std::max_element( newres.begin( ), newres.end( ) ) -> get_opt( ) << "\n\n";
 

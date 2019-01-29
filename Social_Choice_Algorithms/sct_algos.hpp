@@ -29,6 +29,7 @@ class Procedure{
 
         // Helpers
         //Profile& operator( )( Graph& graph );
+        Profile& operator( )( Population& population );
         Profile& operator( )( Rank& rank );
     };
 
@@ -40,6 +41,7 @@ class Qualified_majority_rule : public Procedure{
         ~Qualified_majority_rule( ){ }
 
         //Profile& operator( )( Graph& graph );
+        Profile& operator( )( Population& population );
         Profile& operator( )( Rank& rank );
 
     private:
