@@ -8,7 +8,7 @@ A Social Choice Theory educational software. Intended to be used as a study comp
 
 <strong>PREAMBLE: </strong>
   
-<br> According to <a href="https://plato.stanford.edu/entries/social-choice/#Aca">List( 2013 )</a>, Social Choice Theory is a collection of models, where each of which represents decision procedures involving a collectity. Common to a cathegory of those procedures, are Individuals, Alternatives, and a decision mechanism, i.e., social function, that maps every individual profile of alternatives into a social profile or decision.<br>
+According to <a href="https://plato.stanford.edu/entries/social-choice/#Aca">List( 2013 )</a>, Social Choice Theory is a collection of models, where each of which represents decision procedures involving a collectity. Common to a cathegory of those procedures, are Individuals, Alternatives, and a decision mechanism, i.e., social function, that maps every individual profile of alternatives into a social profile or decision.
 
 In order to represent the above elements, the following data structures were implemented:
 
@@ -60,7 +60,7 @@ There are two way to create a graph:
 
 Also, each node in the graph will hold information of how many and which node it beats, it is beaten by, and it is equal to.
 
-Bonus: cycles are easier to spot with graphs!
+Graphs can show more directly how are alternatives related to each other, also, cycles are easier to spot with graphs!
 
 # About: Algorithms
 
