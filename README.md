@@ -1,49 +1,66 @@
+**Notice: all back-end code is being uploaded to SCT_Test branch, while the GUI related code is being uploaded to TestBranch( yeah, I know the naming is awful, will fix it later, though ).**
+
 # Social Choice Theory - A Toolbox
 
 A Social Choice Theory educational software. Intended to be used as a study companion, it is comprised by data structures and algorithms that represents some known findings of <a href="https://plato.stanford.edu/entries/social-choice/#Aca">Axiomatic SCT</a>. With this software, one will be able to follow, step-by-step, and in many ways, Social Choice models and its results, along with a set of tools that will help visualizing and analyzing the latter.
-
-**Notice: all back-end code is being uploaded to SCT_Test branch, while the GUI related code is being uploaded to TestBranch( yeah, I know the naming is awful, will fix it later, though ).**
 
 # About: Data Structures & Properties
 
 <strong>PREAMBLE: </strong>
   
-<br> According to <a href="https://plato.stanford.edu/entries/social-choice/#Aca">List( 2013 )</a>, Social Choice Theory is, actually, a collection of models, each of which represents decision procedures involving a collectity. Common to a cathegory of those procedures, are Individuals, Alternatives, and a decision mechanism, i.e., social function, that maps every individual profiles of alternatives into a social profile or decision.<br>
+<br> According to <a href="https://plato.stanford.edu/entries/social-choice/#Aca">List( 2013 )</a>, Social Choice Theory is a collection of models, where each of which represents decision procedures involving a collectity. Common to a cathegory of those procedures, are Individuals, Alternatives, and a decision mechanism, i.e., social function, that maps every individual profile of alternatives into a social profile or decision.<br>
 
-In order to represent the above definitions, the following data structures were implemented:
+In order to represent the above elements, the following data structures were implemented:
 
-<p><li><strong>Options</strong></li>
+<p><li><strong>Profiles</strong></li>
 
-Those are the alternatives which will be passed as arguments to the Social Decision Procedures. To guarantee Universal Domain,
-they are randomly generated, without any previous restriction interferring with the generation.
+Higher-level abstraction of the class ***Options***, a ***Profile*** is a container of the latter.
+
+Each *Option* in its respective *Profile* represents the alternatives which will be passed as arguments to the Social Decision Procedures. To guarantee ***Universal Domain***, they( the alternatives ) are randomly generated, without any previous restriction interferring with the generation.
 
 <p><li><strong>Preference Matrix</strong></li>
 
-This class represents a Social Matrix. Composed by the Options above, each line of this matrix is an individual profile of
-preferences, and each column an Option with the respective value of that Option for the corresponding profile. This value,
-or weight, makes possible representing an ordering of those preferences, where, for any alternatives x, y, and for any integers A, B, ( x, A ) and ( y, B ) are pairs s.t. A is the value of x in the ordering, and B of y. If A > B, then, one can conclude that
-x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then, one can infer that, for the
-respective profile, x = y, which can be interpreted as: the agent i is Indifferent between x and y.
+This class represents a Social Matrix of *Profiles*.
 
-<p><li><strong>Pairwise Rank</strong></li>
+The matrix has ***M x N*** dimensions, where each line in *M* represents an individual profile of preferences, and each column *N* represents an Option within the respective profile, as well as the *value*, or weight, of that Option for the corresponding profile.
+
+This value, or weight, makes it possible to represent an ordering of those preferences, where, for any alternatives x, y, and for any integers A, B, ( x, A ) and ( y, B ) are pairs s.t. A is the value of x in the ordering, and B of y.
+
+If A > B, then, one can conclude that x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then, one can infer that, for the respective profile, x = y, which can be interpreted as: the agent i is *Indifferent* between x and y.
+
+Those values/weights should be taken as a purely ***ordinal*** way of ordering preferences for every agent. Their are meaningless when taken cardinally. Also, they allow for the **Indifference** relation to be represented.
+
+<p><li><strong>Social Choice Rank</strong></li>
+
+A generic Ranking generated through a *pairwise*( or round-robin tournament ) coparison between each possible combination of pairs of *Options*.
 
 To guarantee Completeness, each Option in the Preference Matrix will be compaired, pairwise, against every other option, so that
-every possible combination of pairs, without repetition, is considered. Along with that, the Rank will also show how many votes,
-i.e., in how many profiles one alternative beats its adversary, or if it is socially equal( read Indifferent ) to its adversary
-option.
+every possible combination of pairs, without repetition, are taken in consideration. Along with that, the Rank will also show how many votes, i.e., in how many profiles one alternative beats its adversary, or if it is socially equal( read Indifferent ) to its adversary option.
 
-<p><li><strong>Social Preference Node</strong></li>
+Also, has time complexity( upper bound ) of ( n( n - 1 ) / 2 ).
 
-Why nodes?
+<p><li><strong>Social Choice Graph</strong></li>
+
+Higher-level abstraction of ***Social Preference Nodes***, a ***Social Choice Graph*** is made of the latter.
+
+First, each *Social Pref Node* represents an *Option*.
+
+But, why a graph?
 The answer is simple: it will make things easier to be visualized.
 
 How?
-With a Directed Graph. The nodes will make possible the creation of a Social Preference Graph, where the relations between the nodes, taken from how one node is ranked in respect with the others on the Pairwise Rank, are represented by edges. For any nodes
-x and y, if it is true that x is socially preferred to y, then, there is an Directed Edge e from x to y, i.e., e = ( x, y ). If 
-it is the case that in the Social Profile x is indifferent to y, then, a bidirectional edge will link x and y, i.e., e = ( x, y )
-and e' = ( y, x ).
 
-Bonus: cycles are easier to spot on graphs!
+To begin, let one introduce how the graph is created.
+
+There are two way to create a graph:
+
+* first, by taking a *Social Profile*, which is the result of aggregating all the profiles of preferences with a given aggregation procedure, and, then, relating each pair *x* and *y* of node accordingly to how each *Option*( represented, here, as a node ) is related to its adversaries through the aggregation procedure.
+
+* second, by creating *edges* between nodes according to wether one alternative beats its adversary or not in the Rank. I.e., if, for any pair *( a, b )* in the **Social Ranking**, if *a* beats *b*, then, one edge ***from*** *a* to *b* will be created.
+
+Also, each node in the graph will hold information of how many and which node it beats, it is beaten by, and it is equal to.
+
+Bonus: cycles are easier to spot with graphs!
 
 # About: Algorithms
 
