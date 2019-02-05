@@ -4,7 +4,6 @@
 /*		 Fix the case where x and y have the same amount of votes, but no indifference: if xval == yval, then increase ival
  *		 Start documenting - IN PROGRESS
  *		 TODO: enhance code -> ADD EXCEPTIONS!
- *		 TODO: Remove templates, use static typing
  *		 TODO: Fix GUI problem: sometimes graphs are incomplete, i.e., not all nodes are connected
  *		 TODO: Fix GUI problem: for some values of row/column, graphs are not formed at all
  *		 TODO: Fix GUI problem: arrows pointing to the wrong direction
@@ -14,17 +13,16 @@
 
 int main( int argc, char* argv[ ] ){
 
-	srand( time( NULL ) );
+    srand( static_cast<unsigned int>( time( nullptr ) ) );
 
 	//	Start Widget
 	QApplication a( argc, argv );
 
-	MainWindow w{ };
+    MainWindow w{ };
 
-	w.show( );
+    w.show( );
 
-	return a.exec( );
-
+    return a.exec( );
 }
 
 

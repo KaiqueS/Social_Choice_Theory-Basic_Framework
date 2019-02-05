@@ -1,149 +1,194 @@
-#include "Classes/socialprefnode.h"
-#include "Classes/cycle.h"
-#include "Classes/nodeopt.h"
-#include "Classes/pairwiserank.h"
-#include <algorithm>
+#include "Classes/helper_functions.hpp"
 
-template<typename Prefs> void print_graph( std::vector<SocialPrefNode<Prefs>>& graph ){
+/* Possible optimizations: binary search in rank_generation. Harder, better, faster, stronger.
+ *						   order agent's orderings according to alternatives' values - enables
+ *						   binary search
+ */
 
-	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i )
+/// Initialization Functions
 
-		std::cout << graph[ i ] << "\n";
+// Generates, without repetition, all combinations of pairs of alternatives
+std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
+
+    PairsOfOpts compairs{ };
+
+    std::vector<PairsOfOpts> paircomp{ };
+
+    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
+
+    std::vector<int>::size_type listsize = listofagents.size( );
+    std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
+
+    // gets all possible combination of pairs, including repeated pairs
+    for( std::vector<int>::size_type i = 0; i < prefsize; ++i ){
+
+        compairs.xpref = listofagents[ randagt ][ i ];
+
+        for( std::vector<int>::size_type j = i + 1; j < prefsize; ++j ){
+
+            if( j != i ){
+
+                compairs.ypref = listofagents[ randagt ][ j ];
+
+                paircomp.push_back( compairs );
+            }
+        }
+    }
+
+    // returns all combinations without repetitions
+    return paircomp;
 }
 
+void initialize_opts( Population& listofagents, Profile& opts ){
 
-template<typename Prefs> void strongconnect( std::vector<SocialPrefNode<Prefs>>& graph, std::vector<NodeOpt<Prefs>>& track, int index ){
+    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
 
-	NodeOpt<Prefs> v{ };
+    if( !listofagents[ randagt ].get_preferences( ).empty( ) ){
 
-	v.set_opt( index );
-	v.set_link( index );
+        opts = listofagents[ randagt ].get_preferences( ).get_alternatives( );
 
-	++index;
+        for( std::vector<int>::size_type i = 0; i < opts.size( ); ++i )
 
-	track.push_back( v );
+            opts[ i ].set_value( 0 );
+    }
 
-	for( std::vector<int>::size_type i = 0; i < track.size( ); ++i ){
+    else{
 
-		if( track[ i ].get_opt( ).get_id( ) == v.get_opt( ).get_id( ) )
+        std::cerr << "Agent " << listofagents[ randagt ].get_id( ) << " has no preferences.\n";
+    }
+}
 
-			v.set_onstack( true );
+void initialize_opts( Rank& rank, Profile& profile ){
 
-		else
+    // Get all possible options
+    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
 
-			v.set_onstack( false );
-	}
+        profile.push_back( Options( rank[ i ].get_optx( ).get_opt( ), false, 0 ) );
+        profile.push_back( Options( rank[ i ].get_opty( ).get_opt( ), false, 0 ) );
+    }
+
+    // Remove repeated options
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
+
+        for( std::vector<int>::size_type j = 0; j < profile.size( ); ++j ){
+
+            if( i != j ){
+
+                if( profile[ i ].get_opt( ) == profile[ j ].get_opt( ) ){
+
+                    profile.erase( static_cast<int>( j ) );
+                }
+            }
+        }
+    }
+}
+
+/// Printing Functions
+
+/// Data Structures Modifying Functions
+
+/*void circuits( Graph& graph ){
 
 
 }
 
-// Checks for cycles in graph GRAPH - Isso aqui tá claramente dando boxta
-template<typename Prefs> std::vector<Cycle<Prefs>> check_cycle( std::vector<SocialPrefNode<Prefs>>& graph ){
+void johnson( Graph& graph ){
 
-	/*std::vector<Cycle<Prefs>> paths( graph.size( ) );
 
-	for( int i = 0; i < graph.size( ); ++i ){
+}*/
 
-		paths[ i ].set_id( graph[ i ].get_id( ) );
-	}
+Profile make_social_order( Population& population ){
 
-	for( int i = 0; i < graph.size( ); ++i ){
+	Profile socialorder{ };
 
-		for( int j = 0; j < paths.size( ) ; ++j ){
+	initialize_opts( population, socialorder );
 
-			if( graph[ i ].get_id( ) == paths[ j ].get_id( )  ){
+	population.order_preferences( );
 
-				for( int k = 0; k < graph[ i ].get_preferences( ).size( ); ++k ){
+    for( std::vector<int>::size_type i = 0; i < population.size( ); ++i ){
 
-					paths[ j ].set_path( graph[ i ].get_preferences( )[ k ] -> get_id( ) );
+        for( std::vector<int>::size_type j = 0; j < population[ i ].get_preferences( ).size( ); ++j ){
+
+			for( std::vector<int>::size_type k = 0; k < socialorder.size( ); ++k ){
+
+				if( socialorder[ k ].get_opt( ) == population[ i ][ j ].get_opt( ) ){
+
+					socialorder[ k ] += ( static_cast<int>( ( socialorder.size( ) - j ) / 4 ) );
 				}
 			}
-		}
-	}*/
+        }
+    }
 
-	// Tarjan algorithm - DFS
-		// Get a random node in path, add it to path
-			// Get a random value from preferences, add it to path
-				// Do this until a repeated node is reached
-
-
-	int index = 0;
-
-	std::vector<Prefs> paths{ };
-
-	//return paths;
+	return socialorder;
 }
 
-template<typename Prefs> std::vector<Prefs> make_social_order( std::vector<PairWiseRank<Prefs>> socialrank ){
+// Makes a social order from a Pairwise Rank of alternatives
+Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank ){
 
-	std::vector<Options<Prefs>> orderedrank{ };
+    Profile orderedrank{ };
 
-	// get every available option
+    initialize_opts( rank, orderedrank );
 
+    // Check for emptyness - I really should make a exception class to handle this
+    if( !orderedrank.empty( ) )
 
-	// get their respective scores, i.e., how many options they beat
+        // get every available option
+        for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
 
-	// order vector from greatest to smallest
+            // get their respective scores, i.e., how many options they beat
+            for( std::vector<int>::size_type j = 0; j < orderedrank.size( ); ++j ){
 
+                if( rank[ i ].get_optx( ).get_opt( ) == orderedrank[ j ].get_opt( ) ){
 
-	return orderedrank;
-}
-template<typename Prefs> std::vector<Options<Prefs>> make_social_order( std::vector<SocialPrefNode<Prefs>>& socialgraph ){
+                    if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) )
 
-	std::vector<Options<Prefs>> orderedrank = [ ]( std::vector<Options<Prefs>>& opts, std::vector<SocialPrefNode<Prefs>>& graph ){
+                        // ATTENTION: this + 1 at the end...
+                        ++orderedrank[ j ];
+                }
 
-													 opts.resize( graph.size( ) );
+                else if( rank[ i ].get_opty( ).get_opt( ) == orderedrank[ j ].get_opt( ) ){
 
-													 for( std::vector<int>::size_type i = 0; i < opts.size( ); ++i ){
+                    if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) )
 
-														opts[ i ].set_alternatives( graph[ i ].get_id( ) );
-													 }
+                        // ATTENTION: this + 1 at the end...
+                        ++orderedrank[ j ];
+                }
+            }
+        }
 
-													 return opts;
-												 };
+    auto order = [ ]( Options& left, Options& right ){
 
-	for( SocialPrefNode<Prefs> node : socialgraph ){
+        return left.get_value( ) > right.get_value( );
+    };
 
-		for( Options<Prefs> opt : orderedrank ){
+    // order vector from greatest to smallest, according to the value
+    std::sort( orderedrank.begin( ), orderedrank.end( ), order );
 
-			if( opt.get_alternatives( ) == node.get_id( ) )
-
-				opt.set_value( node.get_preferences( ).size( ) );
-		}
-	}
-
-	return std::sort( orderedrank.begin( ), orderedrank.end( ) );
-}
-
-// Checks if the pareto principle is violated or not
-template<typename Prefs> bool pareto_principle( ){
-
-	// Checks the situation where, for every agent, xPiy, but xPy
-	// If it is the case that, for every i in Agents, xPiy
-		// check if xPy, return true
-		// else, return false & the social preference
-
-	// else, everything is okay
-
-	return true;
+    return orderedrank;
 }
 
-// Checks if , for any x, y, and z, the relation between x and y is modified by
-// the position of z in the social ranking
-template<typename Prefs> bool irrelevant_alternatives( ){
+// Makes a social order from a Social Graph of alternatives
+/*Profile make_social_order( Graph& socialgraph ){
 
+    Profile orderedrank{ };
 
-	return true;
-}
+    for( std::vector<int>::size_type i = 0; i < socialgraph.size( ); ++i ){
 
-// Searches for a dictator
-template<typename Prefs> bool non_dictatorship( ){
+        std::vector<Options>::iterator aux{ };
 
-	// if there is a dictator
-		// return true, and the dictator
+        aux = orderedrank.begin( );
 
-	// else
-		// return false, the social ordering is ok
+        int value = static_cast<int>( socialgraph[ i ].get_preferences( ).size( ) );
 
-	return true;
-}
+        for( std::vector<int>::size_type j = 0; j < orderedrank.size( ) && value <= orderedrank[ j ].get_value( ); ++j ){
+
+            aux++;
+        }
+
+        Options holder( socialgraph[ i ].get_id( ), false, static_cast<int>( socialgraph[ i ].get_preferences( ).size( ) + 1 ) );
+
+        orderedrank.insert( aux, holder );
+    }
+
+    return orderedrank;
+}*/

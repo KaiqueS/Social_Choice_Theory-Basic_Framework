@@ -4,23 +4,25 @@
 #include <iostream>
 #include <QTreeWidget>
 
-class TreeWidget
-{
+class TreeWidget{
+
 public:
 
-	TreeWidget(QWidget* parent, int columns);
+	TreeWidget( QWidget* parent, QStringList columnNames );
 
-	~TreeWidget();
+	TreeWidget( QWidget* parent, int column );
 
-	QTreeWidgetItem * addTreeRoot(QString name, QString description);
+	~TreeWidget( );
 
-	QTreeWidgetItem * addTreeChild(QTreeWidgetItem *parent, QString name, QString description);
+    QTreeWidgetItem* addTreeRoot( QString name, QString description );
 
-	QTreeWidget* getTree() const;
+    QTreeWidgetItem* addTreeChild( QTreeWidgetItem* parent, QString name, QString description );
+
+    QTreeWidget* getTree( ) const;
 
 private:
 
-	QTreeWidget *tree;
+    QTreeWidget* tree;
 };
 
 #endif // TREEWIDGET_H

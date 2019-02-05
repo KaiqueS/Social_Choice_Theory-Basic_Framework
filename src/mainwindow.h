@@ -1,16 +1,15 @@
+#pragma once
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QGraphicsItem>
 #include <QTimer>
-#include <iostream>
 #include <QTreeWidget>
 #include <QFileDialog>
 #include <QBuffer>
-#include <iostream>
 #include <fstream>
 #include "Classes/program_logic.h"
 #include "treewidget.h"
@@ -27,7 +26,7 @@ class MainWindow : public QMainWindow{
 
 public:
 
-	Program_Logic<char> *logic{ };
+    Program_Logic<char> logic{ };
 	explicit MainWindow( QWidget* parent = nullptr );
 
 	~MainWindow( );
@@ -37,25 +36,16 @@ private slots:
 	void on_set_dimension_button_clicked( );
 	void update( );
 
-	void on_actionSave_triggered();
-
-	void on_actionLoad_triggered();
-
-	void on_actionimport_triggered();
-
-	void on_actionExport_triggered();
-
-	void on_actionAgents_triggered();
-
-	void on_actionSocial_Preferencies_triggered();
+    void on_actionSave_triggered( );
+    void on_actionLoad_triggered( );
+    void on_actionimport_triggered( );
+    void on_actionExport_triggered( );
+    void on_actionAgents_triggered( );
+    void on_actionSocial_Preferencies_triggered( );
 
 private:
 
-
-
-
-	Ui::MainWindow *ui{ };
-
+    Ui::MainWindow* ui{ };
 
 	QTimer* fps{ };
 	QTimer* controle{ };
@@ -65,7 +55,7 @@ private:
 	QGraphicsRectItem* rectangle{ };
 
 	TreeWidget *tree{ };
-	QWidget * window{ };
+    QWidget* window{ };
 };
 
 #endif // MAINWINDOW_H

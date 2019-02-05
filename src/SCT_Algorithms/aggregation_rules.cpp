@@ -1,44 +1,58 @@
-#include <vector>
-#include "Classes/agent.h"
-#include "Classes/options.h"
-#include "Classes/pairsofopts.h"
-#include "Classes/socialprefnode.h"
-#include "Classes/pairwiserank.h"
-#include "Classes/cycle.h"
+#include "Classes/aggregation_rules.hpp"
 
-// Correct this, get the element with the greatest preferences size
-template<typename Prefs> Options<Prefs> majority_rule( std::vector<SocialPrefNode<Prefs>>& graph ){
+// ATTENTION: every procedure should have the same return type
 
-	Options<Prefs> winner{ };
+// Return: a vector composed only by the elements that satisfies the conditions
+// OR a vector with every element flagged true if they satisfy, or false if
+// they do not? - refer to BIG QUESTION
 
-	for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+/// Majority Rules
 
-		for( std::vector<int>::size_type j = 0; j < graph.size( ); ++j ){
 
-			if( graph[ i ].get_preferences( ).size( ) > graph[ j ].get_preferences( ).size( ) ){
+std::vector<Options> qualified_majority_rule( Graph& graph ){
 
-				if( graph[ i ].get_preferences( ).size( ) > ( graph.size( ) ) / 2 ){
+    std::vector<Options> winnerset{ };
 
-					winner.set_alternatives( graph[ i ].get_id( ) );
-					winner.set_value( graph[ i ].get_preferences( ).size( ) );
-				}
-			}
+    for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
-			else{
+        if( graph[ i ].get_preferences( ).size( ) >= ( graph.size( ) / 2 ) )
 
-				if( graph[ j ].get_preferences( ).size( ) > ( graph.size( ) ) / 2 ){
+            winnerset.push_back( Options( graph[ i ].get_id( ), true, static_cast<int>( graph[ i ].get_preferences( ).size( ) ) ) );
+    }
 
-					winner.set_alternatives( graph[ j ].get_id( ) );
-					winner.set_value( graph[ j ].get_preferences( ).size( ) );
-				}
-			}
-		}
-	}
+    auto order = [ ]( Options& left, Options& right ){
 
-	return winner;
+        return left.get_value( ) > right.get_value( );
+    };
+
+    std::sort( winnerset.begin( ), winnerset.end( ), order );
+
+    return winnerset;
 }
 
-template<typename Prefs> void borda_count( std::vector<PairWiseRank<Prefs>>& rank ){
+std::vector<Options> qualified_majority_rule( Rank& rank ){
 
 
+}
+
+// Majority rule using Pairwise Rank
+std::vector<Options> simple_majority_rule( Rank rank ){
+
+
+}
+
+
+/// Counting Rules
+std::vector<Options> borda_count( Rank rank ){
+
+    std::vector<Options> winnerset{ };
+
+    return winnerset;
+}
+
+std::vector<Options> borda_count( Graph& graph ){
+
+    std::vector<Options> winnerset{ };
+
+    return winnerset;
 }

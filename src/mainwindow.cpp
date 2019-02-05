@@ -1,10 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "Classes/program_logic.h"
 
 MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::MainWindow ){
 
-	logic = new Program_Logic<char>();
+    logic = Program_Logic<char>( );
 
 	ui -> setupUi( this );
 
@@ -17,7 +16,6 @@ MainWindow::MainWindow( QWidget* parent ) : QMainWindow( parent ), ui( new Ui::M
 	ui->actionSave->setToolTip(tr("Save contacts to a file"));
 
 	fps = new QTimer( this );
-
 
 	controle = new QTimer( this );
 
@@ -35,330 +33,433 @@ MainWindow::~MainWindow( ){
 
 void MainWindow::on_set_dimension_button_clicked( ){
 
-	delete logic;
+    // // delete logic;
 
-	logic = new Program_Logic<char>();
+    if( window!= nullptr ){
+
+        window->close();
+	}
+    // logic = new Program_Logic<char>();
+    logic = Program_Logic<char>( );
 
 	int row = ui -> row_size_input -> value( );
 
 	int column = ui -> column_size_input -> value( );
 
-	std::vector<SocialPrefNode<char>> graph = logic->run_project( row, column );
+    //std::vector<SocialPrefNode> graph = logic.run_project( row, column );
+    Graph graph = logic.run_project( row, column );
 
 	scene -> clear( );
 
-	logic -> show_graph( graph, scene );
+    // Problem here
+    logic.show_graph( graph, scene );
 
-	logic -> rank();
+    logic.rank( );
 
 }
 
 void MainWindow::update( ){
 
-	logic->update( ui -> isMagnetic -> isChecked( ) );
+    logic.update( ui -> isMagnetic -> isChecked( ) );
 }
 
-void MainWindow::on_actionSave_triggered()
-{
+void MainWindow::on_actionSave_triggered( ){
 
-	QString filename = QFileDialog::getSaveFileName(this,
-	tr("Save Address Book"), "",
-	tr("Address Book (*.sctb);;All Files (*)"));
-	QFile file(filename);
+	QString filename = QFileDialog::getSaveFileName( this, tr( "Save Address Book" ), "", tr( "Address Book( *.sctb );; All Files( * )" ) );
 
-	if(!file.open(QIODevice::WriteOnly))
-	{
-		std::cout << "Could not open " << filename.toStdString() << std::flush;
+	QFile file( filename );
+
+	if( !file.open( QIODevice::WriteOnly ) ){
+
+		std::cout << "Could not open " << filename.toStdString( ) << std::flush;
+
+		// Hum...
 		return;
 	}
 
-	QDataStream out(&file);
-	out.setVersion(QDataStream::Qt_5_1);
+	QDataStream out( &file );
+	out.setVersion( QDataStream::Qt_5_1 );
 
+    //std::vector<Agent> listofagents = logic.get_list_of_agents( );
+    Population listofagents = logic.get_list_of_agents( );
 
+    int sizeList = static_cast<int>( listofagents.size( ) );
 
-	std::vector<Agent<char>> listofagents = logic->get_list_of_agents();
-	int sizeList = listofagents.size();
 	out << sizeList;
-	for(Agent<char> agent: listofagents){
-		out << QString::fromStdString(agent.get_id());
-		std::vector<Options<char>> preferences = agent.get_preferences();
-		int sizePref = preferences.size();
+
+	for( Agent agent: listofagents ){
+
+		out << QString::fromStdString( agent.get_id( ) );
+
+		//std::vector<Options> preferences = agent.get_preferences( );
+		Profile preferences = agent.get_preferences( );
+
+        int sizePref = static_cast<int>( preferences.size( ) );
+
 		out << sizePref;
-		for(Options<char> pref: preferences){
-			out << pref.get_alternatives();
-			out << pref.get_value();
+
+		for( Options pref : preferences ){
+
+			out << QString::fromStdString( pref.get_opt( ) );
+			out << pref.get_value( );
 		}
 	}
 
-
-
-	file.flush();
-	file.close();
+	file.flush( );
+	file.close( );
 }
 
-void MainWindow::on_actionLoad_triggered()
-{
+void MainWindow::on_actionLoad_triggered( ){
 
-	delete logic;
+	if( window!= nullptr ){
+		window->close();
+	}
 
-	logic = new Program_Logic<char>();
+	QString filename = QFileDialog::getOpenFileName( this, tr( "Open Address Book" ), " ", tr( "Address Book( *.sctb );; All Files( * )" ) );
 
+	QFile file( filename );
 
-	QString filename = QFileDialog::getOpenFileName(this,
-	tr("Open Address Book"), "",
-	tr("Address Book (*.sctb);;All Files (*)"));
+	if( !file.open( QIODevice::ReadOnly ) ){
 
-	QFile file(filename);
+		std::cout << "Could not open " << filename.toStdString( ) << std::flush;
 
-	if(!file.open(QIODevice::ReadOnly))
-	{
-		std::cout << "Could not open " << filename.toStdString() << std::flush;
+		// Hum...
 		return;
 	}
 
-	QDataStream in(&file);
-	in.setVersion(QDataStream::Qt_5_1);
+	QDataStream in( &file );
+	in.setVersion( QDataStream::Qt_5_1 );
 
+	std::vector<Agent> listofagents{ };
 
-	std::vector<Agent<char>> listofagents;
-	int sizeList;
+	int sizeList{ };
+
 	in >> sizeList;
-	int prefSize=0;
-	for(int i = 0; i<sizeList; i++){
+	if( sizeList == 0 ){
+		file.close( );
+		return;
+	}
+    // delete logic;
 
-		QString id;
+    logic = Program_Logic<char>( );
+	int prefSize = 0;
+
+
+	for( int i = 0; i < sizeList; i++ ){
+
+		QString id{ };
+
 		in >> id;
 
-		std::vector<Options<char>> preferences;
-		int sizePref;
+		std::vector<Options> preferences{ };
+
+		int sizePref{ };
+
 		in >> sizePref;
-		for(int i=0; i<sizePref; i++){
-			int alt;
-			int val;
+
+		for( int i = 0; i < sizePref; i++ ){
+			QString alt{ };
+			int val{ };
+
 			in >> alt;
 			in >> val;
-			Options<char> opt((char)alt, val);
-			preferences.push_back(opt);
+
+			Options opt( alt.toStdString( ), false, val );
+
+			preferences.push_back( opt );
 		}
-		if(prefSize<preferences.size())
-			prefSize=preferences.size();
-		listofagents.push_back(Agent<char> ( preferences, id.toStdString()));
+
+        if( prefSize<static_cast<int>( preferences.size( ) ) )
+
+			prefSize = static_cast<int>( preferences.size( ) );
+
+		listofagents.push_back( Agent( preferences, id.toStdString( ) ) );
 	}
 
-	std::vector<SocialPrefNode<char>> graph = logic->run_project(listofagents);
-	logic->setListofagents(listofagents);
-	ui->row_size_input->setValue(listofagents.size());
-	ui->column_size_input->setValue(prefSize);
-	file.close();
+    //std::vector<SocialPrefNode> graph = logic.run_project( listofagents );
+    Graph graph = logic.run_project( listofagents );
 
+    logic.setListofagents( listofagents );
+
+	ui -> row_size_input -> setValue( static_cast<int>( listofagents.size( ) ) ) ;
+
+	ui -> column_size_input -> setValue( prefSize );
+
+	file.close( );
 
 	scene -> clear( );
 
-	logic -> show_graph( graph, scene );
+    logic.show_graph( graph, scene );
 
-	logic -> rank();
+    logic.rank( );
 }
 
-void MainWindow::on_actionimport_triggered(){
+void MainWindow::on_actionimport_triggered( ){
 
-	delete logic;
+	if( window!= nullptr ){
+		window->close();
+	}
 
-	logic = new Program_Logic<char>();
 
-	QString filename = QFileDialog::getOpenFileName(this,
-	tr("Open Address Book"), "",
-	tr("Address Book (*.csv);;All Files (*)"));
+	QString filename = QFileDialog::getOpenFileName( this, tr( "Open Address Book" ), " ", tr( "Address Book( *.csv );; All Files( * )" ) );
 
-	QFile file(filename);
+	QFile file( filename );
 
-	if(!file.open(QIODevice::ReadOnly))
-	{
-		std::cout << "Could not open " << filename.toStdString() << std::flush;
+	if( !file.open( QIODevice::ReadOnly ) ){
+
+		std::cout << "Could not open " << filename.toStdString( ) << std::flush;
+
+		// Hum...
 		return;
 	}
 
-	QDataStream in(&file);
-	in.setVersion(QDataStream::Qt_5_1);
+	QDataStream in( &file );
+	in.setVersion( QDataStream::Qt_5_1 );
 
+	std::vector<Agent> listofagents{ };
 
-	std::vector<Agent<char>> listofagents;
-	QString entrada;
+	QString entrada{ };
+
 	int bufferSize = 100;
-	char buffer[bufferSize];
-	while(!in.atEnd()){
-		int size;
-		size = in.readRawData(buffer,bufferSize);
-		if(size<bufferSize)
-			for(int i=size;i<bufferSize;i++)
-				buffer[i] = 0;
-		entrada += QString(buffer);
+
+	// TODO: See how to deal with this
+	char buffer[ bufferSize ];
+
+	while( !in.atEnd( ) ){
+
+		int size{ };
+
+		size = in.readRawData( buffer, bufferSize );
+
+		if( size < bufferSize )
+
+			for( int i = size; i < bufferSize; i++ )
+
+				buffer[ i ] = 0;
+
+		entrada += QString( buffer );
 	}
+	if(entrada.size()>0){
 
-	QStringList listStringNode = entrada.split(QString("\n"));
-	QStringList listStringHeader = listStringNode.at(0).split(QString(";"));
+        // delete logic;
 
-	std::vector<Options<char>> preferences;
-	int prefSize = 0;
-	for(int i = 1; i<listStringNode.size()-1 ; i++){
+        logic = Program_Logic<char>( );
 
-		QString stringNode = listStringNode.at(i);
-		QStringList listStringOpts = stringNode.split(QString(";"));
-		QString id = listStringOpts.at(0);
+		QStringList listStringNode = entrada.split( QString( "\n" ) );
+		QStringList listStringHeader = listStringNode.at( 0 ).split( QString( ";" ) );
 
-		std::vector<Options<char>> preferences;
-		for(int j = 1; j<listStringOpts.size() ; j++){
-			char id = '_';
-			if(j<listStringHeader.size())
-			 id = listStringHeader.at(j).toStdString()[0];
-			int val = listStringOpts.at(j).toInt();
+		std::vector<Options> preferences{ };
 
+		int prefSize{ 0 };
 
-			Options<char> opt(id, val);
-			preferences.push_back(opt);
+		for( int i = 1; i < listStringNode.size( ) - 1; i++ ){
+
+			QString stringNode = listStringNode.at( i );
+
+			QStringList listStringOpts = stringNode.split( QString( ";" ) );
+
+			QString id = listStringOpts.at( 0 );
+
+			std::vector<Options> preferences{ };
+
+			for( int j = 1; j < listStringOpts.size( ) ; j++ ){
+
+				std::string id = "_";
+
+				if( j < listStringHeader.size( ) )
+
+					id = listStringHeader.at( j ).toStdString( );
+				if(j == listStringOpts.size( )-1)
+					id.resize(id.size()-1);
+				int val = listStringOpts.at( j ).toInt( );
+
+				Options opt( id, false, val );
+
+				preferences.push_back( opt );
+			}
+
+			if( prefSize < static_cast<int>( preferences.size( ) ) )
+
+				prefSize = static_cast<int>( preferences.size( ) );
+
+			listofagents.push_back( Agent( preferences, id.toStdString( ) ) );
 		}
-		if(prefSize<preferences.size())
-			prefSize=preferences.size();
-		listofagents.push_back(Agent<char> ( preferences, id.toStdString()));
+
+        //std::vector<SocialPrefNode> graph = logic.run_project( listofagents );
+        Graph graph = logic.run_project( listofagents );
+
+        logic.setListofagents( listofagents );
+
+		ui -> row_size_input -> setValue( static_cast<int>( listofagents.size( ) ) );
+		ui -> column_size_input -> setValue( prefSize );
+
+		scene -> clear( );
+
+        logic.show_graph( graph, scene );
+
+        logic.rank( );
 	}
-
-	std::vector<SocialPrefNode<char>> graph = logic->run_project(listofagents);
-	logic->setListofagents(listofagents);
-
-	ui->row_size_input->setValue(listofagents.size());
-	ui->column_size_input->setValue(prefSize);
-
-	file.close();
-
-	scene -> clear( );
-
-	logic -> show_graph( graph, scene );
-
-	logic -> rank();
-
+	file.close( );
 }
 
-void MainWindow::on_actionExport_triggered()
-{
-	QString filename = QFileDialog::getSaveFileName(this,
-	tr("Save Address Book"), "",
-	tr("Address Book (*.csv);;All Files (*)"));
-	QFile file(filename);
+void MainWindow::on_actionExport_triggered( ){
 
-	if(!file.open(QIODevice::WriteOnly))
-	{
-		std::cout << "Could not open " << filename.toStdString() << std::flush;
+	QString filename = QFileDialog::getSaveFileName( this, tr( "Save Address Book" ), "", tr( "Address Book( *.csv );; All Files( * )" ) );
+
+	QFile file( filename );
+
+	if( !file.open( QIODevice::WriteOnly ) ){
+
+		std::cout << "Could not open " << filename.toStdString( ) << std::flush;
+
+		// Hum...
 		return;
 	}
-	file.close();
-	std::ofstream myfile;
-	myfile.open (filename.toStdString());
 
-	std::vector<Agent<char>> listofagents;
-	std::string saida("");
-	std::vector<Agent<char>> listAgent = logic->get_list_of_agents();
+	file.close( );
+
+	std::ofstream myfile{ };
+
+	myfile.open( filename.toStdString( ) );
+
+	std::vector<Agent> listofagents{ };
+
+	std::string saida( "" );
+
+    //std::vector<Agent> listAgent = logic.get_list_of_agents( );
+    Population listAgent = logic.get_list_of_agents( );
+
 	saida += "idAgents\\idOptions";
-	std::vector<Options<char>> preferencesaux;
-	for(Options<char> opt : listAgent.at(0).get_preferences()){
-		saida += ";";
-		saida += opt.get_alternatives();
-	}
-	for(Agent<char> agent : listAgent){
-		saida += "\n";
-		std::string str = agent.get_id();
-		saida += str;
-		for(Options<char> opt : agent.get_preferences()){
+	if(listAgent.size()>0){
+		std::vector<Options> preferencesaux{ };
+
+		for( Options opt : listAgent.at( 0 ).get_preferences( ) ){
+
 			saida += ";";
-			saida += QString::number(opt.get_value()).toStdString();
+			saida += opt.get_opt( );
 		}
+
+		for( Agent agent : listAgent ){
+
+			saida += "\n";
+
+			std::string str = agent.get_id( );
+
+			saida += str;
+
+			for( Options opt : agent.get_preferences( ) ){
+
+				saida += ";";
+				saida += QString::number( opt.get_value( ) ).toStdString( );
+			}
+		}
+
+		myfile << saida << "\n";
 	}
-
-	myfile << saida << "\n";
-
-
-	myfile.close();
-
+	myfile.close( );
 }
 
-void MainWindow::on_actionAgents_triggered(){
+void MainWindow::on_actionAgents_triggered( ){
 
-	if(window!=NULL)
+	if( window!= nullptr ){
 		delete window;
+	}
 
-	window = new QWidget();
+	window = new QWidget( );
 
-	window->resize(320, 240);
+	window -> resize( 320, 240 );
+	window -> setWindowTitle( "Agents" );
+	window -> show( );
 
-	window->setWindowTitle("Agents");
+	// Check for DELETE
+	QVBoxLayout* layout = new QVBoxLayout;
 
-	window->show();
+	window -> setLayout( layout );
 
-	QVBoxLayout *layout = new QVBoxLayout;
+	// Check for DELETE
 
-	window->setLayout(layout);
+	QStringList columnNames;
 
-	tree = new TreeWidget(window,2);
+	columnNames << "Name" << "Value";
 
-	layout -> addWidget(tree->getTree());
+	tree = new TreeWidget( window, columnNames );
 
-	for( Agent<char> a: logic->get_list_of_agents()){
+	layout -> addWidget( tree -> getTree( ) );
 
-		QTreeWidgetItem * agentItem = tree->addTreeRoot( QString::fromStdString(a.get_id()) , "Agent" );
+    for( Agent a: logic.get_list_of_agents( ) ){
 
-		for( Options<char> opt : a.get_sorted_preferences() ){
-			std::string alternId{ opt.get_alternatives() };
-			QTreeWidgetItem * optionItem = tree->addTreeChild( agentItem , QString::fromStdString(alternId) , "Alternative");
-			tree->addTreeChild( optionItem , QString::number(opt.get_value()) , "Value" );
+		QTreeWidgetItem* agentItem = tree -> addTreeRoot( QString::fromStdString( a.get_id( ) ) , "" );
+
+		a.sort_preferences( );
+
+		for( Options opt : a.get_preferences( ) ){
+
+			std::string alternId{ opt.get_opt( ) };
+
+			tree -> addTreeChild( agentItem , QString::fromStdString( alternId ) , QString::number( opt.get_value( ) ) );
+
 		}
 	}
 }
 
+void MainWindow::on_actionSocial_Preferencies_triggered( ){
 
-void MainWindow::on_actionSocial_Preferencies_triggered(){
-
-	if(window!=NULL)
+	if( window!= nullptr ){
 		delete window;
+	}
 
-	window = new QWidget();
+	window = new QWidget( );
 
-	window->resize(320, 240);
+	window -> resize( 320, 240 );
 
-	window->setWindowTitle("Social Preferences");
+	window -> setWindowTitle( "Social Preferences" );
 
-	window->show();
+	window -> show( );
 
-	QVBoxLayout *layout = new QVBoxLayout;
+	// Check for { } default initialization
+	QVBoxLayout* layout = new QVBoxLayout{ };
 
-	window->setLayout(layout);
+	window -> setLayout( layout );
 
-	tree = new TreeWidget(window,2);
+	QStringList columnNames;
 
-	layout -> addWidget(tree->getTree());
-	if(logic->getSocialPrefGraph())
-		for( SocialPrefNode<char> opt: *(logic->getSocialPrefGraph())){
+	columnNames << "Name" << "Value";
 
-			std::string alternId{ opt.get_id() };
-			QTreeWidgetItem * optItem = tree->addTreeRoot( QString::fromStdString(alternId) , "Alternative" );
+	tree = new TreeWidget( window, columnNames );
 
-			QTreeWidgetItem * prefItem = tree->addTreeChild( optItem , "Preferred" , "Relation");
+	layout -> addWidget( tree -> getTree( ) );
 
-			for( SocialPrefNode<char> * preferred : logic->spnGetFromList(opt.get_preferences()) ){
+    if( logic.getSocialPrefGraph( ) )
+	{
+		QBrush brush_green(Qt::green);
+		QBrush brush_blue(Qt::blue);
+		QBrush brush_red(Qt::red);
+        for( SocialPrefNode opt: *( logic.getSocialPrefGraph( ) ) ){
+
+			std::string alternId = opt.get_id();
+
+			QTreeWidgetItem* optItem = tree -> addTreeRoot( QString::fromStdString( alternId ) , "" );
+
+            for( SocialPrefNode* preferred : logic.spnGetFromList( opt.get_preferences( ) ) ){
+
 				std::string alternIdAux{ preferred->get_id() };
-				tree->addTreeChild( prefItem , QString::fromStdString(alternIdAux) , "Alternative");
+
+				tree -> addTreeChild( optItem , QString::fromStdString(preferred->get_id()) , "Preferred" )->setBackground(0, brush_green);
 			}
 
-			QTreeWidgetItem * worseItem = tree->addTreeChild( optItem , "Worse" , "Relation");
+            for( SocialPrefNode* worse : logic.spnGetFromList( opt.get_worse( ) ) ){
 
-			for( SocialPrefNode<char> * worse : logic->spnGetFromList(opt.get_worse()) ){
-				std::string alternIdAux{ worse->get_id() };
-				tree->addTreeChild( worseItem , QString::fromStdString(alternIdAux) , "Alternative");
+				std::string alternIdAux{ worse->get_id( ) };
+
+				tree -> addTreeChild( optItem , QString::fromStdString(worse->get_id()) , "Worse" )->setBackground(0, brush_red);
 			}
 
-			QTreeWidgetItem * equalItem = tree->addTreeChild( optItem , "Equal" , "Relation");
+            for( SocialPrefNode* equal : logic.spnGetFromList( opt.get_indiff( ) ) ){
 
-			for( SocialPrefNode<char> * equal : logic->spnGetFromList(opt.get_indiff()) ){
-				std::string alternIdAux{ equal->get_id() };
-				tree->addTreeChild( equalItem , QString::fromStdString(alternIdAux) , "Alternative");
+				std::string alternIdAux{ equal -> get_id( ) };
+
+				tree -> addTreeChild( optItem , QString::fromStdString(equal->get_id()) , "Equal" )->setBackground(0, brush_blue);
 			}
 		}
+	}
 }

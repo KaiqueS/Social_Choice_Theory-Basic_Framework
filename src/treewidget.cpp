@@ -1,41 +1,52 @@
 #include "treewidget.h"
 
-
-TreeWidget::TreeWidget(QWidget* parent, int columns){
+TreeWidget::TreeWidget( QWidget* parent, QStringList columnNames ){
 
 	tree = new QTreeWidget( parent );
 
-	tree->setColumnCount(columns);
+	tree->setHeaderLabels(columnNames);
 
-	tree->show();
+    tree -> show( );
 
 }
 
-TreeWidget::~TreeWidget()
+TreeWidget::TreeWidget(QWidget* parent, int column)
 {
-	delete tree;
+	tree = new QTreeWidget( parent );
+
+	tree->setColumnCount(column);
+
+	tree -> show( );
 }
 
-QTreeWidgetItem * TreeWidget::addTreeRoot(QString name, QString description){
+TreeWidget::~TreeWidget( ){
 
-	QTreeWidgetItem *treeItem = new QTreeWidgetItem( tree );
-	treeItem->setText(0, description);
-	treeItem->setText(1, name);
+    delete tree;
+}
+
+QTreeWidgetItem* TreeWidget::addTreeRoot( QString name, QString description ){
+
+    QTreeWidgetItem* treeItem = new QTreeWidgetItem( tree );
+
+	treeItem -> setText( 0, name );
+	treeItem -> setText( 1, description );
+
+    return treeItem;
+}
+
+QTreeWidgetItem* TreeWidget::addTreeChild( QTreeWidgetItem* parent, QString name, QString description ){
+
+    QTreeWidgetItem* treeItem = new QTreeWidgetItem( );
+
+	treeItem -> setText( 0, name );
+	treeItem -> setText( 1, description );
+
+    parent -> addChild( treeItem );
+
 	return treeItem;
 }
 
-QTreeWidgetItem * TreeWidget::addTreeChild(QTreeWidgetItem *parent, QString name, QString description){
+QTreeWidget* TreeWidget::getTree( ) const{
 
-	QTreeWidgetItem *treeItem = new QTreeWidgetItem();
-
-	treeItem->setText(0, description);
-	treeItem->setText(1, name);
-
-	parent->addChild(treeItem);
-	return treeItem;
-}
-
-QTreeWidget* TreeWidget::getTree() const
-{
-	return tree;
+    return tree;
 }
