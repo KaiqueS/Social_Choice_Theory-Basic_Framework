@@ -28,7 +28,7 @@ This value, or weight, makes it possible to represent an ordering of those prefe
 
 If A > B, then, one can conclude that x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then, one can infer that, for the respective profile, x = y, which can be interpreted as: the agent i is *Indifferent* between x and y.
 
-Those values/weights should be taken as a purely ***ordinal*** way of ordering preferences for every agent. Their are meaningless when taken cardinally. Also, they allow for the **Indifference** relation to be represented.
+Those values/weights should be taken as a purely ***ordinal*** way of ordering preferences for every agent. They are meaningless when taken for its cardinality. Also, they allow for the **Indifference** relation to be represented.
 
 <p><li><strong>Social Choice Rank</strong></li>
 
