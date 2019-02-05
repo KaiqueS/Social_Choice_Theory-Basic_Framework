@@ -99,9 +99,27 @@ void johnson( Graph& graph ){
 
 Profile make_social_order( Population& population ){
 
-    Profile result{ };
+	Profile socialorder{ };
 
-    return result;
+	initialize_opts( population, socialorder );
+
+	population.order_preferences( );
+
+    for( std::vector<int>::size_type i = 0; i < population.size( ); ++i ){
+
+        for( std::vector<int>::size_type j = 0; j < population[ i ].get_preferences( ).size( ); ++j ){
+
+			for( std::vector<int>::size_type k = 0; k < socialorder.size( ); ++k ){
+
+				if( socialorder[ k ].get_opt( ) == population[ i ][ j ].get_opt( ) ){
+
+					socialorder[ k ] += ( static_cast<int>( ( socialorder.size( ) - j ) / 4 ) );
+				}
+			}
+        }
+    }
+
+	return socialorder;
 }
 
 // Makes a social order from a Pairwise Rank of alternatives

@@ -92,7 +92,7 @@ PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
 
 bool operator<( PairWiseRank& left, PairWiseRank& right ){
 
-    return ( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) < ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) );
+    return( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) < ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) );
 }
 
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank ){

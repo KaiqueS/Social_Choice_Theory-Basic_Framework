@@ -15,10 +15,10 @@ public:
 
     // Constructors & Destructor
     Agent( );
-    Agent( std::vector<Options> list, std::string tag );
+    Agent( Profile list, std::string tag );
     Agent( const Agent& copy );
 
-    ~Agent( ){ /*std::cout << "Agent " << id << " destructed.\n\n";*/ }
+    ~Agent( );
 
     // Setters
     void set_preferences( Preferencematrix& prefmatrix );
@@ -47,7 +47,5 @@ private:
 };
 
 std::ostream& operator<<( std::ostream& os, Agent& agt );
-
-void initialize_agents( std::vector<Agent>& listofagents, Preferencematrix newmtx );
 
 #endif // AGENT_H

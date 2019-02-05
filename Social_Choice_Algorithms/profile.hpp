@@ -40,11 +40,8 @@ public:
     bool empty( );
 
     void push_back( Options opt ){ alternatives.push_back( opt ); }
-
-	void clear( ){ alternatives.clear( ); }
-
+    void clear( ){ alternatives.clear( ); }
     void insert( std::vector<Options>::iterator pos, Options& opt ){ alternatives.insert( pos, opt ); }
-
     void erase( const int index ){ alternatives.erase( begin( ) + index ); }
 
 private:
@@ -52,6 +49,7 @@ private:
     std::vector<Options> alternatives{ };
 };
 
+// Non-Member Helpers
 std::ostream& operator<<( std::ostream& os, Profile& profile );
 
 bool operator==( const Profile& lhs, const Profile& rhs );

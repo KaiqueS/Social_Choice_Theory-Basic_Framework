@@ -37,6 +37,13 @@ Preferencematrix::Preferencematrix( const Preferencematrix& copymatrix ){
     matrix = copymatrix.matrix;
 }
 
+Preferencematrix::~Preferencematrix( ){
+
+	clear( );
+
+	std::vector<Profile>( ).swap( matrix );
+}
+
 /* Setters */
 
 void Preferencematrix::set_rowsz( std::vector<int>::size_type row ){ rowsize = row; }

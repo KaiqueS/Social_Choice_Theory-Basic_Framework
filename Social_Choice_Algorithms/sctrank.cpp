@@ -12,6 +12,13 @@ Rank::Rank( std::vector<PairWiseRank> ordering ){ ranking = ordering; }
 // Copy constructor
 Rank::Rank( const Rank& copy ){ ranking = copy.ranking; }
 
+Rank::~Rank( ){
+
+    clear( );
+
+    std::vector<PairWiseRank>( ).swap( ranking );
+}
+
 /// Setters
 
 void Rank::set_rank( PairWiseRank pair ){ ranking.push_back( pair ); }

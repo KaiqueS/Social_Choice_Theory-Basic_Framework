@@ -53,6 +53,15 @@ Profile& sct::Qualified_majority_rule::operator( )( Rank& rank ){
     return winnerset;
 }
 
+Profile& sct::Simple_majority_rule::Procedure::operator( )( Population& population ){
+
+    winnerset = make_social_order( population );
+
+    std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
+
+    return winnerset;
+}
+
 /// Counting Rules
 
 Profile& sct::Borda_count::operator( )( Population& population ){
@@ -78,6 +87,13 @@ Profile& sct::Borda_count::operator( )( Population& population ){
         }
     }
 
+    auto order = [ ]( Options& left, Options& right ){
+
+        return left.get_value( ) > right.get_value( );
+    };
+
+    std::sort( winnerset.begin( ), winnerset.end( ), order );
+
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
 
     // TODO: make graph according to borda count before returning graph
@@ -87,7 +103,30 @@ Profile& sct::Borda_count::operator( )( Population& population ){
 
 Profile& sct::Borda_count::operator( )( Rank& rank ){
 
+	winnerset = make_social_order( rank );
 
+	for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+		winnerset[ i ].set_value( 0 );
+	}
+
+	for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
+
+		for( std::vector<int>::size_type j = 0; j < winnerset.size( ); ++j ){
+
+			if( winnerset[ j ].get_opt( ) == rank[ i ].get_optx( ).get_opt( ) ){
+
+				winnerset[ j ] += rank[ i ].get_xval( );
+			}
+
+			else if( winnerset[ j ].get_opt( ) == rank[ i ].get_opty( ).get_opt( ) ){
+
+				winnerset[ j ] += rank[ i ].get_yval( );
+			}
+		}
+	}
+
+	return winnerset;
 }
 
 // DEPRECATED

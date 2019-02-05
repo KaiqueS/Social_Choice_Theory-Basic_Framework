@@ -11,7 +11,7 @@ Agent::Agent( ){
 }
 
 // Parameterized Constructor
-Agent::Agent( std::vector<Options> list, std::string name ){
+Agent::Agent( Profile list, std::string name ){
 
     preferences = list;
 
@@ -24,6 +24,13 @@ Agent::Agent( const Agent& copy ){
     preferences = copy.preferences;
 
     id = copy.id;
+}
+
+Agent::~Agent( ){
+
+    preferences.clear( );
+
+    std::vector<Options>( ).swap( preferences.get_alternatives( ) );
 }
 
 /* Setters */
@@ -100,15 +107,4 @@ std::ostream& operator<<( std::ostream& os, Agent& agt ){
         os << "( " << opt << " )";
 
     return os;
-}
-
-void initialize_agents( std::vector<Agent>& listofagents, Preferencematrix newmtx ){
-
-    std::vector<int>::size_type listsize = listofagents.size( );
-
-    for( std::vector<int>::size_type i = 0; i < listsize; ++i ){
-
-        listofagents[ i ].set_id( std::to_string( i ) );
-        listofagents[ i ].set_preferences( newmtx );
-    }
 }

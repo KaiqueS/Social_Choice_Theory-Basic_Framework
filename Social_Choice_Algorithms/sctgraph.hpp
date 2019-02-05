@@ -18,7 +18,7 @@ public:
     Graph( std::vector<SocialPrefNode> vertices );
     Graph( const Graph& copy );
 
-	~Graph( ){ nodes.clear( ); }
+    ~Graph( );
 
     // Setters
     void set_graph( std::vector<SocialPrefNode> vertices );
@@ -38,6 +38,7 @@ public:
     void initialize_graph( Preferencematrix& mtx );
     void make_graph( Preferencematrix& mtx, Rank& rank );
     void push_back( SocialPrefNode& node ){ nodes.push_back( node ); }
+    void clear( ){ nodes.clear( ); }
 
     std::vector<int>::size_type size( ){ return nodes.size( ); }
 

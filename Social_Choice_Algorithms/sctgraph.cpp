@@ -8,15 +8,16 @@ Graph::Graph( ){ nodes = { }; }
 Graph::Graph( SocialPrefNode node ){ nodes.push_back( node ); }
 
 // Parameterized constructor
-Graph::Graph( std::vector<SocialPrefNode> vertices ){
-
-    nodes = vertices;
-}
+Graph::Graph( std::vector<SocialPrefNode> vertices ){ nodes = vertices; }
 
 // Copy constructor
-Graph::Graph( const Graph& vertices ){
+Graph::Graph( const Graph& vertices ){ nodes = vertices.nodes; }
 
-    nodes = vertices.nodes;
+Graph::~Graph( ){
+
+    clear( );
+
+    std::vector<SocialPrefNode>( ).swap( nodes );
 }
 
 /// Setters
@@ -146,7 +147,7 @@ void Graph::make_graph( Preferencematrix& mtx, Rank& rank ){
                                 nodes[ j ].set_worse( nodes[ k ] );
                         }
                     }
-            }
+                }
 
                 // if x < y
                 else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) ){
@@ -162,17 +163,17 @@ void Graph::make_graph( Preferencematrix& mtx, Rank& rank ){
                         }
                     }
 
-                // Else if graph[ j ] == y, set preferences = y
-                else if( nodes[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
+                    // Else if graph[ j ] == y, set preferences = y
+                    else if( nodes[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
 
-                    for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
+                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
 
-                        if( nodes[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
+                            if( nodes[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
 
-                            nodes[ j ].set_pref( nodes[ k ] );
+                                nodes[ j ].set_pref( nodes[ k ] );
+                        }
                     }
                 }
-            }
 
                 // if x == y
                 else if( rank[ i ].get_xval( ) == rank[ i ].get_yval( ) ){

@@ -67,6 +67,8 @@ bool Profile::empty( ){
         return false;
 }
 
+/// Non-Member Helpers
+
 std::ostream& operator<<( std::ostream& os, Profile& profile ){
 
     for( std::vector<int>::size_type i = 0; i < profile.get_alternatives( ).size( ); ++i ){

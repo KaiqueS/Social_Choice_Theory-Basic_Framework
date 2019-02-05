@@ -1,8 +1,95 @@
 #include "sctheory.hpp"
 
+// Remember: function will be a functor, which, in turn, will return a profile of preferences, so
+// one has to guarantee that the parameter function will return something that have the below nec
+// essary methods, like, e.g., .size( ).
+
 // Checks if the pareto principle is violated or not - Working(?) - TODO: Check for transitivity problems
 // TODO: overload pareto principle so that it only deals with graph or rank, but not both
-bool pareto_principle( Graph& graph , Rank& rank, Profile& procedure ){
+bool SCT::Pareto_Principle::operator( )( sct::Procedure& procedure ){
+
+    Options pareto{ };
+
+    bool validity{ true };
+
+    Profile winner = procedure( rank );
+
+    std::vector<int>::size_type ranksize = winner.size( );
+
+    // Reads PairWiseRank. Since it considers how each pair is being ranked on every individual
+    // profile of preferences WITHOUT being a social order, one can proceed as follows:
+    for( std::vector<int>::size_type i = 0; i < ranksize; ++i ){
+
+        // Get an option in rank
+        // TODO: implement something to make it possible for optx or opty to be selected randomly
+        Options opt( rank[ i ].get_optx( ).get_opt( ), false, 0  );
+
+        // Get every option in rank
+        for( PairWiseRank pair : rank ){
+
+            // Check if opt is equal to one of the alternatives in pair
+            if( opt.get_opt( ) == pair.get_optx( ).get_opt( ) ){
+
+                // If it is, then check if opt beats its adversary
+                if( pair.get_xval( ) > pair.get_yval( ) ){
+
+                    // If it beats, then increment the value of opt
+                    ++opt;
+                }
+            }
+
+            else if( opt.get_opt( ) == pair.get_opty( ).get_opt( ) ){
+
+                if( pair.get_xval( ) < pair.get_yval( ) ){
+
+                    ++opt;
+                }
+            }
+        }
+
+        // If it is the case that opt is UNANIMOUSLY select by the agents
+        if( opt.get_value( ) == static_cast<int>( ranksize ) - 1 ){
+
+            // Make pareto = opt
+            pareto = opt;
+        }
+
+        // PROBLEM HERE: Think about some way of using this else to report relevant message
+        else{
+
+            //pareto = Options( "NULL", -1 );
+
+            continue;
+        }
+    }
+
+    // Now, the second part: If there is a pareto option
+    if( pareto.get_opt( ) != "NULL" ){
+
+        // Get the first element of socialorder. Remember, this vector ir ordered from the most to
+        // the least preferred alternative
+        std::vector<Options, std::allocator<Options>>::iterator index = winner.begin( );
+
+        // If it is the case that pareto equals the first element of socialorder
+        if( pareto.get_opt( ) == index -> get_opt( ) ){
+
+            // Then the axiom is not being violated
+            validity = true;
+        }
+
+        // Else, it is being violated
+        else if( pareto.get_opt( ) != index -> get_opt( ) ){
+
+            validity = false;
+        }
+    }
+
+    // Returns final validity
+    return validity;
+}
+
+
+/*bool SCT::pareto_principle( Graph& graph , Rank& rank, Profile& procedure ){
 
     Options pareto{ };
 
@@ -81,21 +168,106 @@ bool pareto_principle( Graph& graph , Rank& rank, Profile& procedure ){
     // Returns final validity
     return validity;
 }
+*/
 
 // Checks if , for any x, y, and z, the relation between x and y is modified by
 // the relation between x and z or y and z in the social ranking
 // TODO: maybe a bool key? The same as validity above
 // TODO: remember to pass a PROCEDURE as argument
-bool irrelevant_alternatives( Preferencematrix& mtx, std::vector<Agent>& people ){
+bool SCT::Irrelevant_Alternatives::operator( )( sct::Procedure& procedure ){
+
+    // THIS IS GAMBIARRAAAAAAAAAAAAAAAAAAAAA
+    Population& people = this -> population;
+
+    bool validity{ true };
+
+    // generate a second profile R' of preferences
+    Preferencematrix primeMtx( matrix.get_rowsz( ), matrix.get_columnsz( ) );
+
+    Population population( primeMtx.size( ) );
+
+    population.initialize_population( primeMtx );
+
+    // To optmize: search for the way to falsify the axiom -> check for the case where
+    // the condition is true, but the consequence is false
+
+    // Sort agents preferences according to value, will make things here easier
+    for( std::vector<int>::size_type i = 0; i < people.size( ) && population.size( ); ++i ){
+
+        people[ i ].sort_preferences( );
+        population[ i ].sort_preferences( );
+    }
+
+    // if it is the case that, for any two alternatives x and y, and for every person i
+    // xRiy iff xR'iy
+    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
+
+        for( std::vector<int>::size_type j = 0; j < population.size( ); ++j ){
+
+            if( people[ i ].get_preferences( ) != population[ j ].get_preferences( ) ){
+
+                validity = true;
+
+                return validity;
+            }
+
+            // A SHITPOINT, BERG, BE CAREFUL
+            else
+
+                validity = false;
+        }
+    }
+
+    // TODO: workaround below
+
+    Population newpop( people );
+
+    Rank rank{ };
+    rank.generate_ranking( newpop );
+
+    Rank primerank{ };
+    primerank.generate_ranking( newpop );
+
+    // END of workaround
+
+    Graph graph{ };
+    graph.make_graph( matrix, rank );
+
+    Graph primegraph{ };
+    primegraph.make_graph( primeMtx, rank );
+
+    // then, generate a social order for each profile and check if x and y are ranked equally in both profiles
+    // TODO: this should compare the social orders generated by an ARBITRARY aggregation procedure. REMEMBER to
+    // allow for user-specified procedure later
+    // NOTE: Q_Majority_rule used for debug purposes only
+    if( procedure( rank ) == procedure( primerank ) ){
+
+        // If that is the case, the axiom is not being violated, return true
+        validity = true;
+
+        return validity;
+    }
+
+    // Else, the axiom is being violated, return false
+    // TODO: Print something here, to let one know what was wrong
+    else{
+
+        validity = false;
+
+        return validity;
+    }
+}
+
+bool SCT::irrelevant_alternatives( Preferencematrix& mtx, Population& people ){
 
     bool validity{ true };
 
     // generate a second profile R' of preferences
     Preferencematrix primeMtx( mtx.get_rowsz( ), mtx.get_columnsz( ) );
 
-    std::vector<Agent> population( primeMtx.get_matrix( ).size( ) );
+    Population population( primeMtx.get_matrix( ).size( ) );
 
-    initialize_agents( population, primeMtx );
+    population.initialize_population( primeMtx );
 
     // To optmize: search for the way to falsify the axiom -> check for the case where
     // the condition is true, but the consequence is false
@@ -171,15 +343,15 @@ bool irrelevant_alternatives( Preferencematrix& mtx, std::vector<Agent>& people 
 // If is that the case that another person also prefers x to y, then the clause is not
 // valid
 // TODO: revise this
-bool non_dictatorship( std::vector<Agent>& people, Rank& rank, Graph& graph ){
+bool SCT::non_dictatorship( Population& people, Rank& rank, Graph& graph ){
 
     for( std::vector<int>::size_type i = 0; i < people.size( ); ++i )
 
         people[ i ].sort_preferences( );
 
-    std::vector<Options> dictatedopts{ };
+    Profile dictatedopts{ };
 
-    std::vector<Agent> dictators{ };
+    Population dictators{ };
 
     // TODO: revise this. Maybe there is a case where x == y == 1, since there is repe
     // tition in pairwiserank
@@ -249,7 +421,7 @@ bool non_dictatorship( std::vector<Agent>& people, Rank& rank, Graph& graph ){
 
 // TODO: use this only for the case where there are only three alternatives,
 // so -> check rank and graph sizes, then check for condorcerity
-bool condorcet_paradox( Rank& rank, Graph& graph ){
+bool SCT::condorcet_paradox( Rank& rank, Graph& graph ){
 
     int selection{ };
 
@@ -379,7 +551,7 @@ bool condorcet_paradox( Rank& rank, Graph& graph ){
     return true;
 }
 
-bool is_singlePeaked( Rank& rank, Graph& graph ){
+bool SCT::is_single_peaked( Rank& rank, Graph& graph ){
 
 
 }
@@ -387,15 +559,11 @@ bool is_singlePeaked( Rank& rank, Graph& graph ){
 // If not true: analyze the profiles of preferences, both individual and social, then search for some kind of structure,
 // i.e., single peakedness degree, individual impact on social profile, etc.
 // If true, search for single peakedness or known structures/feats that causes the truthness
-bool arrow_impossibility( std::vector<Agent>& listofagents, Preferencematrix& mtx , Rank& rank, Graph& graph, sct::Procedure& procedure( Population& agts ) ){
+bool SCT::arrow_impossibility( Population& pop, Preferencematrix& mtx , Rank& rank, Graph& graph, sct::Procedure& procedure ){
 
     bool validity{ true };
 
-    Population pop = listofagents;
-
-    sct::Borda_count borda{};
-
-    borda( pop );
+    sct::Borda_count borda{ };
 
     Profile newprof = borda( pop );
     // If it is the case that every conditions is satisfied, then, check the structure of the preferences for single-
@@ -408,14 +576,14 @@ bool arrow_impossibility( std::vector<Agent>& listofagents, Preferencematrix& mt
         std::cout << "Pareto principle violated.\n";
     }
 
-    if( irrelevant_alternatives( mtx, listofagents ) == false ){
+    if( irrelevant_alternatives( mtx, pop ) == false ){
 
         validity = false;
 
         std::cout << "Irrelevant alternatives violated.\n";
     }
 
-    if( non_dictatorship( listofagents, rank, graph ) == false ){
+    if( non_dictatorship( pop, rank, graph ) == false ){
 
         validity = false;
 

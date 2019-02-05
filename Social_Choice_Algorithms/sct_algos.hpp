@@ -31,6 +31,10 @@ class Procedure{
         //Profile& operator( )( Graph& graph );
         Profile& operator( )( Population& population );
         Profile& operator( )( Rank& rank );
+
+    private:
+
+        Profile winnerset{ };
     };
 
 class Qualified_majority_rule : public Procedure{
@@ -48,6 +52,21 @@ class Qualified_majority_rule : public Procedure{
 
         Profile winnerset{ };
     };
+
+class Simple_majority_rule : public Procedure{
+
+    public:
+
+        Simple_majority_rule( ){ }
+		~Simple_majority_rule( ){ }
+
+        //Profile& operator( )( Population& population );
+        //Profile& operator( )( Rank& rank );
+
+    private:
+
+        Profile winnerset{ };
+};
 
 class Borda_count : public Procedure{
 

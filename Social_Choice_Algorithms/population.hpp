@@ -39,6 +39,9 @@ public:
 
     void order_preferences( );
 
+    void push_back( Agent& agt ){ population.push_back( agt ); }
+    void pop_back( ){ population.pop_back( ); }
+
 private:
 
     std::vector<Agent> population{ };

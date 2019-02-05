@@ -38,6 +38,8 @@ Population& Population::operator=( const Population& copy ){
 
 /// Helpers
 
+bool Population::empty( ){ return population.empty( ); }
+
 void Population::initialize_population( Preferencematrix mtx ){
 
 	if( population.empty( ) )

@@ -23,7 +23,7 @@ public:
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx );
     Preferencematrix( const Preferencematrix& copymatrix );
 
-    ~Preferencematrix( ){ /*std::cout << "Matrix destructed.\n\n";*/ }
+	~Preferencematrix( );
 
 	// Setters
     void set_rowsz( std::vector<int>::size_type row );
@@ -36,7 +36,7 @@ public:
     std::vector<int>::size_type get_columnsz( ){ return columnsize; }
 
     // Return a reference instead?
-    std::vector<Profile> get_matrix( ){ return matrix; }
+	std::vector<Profile> get_matrix( ){ return matrix; }
 
 	// Operators
     Profile& operator[ ]( const std::vector<int>::size_type& position ){ return matrix[ position ]; }
@@ -46,14 +46,22 @@ public:
 	bool operator==( const Preferencematrix& rhs ) const;
 
 	// Helpers
+	std::vector<int>::size_type size( ){ return matrix.size( ); }
+
+	std::vector<Profile, std::allocator<Profile>>::iterator begin( ){ return matrix.begin( ); }
+	std::vector<Profile, std::allocator<Profile>>::iterator end( ){ return matrix.end( ); }
+
 	void delete_row( int rowindex );
 
-    std::vector<int>::size_type size( ){ return matrix.size( ); }
+	void push_back( Profile& profile ){ matrix.push_back( profile ); }
+
+	void clear( ){ matrix.clear( ); }
 
 private:
 
+	// Remember to update size whenever a method that changes it is called
     std::vector<int>::size_type rowsize{ };
-    std::vector<int>::size_type columnsize{ };
+	std::vector<int>::size_type columnsize{ };
 
     std::vector<Profile> matrix{ };
 };

@@ -16,7 +16,7 @@ public:
     Rank( std::vector<PairWiseRank> ordering );
     Rank( const Rank& copy );
 
-	~Rank( ){ ranking.clear( ); }
+    ~Rank( );
 
     // Setters
     void set_rank( PairWiseRank pair );
@@ -40,6 +40,7 @@ public:
 	bool empty( );
 
 	void push_back( PairWiseRank& rank ){ ranking.push_back( rank ); }
+    void clear( ){ ranking.clear( ); }
 
 private:
 
