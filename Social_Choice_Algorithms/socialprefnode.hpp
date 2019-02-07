@@ -6,7 +6,7 @@
 #include <vector>
 #include <iostream>
 
-template <typename T, typename Parameter> class NamedType{
+template<typename T, typename Parameter> class NamedType{
 
 public:
 
@@ -32,7 +32,10 @@ public:
     // Constructors & Destructor
     SocialPrefNode( );
     SocialPrefNode( std::string self, int ind, int link, bool stack, std::vector<SocialPrefNode*> pref,
-					std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff );
+                    std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff ) :
+                    id( self ), index( ind ), lowlink( link ), onstack( stack ),
+                    preferences( pref ), worsethan( worse ), indifference( indiff ){ }
+
     SocialPrefNode( const SocialPrefNode& copy );
 
     ~SocialPrefNode( );

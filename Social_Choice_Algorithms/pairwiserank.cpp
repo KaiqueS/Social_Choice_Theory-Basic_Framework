@@ -13,17 +13,6 @@ PairWiseRank::PairWiseRank( ){
     ival = { };
 }
 
-// Parameterized constructor: initializes members accordingly to the arguments passed by
-PairWiseRank::PairWiseRank( Options x, Options y, int valx, int valy, int vali ){
-
-    optx = x;
-    opty = y;
-
-    xval = valx;
-    yval = valy;
-    ival = vali;
-}
-
 // Copy constructor
 PairWiseRank::PairWiseRank( const PairWiseRank& copy ){
 

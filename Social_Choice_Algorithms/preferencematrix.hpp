@@ -20,7 +20,9 @@ public:
 	// Constructors & Destructor
 	Preferencematrix( );
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
-    Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx );
+    Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) :
+                      rowsize( row ), columnsize( col ), matrix( mtx ){ }
+
     Preferencematrix( const Preferencematrix& copymatrix );
 
 	~Preferencematrix( );

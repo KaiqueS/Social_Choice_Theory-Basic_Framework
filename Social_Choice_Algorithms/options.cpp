@@ -12,16 +12,6 @@ Options::Options( ){
     value = -1;
 }
 
-// Parameterized constructor. Initializes private properties based on the arguments passed by
-Options::Options( std::string alts, bool stats, int val ){
-
-	opt = alts;
-
-    status = stats;
-
-	value = val;
-}
-
 // Copy constructor. Initializes private properties based on the arguments passed by
 Options::Options( const Options& copy ){
 

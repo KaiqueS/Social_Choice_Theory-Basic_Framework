@@ -19,15 +19,6 @@ Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector
     set_matrix( row, col );
 }
 
-// Parameterized constructor
-Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ){
-
-    rowsize = row;
-    columnsize = col;
-
-    matrix = mtx;
-}
-
 // Copy Constructor. Initializes values according to parameters
 Preferencematrix::Preferencematrix( const Preferencematrix& copymatrix ){
 

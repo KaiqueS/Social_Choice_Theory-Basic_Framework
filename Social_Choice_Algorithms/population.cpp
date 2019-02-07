@@ -5,8 +5,6 @@ Population::Population( ){ population = { }; }
 
 Population::Population( std::vector<int>::size_type size ){ population.resize( size ); }
 
-Population::Population( std::vector<Agent> people ){ population = people; }
-
 Population::Population( Agent person ){ population.push_back( person ); }
 
 Population::Population( const Population& copy ){ population = copy.population; }
@@ -63,6 +61,8 @@ void Population::order_preferences( ){
         population[ i ].sort_preferences( );
 }
 
+/// Non-member Helpers
+
 std::ostream& operator<<( std::ostream& os, Population& people ){
 
     for( std::vector<int>::size_type i = 0; i < people.get_population( ).size( ); ++i ){
@@ -71,4 +71,48 @@ std::ostream& operator<<( std::ostream& os, Population& people ){
     }
 
     return os;
+}
+
+void initialize_opts( Population& listofagents, Profile& opts ){
+
+    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
+
+    if( !listofagents[ randagt ].get_preferences( ).empty( ) ){
+
+        opts = listofagents[ randagt ].get_preferences( ).get_alternatives( );
+
+        for( std::vector<int>::size_type i = 0; i < opts.size( ); ++i )
+
+            opts[ i ].set_value( 0 );
+    }
+
+    else{
+
+        std::cerr << "Agent " << listofagents[ randagt ].get_id( ) << " has no preferences.\n";
+    }
+}
+
+Profile make_social_order( Population& population ){
+
+    Profile socialorder{ };
+
+    initialize_opts( population, socialorder );
+
+    population.order_preferences( );
+
+    for( std::vector<int>::size_type i = 0; i < population.size( ); ++i ){
+
+        for( std::vector<int>::size_type j = 0; j < population[ i ].get_preferences( ).size( ); ++j ){
+
+            for( std::vector<int>::size_type k = 0; k < socialorder.size( ); ++k ){
+
+                if( socialorder[ k ].get_opt( ) == population[ i ][ j ].get_opt( ) ){
+
+                    socialorder[ k ] += ( static_cast<int>( ( socialorder.size( ) - j ) / 4 ) );
+                }
+            }
+        }
+    }
+
+    return socialorder;
 }

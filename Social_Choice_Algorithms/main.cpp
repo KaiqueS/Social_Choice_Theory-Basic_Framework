@@ -1,10 +1,7 @@
 #include <iostream>
-#include "sct_algos.hpp"
 #include "sctheory.hpp"
-#include "sctgraph.hpp"
-#include "sctrank.hpp"
-#include "population.hpp"
 
+// TODO: constructor list initialization!!! Implement in every class - DONE
 // TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
 //       for emptiness
 // TODO: Clean/organize code & start documenting
@@ -37,7 +34,7 @@ int main( ){
 
     Preferencematrix newmtx{ };
 
-    newmtx.set_matrix( 5, 5 );
+    newmtx.set_matrix( 50, 50 );
 
     Population listofagents( newmtx.get_matrix( ).size( ) );
 
@@ -88,11 +85,23 @@ int main( ){
      //std::cin >> procedure
      //pass procedure as argument to arrow function
 
-    std::vector<Options> result = qualified_majority_rule( graph );
+	Profile result = qualified_majority_rule( graph );
 
-    //SCT::arrow_impossibility( listofagents, newmtx, rank, graph, {} );
+    SCT::Arrow_Impossibility arrow( newmtx, rank, listofagents, graph );
 
-    std::cout << "\n\n";
+    sct::Procedure newproc = sct::Simple_majority_rule( );
+
+    sct::Simple_majority_rule majority;
+
+    bool truth = arrow( majority );
+
+    if( truth )
+
+        std::cout << "All right.\n\n";
+
+    else
+
+        std::cout << "Oh, damn!.\n\n";
 
     /*Graph graph{ };
 

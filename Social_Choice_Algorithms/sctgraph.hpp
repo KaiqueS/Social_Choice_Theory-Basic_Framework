@@ -15,7 +15,7 @@ public:
     // Constructors & Destructor
     Graph( );
     Graph( SocialPrefNode node );
-    Graph( std::vector<SocialPrefNode> vertices );
+    Graph( std::vector<SocialPrefNode> vertices ) : nodes( vertices ){ }
     Graph( const Graph& copy );
 
     ~Graph( );

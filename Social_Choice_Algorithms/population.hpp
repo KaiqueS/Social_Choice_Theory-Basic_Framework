@@ -10,7 +10,7 @@ public:
     // Constructors & Destructor
     Population( );
 	Population( std::vector<int>::size_type size );
-    Population( std::vector<Agent> people );
+    Population( std::vector<Agent> people ) : population( people ){ }
     Population( Agent person );
     Population( const Population& copy );
     ~Population( );
@@ -42,11 +42,18 @@ public:
     void push_back( Agent& agt ){ population.push_back( agt ); }
     void pop_back( ){ population.pop_back( ); }
 
+	void clear( ){ population.clear( ); }
+
 private:
 
     std::vector<Agent> population{ };
 };
 
+// Non-member Helpers
 std::ostream& operator<<( std::ostream& os, Population& people );
+
+void initialize_opts( Population& listofagents, Profile& opts );
+
+Profile make_social_order( Population& population );
 
 #endif // POPULATION_HPP

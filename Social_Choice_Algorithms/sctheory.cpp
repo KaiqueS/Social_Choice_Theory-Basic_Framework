@@ -12,7 +12,9 @@ bool SCT::Pareto_Principle::operator( )( sct::Procedure& procedure ){
 
     bool validity{ true };
 
-    Profile winner = procedure( rank );
+    Profile winner{ };
+
+    winner = procedure( rank );
 
     std::vector<int>::size_type ranksize = winner.size( );
 
@@ -258,7 +260,7 @@ bool SCT::Irrelevant_Alternatives::operator( )( sct::Procedure& procedure ){
     }
 }
 
-bool SCT::irrelevant_alternatives( Preferencematrix& mtx, Population& people ){
+/*bool SCT::irrelevant_alternatives( Preferencematrix& mtx, Population& people ){
 
     bool validity{ true };
 
@@ -338,16 +340,18 @@ bool SCT::irrelevant_alternatives( Preferencematrix& mtx, Population& people ){
         return validity;
     }
 }
+*/
 
 // Find an agent that, whenever ONLY HER prefers x to y, the social order becomes xPy
 // If is that the case that another person also prefers x to y, then the clause is not
 // valid
 // TODO: revise this
-bool SCT::non_dictatorship( Population& people, Rank& rank, Graph& graph ){
+bool SCT::Non_Dictatorship::operator( )( sct::Procedure& procedure ){
 
-    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i )
+	// FULL GAMBIARRA MODE ON
+	Population& people = population;
 
-        people[ i ].sort_preferences( );
+	people.order_preferences( );
 
     Profile dictatedopts{ };
 
@@ -421,7 +425,7 @@ bool SCT::non_dictatorship( Population& people, Rank& rank, Graph& graph ){
 
 // TODO: use this only for the case where there are only three alternatives,
 // so -> check rank and graph sizes, then check for condorcerity
-bool SCT::condorcet_paradox( Rank& rank, Graph& graph ){
+bool SCT::Condorcet_Paradox::operator( )( Profile& profile ){
 
     int selection{ };
 
@@ -435,7 +439,8 @@ bool SCT::condorcet_paradox( Rank& rank, Graph& graph ){
 
         std::cerr << "Invalid options.\n";
 
-        return condorcet_paradox( rank, graph );
+		// Man... this smells like shit
+		return SCT::Condorcet_Paradox::operator( )( profile );
     }
 
     // THIS IS SHITTY AF. Use recursion instead, for god's sake.
@@ -551,7 +556,7 @@ bool SCT::condorcet_paradox( Rank& rank, Graph& graph ){
     return true;
 }
 
-bool SCT::is_single_peaked( Rank& rank, Graph& graph ){
+bool SCT::Single_Peakedness::operator( )( Rank& rank, Graph& graph ){
 
 
 }
@@ -559,36 +564,34 @@ bool SCT::is_single_peaked( Rank& rank, Graph& graph ){
 // If not true: analyze the profiles of preferences, both individual and social, then search for some kind of structure,
 // i.e., single peakedness degree, individual impact on social profile, etc.
 // If true, search for single peakedness or known structures/feats that causes the truthness
-bool SCT::arrow_impossibility( Population& pop, Preferencematrix& mtx , Rank& rank, Graph& graph, sct::Procedure& procedure ){
+bool SCT::Arrow_Impossibility::operator( )( sct::Procedure& procedure ){
 
-    bool validity{ true };
-
-    sct::Borda_count borda{ };
-
-    Profile newprof = borda( pop );
     // If it is the case that every conditions is satisfied, then, check the structure of the preferences for single-
     // peakedness or anything that might have made it possible for the result to hold
+	bool validity{ true };
 
-    if( pareto_principle( graph, rank, newprof ) == false ){
+    //Profile newprof = procedure(  );
+
+    if( pareto( procedure ) == false ){
 
         validity = false;
 
         std::cout << "Pareto principle violated.\n";
     }
 
-    if( irrelevant_alternatives( mtx, pop ) == false ){
+    if( irrelevant( procedure ) == false ){
 
         validity = false;
 
         std::cout << "Irrelevant alternatives violated.\n";
     }
 
-    if( non_dictatorship( pop, rank, graph ) == false ){
+    if( dictator( procedure ) == false ){
 
         validity = false;
 
         std::cout << "Nondictatorship violated.\n";
-    }
+	}
 
     if( validity == true ){
 

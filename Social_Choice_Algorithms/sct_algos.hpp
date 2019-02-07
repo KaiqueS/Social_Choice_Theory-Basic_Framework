@@ -29,7 +29,7 @@ class Procedure{
 
         // Helpers
         //Profile& operator( )( Graph& graph );
-        Profile& operator( )( Population& population );
+		Profile& operator( )( Population& population );
         Profile& operator( )( Rank& rank );
 
     private:

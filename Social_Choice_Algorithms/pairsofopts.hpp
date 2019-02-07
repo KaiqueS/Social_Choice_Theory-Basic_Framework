@@ -1,14 +1,14 @@
 #ifndef PAIRSOFOPTS_H
 #define PAIRSOFOPTS_H
 
-#include "options.hpp"
-#include "agent.hpp"
+//#include "options.hpp"
+#include "population.hpp"
 
 struct PairsOfOpts{
 
     // Constructors & Destructor
     PairsOfOpts( );
-    PairsOfOpts( Options optx, Options opty );
+    PairsOfOpts( Options optx, Options opty ) : xpref( optx ), ypref( opty ){ }
     PairsOfOpts( const PairsOfOpts& copy );
 
     ~PairsOfOpts( ){ }
@@ -20,5 +20,7 @@ struct PairsOfOpts{
     Options xpref{ };
     Options ypref{ };
 };
+
+std::vector<PairsOfOpts> pair_generation( Population& listofagents );
 
 #endif // PAIRSOFOPTS_H

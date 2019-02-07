@@ -13,7 +13,7 @@ public:
 
     // Constructors & Destructor
     Rank( );
-    Rank( std::vector<PairWiseRank> ordering );
+    Rank( std::vector<PairWiseRank> ordering ) : ranking( ordering ){ }
     Rank( const Rank& copy );
 
     ~Rank( );
@@ -46,5 +46,9 @@ private:
 
     std::vector<PairWiseRank> ranking{ };
 };
+
+void initialize_opts( Rank& rank, Profile& profile );
+
+Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank );
 
 #endif // SCTRANK_H

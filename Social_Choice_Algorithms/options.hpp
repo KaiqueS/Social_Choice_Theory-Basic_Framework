@@ -14,7 +14,7 @@ public:
 
 	// Constructors & Destructor
 	Options( );
-    Options( std::string alts, bool stats, int val );
+    Options( std::string alts, bool stats, int val ) : opt( alts ), status( stats ), value( val ){ }
 	Options( const Options& copy );
 
 	~Options( ){ }

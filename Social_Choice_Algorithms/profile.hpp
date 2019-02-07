@@ -11,7 +11,7 @@ public:
     // Constructors & Destructor
     Profile( );
     Profile( std::vector<int>::size_type size );
-    Profile( std::vector<Options> alts );
+    Profile( std::vector<Options> alts ) : alternatives( alts ){ }
     Profile( Options opt );
     Profile( const Profile& copy );
     ~Profile( );

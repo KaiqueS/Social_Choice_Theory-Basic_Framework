@@ -15,12 +15,13 @@ public:
 
     // Constructors & Destructor
     Agent( );
-    Agent( Profile list, std::string tag );
+    Agent( Profile list, std::string tag ) : preferences( list ), id( tag ){ }
     Agent( const Agent& copy );
 
     ~Agent( );
 
     // Setters
+    // Maybe pass a profile, instead, and take it from PrefMtx?
     void set_preferences( Preferencematrix& prefmatrix );
 
     void set_id( std::string tag );

@@ -7,9 +7,6 @@ Graph::Graph( ){ nodes = { }; }
 
 Graph::Graph( SocialPrefNode node ){ nodes.push_back( node ); }
 
-// Parameterized constructor
-Graph::Graph( std::vector<SocialPrefNode> vertices ){ nodes = vertices; }
-
 // Copy constructor
 Graph::Graph( const Graph& vertices ){ nodes = vertices.nodes; }
 

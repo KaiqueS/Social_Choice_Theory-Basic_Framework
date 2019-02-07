@@ -4,7 +4,6 @@
 
 Profile::Profile( ){ alternatives = { }; }
 Profile::Profile( std::vector<int>::size_type size ){ alternatives.resize( size ); }
-Profile::Profile( std::vector<Options> alts ){ alternatives = alts; }
 Profile::Profile( Options opt ){ alternatives.push_back( opt ); }
 Profile::Profile( const Profile& copy ){ alternatives = copy.alternatives; }
 Profile::~Profile( ){

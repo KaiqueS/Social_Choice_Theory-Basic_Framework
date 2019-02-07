@@ -18,22 +18,6 @@ SocialPrefNode::SocialPrefNode( ){
 	indifference = { };
 }
 
-// Parameterized constructor.
-SocialPrefNode::SocialPrefNode( std::string self, int ind, int link, bool stack, std::vector<SocialPrefNode*> pref,
-								std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff ){
-
-    id = self;
-
-	index = ind;
-	lowlink = link;
-
-	onstack = stack;
-
-    preferences = pref;
-	worsethan = worse;
-	indifference = indiff;
-}
-
 // Copy constructor
 SocialPrefNode::SocialPrefNode( const SocialPrefNode& copy ){
 

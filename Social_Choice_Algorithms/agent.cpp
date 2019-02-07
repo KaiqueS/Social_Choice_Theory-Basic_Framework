@@ -10,14 +10,6 @@ Agent::Agent( ){
     id = { };
 }
 
-// Parameterized Constructor
-Agent::Agent( Profile list, std::string name ){
-
-    preferences = list;
-
-    id = name;
-}
-
 // Copy constructor
 Agent::Agent( const Agent& copy ){
 

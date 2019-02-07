@@ -62,6 +62,15 @@ Profile& sct::Simple_majority_rule::Procedure::operator( )( Population& populati
     return winnerset;
 }
 
+Profile& sct::Simple_majority_rule::Procedure::operator( )( Rank& rank ){
+
+    winnerset = make_social_order( rank );
+
+    std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
+
+    return  winnerset;
+}
+
 /// Counting Rules
 
 Profile& sct::Borda_count::operator( )( Population& population ){

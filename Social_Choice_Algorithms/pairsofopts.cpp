@@ -9,13 +9,6 @@ PairsOfOpts::PairsOfOpts( ){
     ypref = { };
 }
 
-// Parameterized constructor
-PairsOfOpts::PairsOfOpts( Options optx, Options opty ){
-
-    xpref = optx;
-    ypref = opty;
-}
-
 // Copy constructor
 PairsOfOpts::PairsOfOpts( const PairsOfOpts& copy ){
 
@@ -34,4 +27,33 @@ PairsOfOpts& PairsOfOpts::operator=( const PairsOfOpts& copy ){
     return *this;
 }
 
+std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
 
+    PairsOfOpts compairs{ };
+
+    std::vector<PairsOfOpts> paircomp{ };
+
+    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
+
+    std::vector<int>::size_type listsize = listofagents.size( );
+    std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
+
+    // gets all possible combination of pairs, including repeated pairs
+    for( std::vector<int>::size_type i = 0; i < prefsize; ++i ){
+
+        compairs.xpref = listofagents[ randagt ][ i ];
+
+        for( std::vector<int>::size_type j = i + 1; j < prefsize; ++j ){
+
+            if( j != i ){
+
+                compairs.ypref = listofagents[ randagt ][ j ];
+
+                paircomp.push_back( compairs );
+            }
+        }
+    }
+
+    // returns all combinations without repetitions
+    return paircomp;
+}

@@ -12,7 +12,10 @@ public:
 
     // Constructors & Destructor
     PairWiseRank( );
-    PairWiseRank( Options optx, Options opty, int xval, int yval, int ival );
+    PairWiseRank( Options xopt, Options yopt, int valx, int valy, int vali ) :
+        optx( xopt ), opty( yopt ),
+        xval( valx ), yval( valy ), ival( vali ){ }
+
     PairWiseRank( const PairWiseRank& copy );
 
     ~PairWiseRank( ){ }
