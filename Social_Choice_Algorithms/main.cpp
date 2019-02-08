@@ -34,7 +34,7 @@ int main( ){
 
     Preferencematrix newmtx{ };
 
-    newmtx.set_matrix( 50, 50 );
+    newmtx.set_matrix( 5, 5 );
 
     Population listofagents( newmtx.get_matrix( ).size( ) );
 
