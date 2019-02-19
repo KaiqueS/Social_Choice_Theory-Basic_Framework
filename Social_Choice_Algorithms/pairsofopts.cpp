@@ -1,6 +1,6 @@
 #include "pairsofopts.hpp"
 
-/* Constructors & Destructor */
+/// Constructors & Destructor
 
 // Default constructor
 PairsOfOpts::PairsOfOpts( ){
@@ -16,7 +16,7 @@ PairsOfOpts::PairsOfOpts( const PairsOfOpts& copy ){
     ypref = copy.ypref;
 }
 
-/* Operators */
+/// Operators
 
 // Overloaded assignment operator
 PairsOfOpts& PairsOfOpts::operator=( const PairsOfOpts& copy ){
@@ -27,6 +27,9 @@ PairsOfOpts& PairsOfOpts::operator=( const PairsOfOpts& copy ){
     return *this;
 }
 
+/// Non-member helpers
+
+// Generates all possible combination of pairs of options, without repetitions
 std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
 
     PairsOfOpts compairs{ };

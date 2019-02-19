@@ -5,11 +5,14 @@
 // Default constructor
 Graph::Graph( ){ nodes = { }; }
 
+// Alternative parameterized constructor. Inserts a node at the
+// end of NODES
 Graph::Graph( SocialPrefNode node ){ nodes.push_back( node ); }
 
 // Copy constructor
 Graph::Graph( const Graph& vertices ){ nodes = vertices.nodes; }
 
+// Destructor. Clears NODES from memory
 Graph::~Graph( ){
 
     clear( );
@@ -25,15 +28,19 @@ void Graph::set_graph( std::vector<SocialPrefNode> vertices ){ nodes = vertices;
 // Sets a Graph's node to parameter node into position graph[ index ]
 void Graph::set_graph( SocialPrefNode node, std::vector<int>::size_type index ){
 
+    // Checks for indexes out of NODES range
     if( index >= nodes.size( ) ){
 
         std::cout << "Invalid index. Please, set a value between 0 and " << nodes.size( ) -1 << ".\n";
 
         std::cin >> index;
 
+        // If it is the case the index is out of NODES' range, prompt
+        // for another index
         set_graph( node, index );
     }
 
+    // Checks for indexes out of NODES range
     else if( static_cast<int>( index ) < 0 ){
 
         std::cout << "Invalid index. Value smaller than 0. Please set a value between 0 and " << nodes.size( ) -1 << ".\n";
@@ -43,6 +50,7 @@ void Graph::set_graph( SocialPrefNode node, std::vector<int>::size_type index ){
         set_graph( node, index );
     }
 
+    // If index is in NODES' range, set NODES[ INDEX ] to node
     else
 
         nodes[ index  ] = node;
@@ -63,21 +71,12 @@ Graph& Graph::operator=( const Graph& copy ){
     return *this;
 }
 
-// Overloaded subscript operator
+// Overloaded subscript operator. Returns a SocialPrefNode at index position
 SocialPrefNode& Graph::operator[ ]( const std::vector<int>::size_type index ){ return nodes[ index ]; }
-
-// Overloaded printing operator
-std::ostream& operator<<( std::ostream& os, Graph& graph ){
-
-    for( std::vector<int>::size_type i = 0; i < graph.get_graph( ).size( ); ++i )
-
-        os << "[ " << graph[ i ].get_id( ) << " ]" << " ";
-
-    return os;
-}
 
 /// Helpers
 
+// Initializes a graph according to the options in an random agent's profile
 void Graph::initialize_graph( Population& population ){
 
     std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % population.size( );
@@ -88,6 +87,7 @@ void Graph::initialize_graph( Population& population ){
     }
 }
 
+// Initializes a graph according to a random profile in a PreferenceMatrix
 void Graph::initialize_graph( Preferencematrix& mtx ){
 
     if( !mtx.get_matrix( ).empty( ) )
@@ -106,6 +106,7 @@ void Graph::initialize_graph( Preferencematrix& mtx ){
  * x.indifference */
 void Graph::make_graph( Preferencematrix& mtx, Rank& rank ){
 
+    // Checks if the vector NODES is not empty
     if( nodes.empty( ) ){
 
         std::cout << "Graph has no nodes! Initializing it.\n\n";
@@ -204,6 +205,7 @@ void Graph::make_graph( Preferencematrix& mtx, Rank& rank ){
     }
 }
 
+// Checks if Graph is empty. Return true if it is.
 bool Graph::empty( ){
 
     if( nodes.empty( ) )
@@ -215,6 +217,19 @@ bool Graph::empty( ){
         return false;
 }
 
+/// Non-member helpers
+
+// Overloaded printing operator
+std::ostream& operator<<( std::ostream& os, Graph& graph ){
+
+    for( std::vector<int>::size_type i = 0; i < graph.get_graph( ).size( ); ++i )
+
+        os << "[ " << graph[ i ].get_id( ) << " ]" << " ";
+
+    return os;
+}
+
+// Prints graph
 void print_graph( Graph& graph ){
 
     for( std::vector<int>::size_type i = 0; i < graph.get_graph( ).size( ); ++i )

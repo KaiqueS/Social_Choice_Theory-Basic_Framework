@@ -1,32 +1,26 @@
 #include <iostream>
 #include "sctheory.hpp"
 
-// TODO: constructor list initialization!!! Implement in every class - DONE
 // TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
 //       for emptiness
-// TODO: Clean/organize code & start documenting
 // TODO: Rethink PairWiseRank -> Try to figure out how to, for any two PWR, if any of the two options
 //       that it holds are equal, then they ARE the SAME, i.e., have the same address. This way one
 //       can use majority rule for PWR withouht appealing to a middle-class
-// TODO: template function to deal with lambdas -> Check for type, then use an appropriate lambda - DONE, used functors instead
 // MODIFY: PreferenceMatrix: remove options, use string instead, no value for each alternative
 //         Agent: agents will set their own values, instead of taking from the matrix -> Smells like boilerplate
 // TODO: create a test for irrelevant alts. Case -> two identical profiles
 // MODIFY: Remember to change Options operator==. Check only for id, because of Irrelevant Alts
 // TODO: Revise Non-Dic
-// TRY: creating a SCT namespace to hold sctheory.cpp functions and aggregation_rules.cpp functions
-//      see if this solves the problem of multiple definitions when integrating the GUI to the proj - Done, but needs testing
 // CONSIDER: .cpp files for graph algorithms and rank algorithms
 // BIG QUESTION: what should SCF return? Alternatives or profiles? If the latter, are they composed
 // by only the alternatives that satisfies the aggregation procedure, or are they composed by every
 // alternative, sorted according to wheter they satisfy or not the procedure? - For Arrow, return profiles, for GS, return an alternative
 // TODO: allow choosing between a pure graph, i.e., graph not based on any aggregation procedure and
 // a graph based on procedures
-// TODO: modify arrow -> Allow for a procedure to be passed as an argument, use the profile resulted
-// from the procedure in the axioms
 // TODO: when allowing for used-defined aggregation procedures, use as example a custom threshold
 // procedure, i.e., allow for the user to input a threshold that, when a given option surpasses
 // the latter, it becomes the winner or one of the winners. Add that to GUI
+// TODO: let the user decide between majority or list based procedures
 
 int main( ){
 
@@ -85,15 +79,34 @@ int main( ){
      //std::cin >> procedure
      //pass procedure as argument to arrow function
 
-	Profile result = qualified_majority_rule( graph );
-
     SCT::Arrow_Impossibility arrow( newmtx, rank, listofagents, graph );
 
-    sct::Procedure newproc = sct::Simple_majority_rule( );
+    SCT::Qualified_majority_rule maj;
 
-    sct::Simple_majority_rule majority;
+    Profile simplemaj = SCT::Simple_majority_rule( )( listofagents );
 
-    bool truth = arrow( majority );
+    SCT::Proportional proport;
+
+    SCT::Borda_count borda;
+
+    Profile count = borda( listofagents );
+
+    Profile res = proport( listofagents );
+
+    SCT::Borda_count bordinha;
+
+    bordinha( listofagents );
+
+    for( std::vector<int>::size_type i = 0; i < res.size( ); ++i ){
+
+        if( res[ i ].get_status( ) == true )
+
+            std::cout << res[ i ] << " ";
+    }
+
+    std::cout << "\n";
+
+    bool truth = arrow( maj );
 
     if( truth )
 

@@ -9,6 +9,7 @@ Rank::Rank( ){ ranking = { }; }
 // Copy constructor
 Rank::Rank( const Rank& copy ){ ranking = copy.ranking; }
 
+// Destructor. Clears RANKING from memory
 Rank::~Rank( ){
 
     clear( );
@@ -18,19 +19,21 @@ Rank::~Rank( ){
 
 /// Setters
 
+// Inserts a PairWiseRank at the end of RANKING
 void Rank::set_rank( PairWiseRank pair ){ ranking.push_back( pair ); }
 
+// Sets RANKING to order
 void Rank::set_rank( std::vector<PairWiseRank> order ){ ranking = order; }
 
 /* Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
  * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
- * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives
- */
+ * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives */
 void Rank::generate_ranking( Population& listofagents ){
 
     // Holder for a pair of options
     PairsOfOpts compairs{ };
 
+    // Generates all possible combinations of pairs, without repetitions
     std::vector<PairsOfOpts> ordering = pair_generation( listofagents );
 
     // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
@@ -38,8 +41,13 @@ void Rank::generate_ranking( Population& listofagents ){
 
     //std::vector<PairWiseRank> ranking{ };
 
+    // Number of all possible combinations of pairs, without repetitions
     std::vector<int>::size_type ordersize = ordering.size( );
+
+    // Number of profiles
     std::vector<int>::size_type listsize = listofagents.size( );
+
+    // Number of options in each profile
     std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
 
     // Checks how a pair ( x, y ) is ranked for each agent
@@ -86,15 +94,13 @@ void Rank::generate_ranking( Population& listofagents ){
         // Resets the tuple for a new ranking
         paircomp = { };
     }
-
-    // returns a vector of quintuples
-    //return ranking;
 }
 
 /// Getters
 
 /// Operators
 
+// Overloaded assignment operator
 Rank& Rank::operator=( const Rank& copy ){
 
     ranking = copy.ranking;
@@ -102,38 +108,48 @@ Rank& Rank::operator=( const Rank& copy ){
     return *this;
 }
 
+// Overloaded subscript operator. Returns a quintuple PairWiseRank of the form
+// ( optx, opty, xval, yval, ival )
 PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
 
+    // Checks if RANKING is not empty
     if( !ranking.empty( ) ){
 
+        // If it is not, and if index in within the range of RANKING
         if( ( static_cast<int>( index ) >= 0 ) && ( index < ranking.size( ) ) )
 
+            // return PairWiseRank[ index ]
             return ranking[ index  ];
 
+        // Else, if index is invalid
         else{
 
             std::cerr << "Invalid index. Please, enter another value: ";
 
             std::vector<int>::size_type newindex{ };
 
+            // Get a new index
             std::cin >> newindex;
 
             return operator[ ]( newindex );
         }
     }
 
+    // If RANKING is empty
     else{
 
         std::cerr << "Ranking is empty!. Creating a default ordered pair instead.\n";
 
         ranking.resize( 1 );
 
+        // Return a default PairWiseRank
         return *ranking.begin( );
     }
 }
 
 /// Helpers
 
+// Checks if RANKING is empty. Returns true if it is
 bool Rank::empty( ){
 
 	if( ranking.empty( ) )
@@ -145,6 +161,7 @@ bool Rank::empty( ){
 		return false;
 }
 
+// Initializes a Profile with options in RANK, withouth repetition.
 void initialize_opts( Rank& rank, Profile& profile ){
 
     // Get all possible options
@@ -170,39 +187,47 @@ void initialize_opts( Rank& rank, Profile& profile ){
     }
 }
 
-Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank ){
+// Makes a generic social order, sorted in descending order
+Profile make_social_order( Rank& rank ){
 
+    // Holder for resulting social order
     Profile orderedrank{ };
 
+    // Gets every existing option
     initialize_opts( rank, orderedrank );
 
     // Check for emptyness - I really should make a exception class to handle this
     if( !orderedrank.empty( ) )
 
-        // get every available option
+        // get every available option in RANK
         for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
 
-            // get their respective scores, i.e., how many options they beat
+            // get every possible option in ORDEREDRANK
             for( std::vector<int>::size_type j = 0; j < orderedrank.size( ); ++j ){
 
+                // checks if the ORDEREDRANK[ j ] equals RANK[ i ]'s optx
                 if( rank[ i ].get_optx( ).get_opt( ) == orderedrank[ j ].get_opt( ) ){
 
+                    // Checks which option beats the other
                     if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) )
 
-                        // ATTENTION: this + 1 at the end...
+                        // If the option being considered beats its adversary, increment the former
                         ++orderedrank[ j ];
                 }
 
+                // checks if the ORDEREDRANK[ j ] equals RANK[ i ]'s opty
                 else if( rank[ i ].get_opty( ).get_opt( ) == orderedrank[ j ].get_opt( ) ){
 
+                    // If it is, check if opty beats optx
                     if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) )
 
-                        // ATTENTION: this + 1 at the end...
+                        // Increment it
                         ++orderedrank[ j ];
                 }
             }
         }
 
+    // Returns best ranked option
     auto order = [ ]( Options& left, Options& right ){
 
         return left.get_value( ) > right.get_value( );
@@ -211,5 +236,6 @@ Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank ){
     // order vector from greatest to smallest, according to the value
     std::sort( orderedrank.begin( ), orderedrank.end( ), order );
 
+    // Return sorted profile
     return orderedrank;
 }

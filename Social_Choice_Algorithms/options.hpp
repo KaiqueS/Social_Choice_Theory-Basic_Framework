@@ -51,6 +51,9 @@ private:
     int value{ -1 };
 };
 
+// Non-member helpers
 std::ostream& operator<<( std::ostream& os, Options& opt );
+
+bool operator==( Options& left, Options& right );
 
 #endif // OPTIONS_H

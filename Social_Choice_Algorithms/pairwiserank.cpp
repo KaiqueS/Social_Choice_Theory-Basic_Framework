@@ -1,6 +1,6 @@
 #include "pairwiserank.hpp"
 
-/* Constructors & Destructor */
+/// Constructors & Destructor
 
 // Default constructor: initializes members to its default values
 PairWiseRank::PairWiseRank( ){
@@ -24,7 +24,7 @@ PairWiseRank::PairWiseRank( const PairWiseRank& copy ){
     ival = copy.ival;
 }
 
-/* Setters */
+/// Setters
 
 // Sets option x to opt
 void PairWiseRank::set_optx( Options& opt ){
@@ -47,7 +47,7 @@ void PairWiseRank::set_yval( int val ){ yval = val; }
 // Sets how many persons are indifferent between x and y, i.e., gave equal values to both of them
 void PairWiseRank::set_ival( int val ){ ival = val; }
 
-/* Getters */
+/// Getters
 
 // Returns option x
 Options& PairWiseRank::get_optx( ){ return optx; }
@@ -64,7 +64,7 @@ int PairWiseRank::get_yval( ){ return yval; }
 // Returns the number of votes given equally to both x and y
 int PairWiseRank::get_ival( ){ return ival; }
 
-/* Operators */
+/// Operators
 
 // Overloaded assignment operator
 PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
@@ -79,11 +79,17 @@ PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
     return *this;
 }
 
+/// Non-member helpers
+
+// Comparison operator. Returns true when the average of optx + opty of LEFT is smaller than
+// opty + opty of Right. I.e., it means that a pair of options is greater than another when
+// its average is greater.
 bool operator<( PairWiseRank& left, PairWiseRank& right ){
 
     return( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) < ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) );
 }
 
+// Overloaded printing operator.
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank ){
 
     os << "X: " << rank.get_optx( ).get_opt( )

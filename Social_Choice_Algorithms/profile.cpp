@@ -2,10 +2,20 @@
 
 /// Constructors & Destructor
 
+// Default constructor. Initializes ALTERNATIVES to its default value
 Profile::Profile( ){ alternatives = { }; }
+
+// Alternative parameterized constructor. Resizes ALTERNATIVES to size
 Profile::Profile( std::vector<int>::size_type size ){ alternatives.resize( size ); }
+
+// Alternative parameterized constructor. Inserts an Option opt at the
+// end of ALTERNATIVES
 Profile::Profile( Options opt ){ alternatives.push_back( opt ); }
+
+// Copy construcotr
 Profile::Profile( const Profile& copy ){ alternatives = copy.alternatives; }
+
+// Destructor. Clears ALTERNATIVES from memory
 Profile::~Profile( ){
 
     //std::cout << "Clearing profile of alternatives.\n";
@@ -17,13 +27,17 @@ Profile::~Profile( ){
 
 /// Setters
 
+// Sets ALTERNATIVES to alts
 void Profile::set_alternatives( std::vector<Options>& alts ){ alternatives = alts; }
+
+// Inserts opt at the end of ALTERNATIVES
 void Profile::set_alternatives( Options& opt ){ alternatives.push_back( opt ); }
 
 /// Getters
 
 /// Operators
 
+// Overloaded assignment operator
 Profile& Profile::operator=( const Profile& copy ){
 
     alternatives = copy.alternatives;
@@ -31,6 +45,8 @@ Profile& Profile::operator=( const Profile& copy ){
     return *this;
 }
 
+// Overloaded comparison operator. Compares two profiles.
+// Returns true if they are equal
 bool Profile::operator==( const Profile& rhs ){
 
     if( alternatives == rhs.alternatives )
@@ -42,6 +58,8 @@ bool Profile::operator==( const Profile& rhs ){
         return false;
 }
 
+// Overloaded difference operator. Compares two profiles.
+// Returns true if they are different.
 bool Profile::operator!=( const Profile& rhs ){
 
     if( alternatives == rhs.alternatives )
@@ -55,6 +73,7 @@ bool Profile::operator!=( const Profile& rhs ){
 
 /// Helpers
 
+// Checks if a profile is empty. If it is, return true.
 bool Profile::empty( ){
 
     if( alternatives.empty( ) )
@@ -68,9 +87,10 @@ bool Profile::empty( ){
 
 /// Non-Member Helpers
 
+// Overloaded printing operator
 std::ostream& operator<<( std::ostream& os, Profile& profile ){
 
-    for( std::vector<int>::size_type i = 0; i < profile.get_alternatives( ).size( ); ++i ){
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
 
         os << profile[ i ] << " ";
     }
@@ -78,6 +98,8 @@ std::ostream& operator<<( std::ostream& os, Profile& profile ){
     return os;
 }
 
+// Overloaded comparison operator. Compares the alternatives
+// of two profiles. Returns true if the are all equal
 bool operator==( const Profile& lhs, const Profile& rhs ){
 
     Profile newlhs = lhs;

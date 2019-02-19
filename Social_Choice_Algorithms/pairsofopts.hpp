@@ -21,6 +21,7 @@ struct PairsOfOpts{
     Options ypref{ };
 };
 
+// Non-member helpers
 std::vector<PairsOfOpts> pair_generation( Population& listofagents );
 
 #endif // PAIRSOFOPTS_H

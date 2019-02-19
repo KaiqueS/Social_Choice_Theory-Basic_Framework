@@ -7,6 +7,8 @@
 #include "pairwiserank.hpp"
 #include "population.hpp"
 
+/* Class Description */
+
 class Rank{
 
 public:
@@ -47,8 +49,9 @@ private:
     std::vector<PairWiseRank> ranking{ };
 };
 
+// Non-member helpers
 void initialize_opts( Rank& rank, Profile& profile );
 
-Profile make_social_order( /*std::vector<Agent>& listofagt,*/ Rank& rank );
+Profile make_social_order( Rank& rank );
 
 #endif // SCTRANK_H

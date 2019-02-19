@@ -1,6 +1,6 @@
 #include "preferencematrix.hpp"
 
-/* Constructors */
+/// Constructors
 
 // Default Constructor. Initializes private members to its default values
 Preferencematrix::Preferencematrix( ){
@@ -11,6 +11,7 @@ Preferencematrix::Preferencematrix( ){
     matrix = { };
 }
 
+// Parameterize constructor. Sets a matrix of ROW x COL dimensions
 Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col ){
 
     rowsize = row;
@@ -28,6 +29,7 @@ Preferencematrix::Preferencematrix( const Preferencematrix& copymatrix ){
     matrix = copymatrix.matrix;
 }
 
+// Destructor. Clears the vector MATRIX from memory
 Preferencematrix::~Preferencematrix( ){
 
 	clear( );
@@ -35,21 +37,28 @@ Preferencematrix::~Preferencematrix( ){
 	std::vector<Profile>( ).swap( matrix );
 }
 
-/* Setters */
+/// Setters
 
+// Sets ROWSIZE to row
 void Preferencematrix::set_rowsz( std::vector<int>::size_type row ){ rowsize = row; }
 
+// Sets COLUMNSIZE to col
 void Preferencematrix::set_columnsz( std::vector<int>::size_type col ){ columnsize = col; }
 
-// Set a matrix of RowSZ x ColSZ dimensions. Sets a random value to each alternative
+// Set a matrix of RowSZ x ColSZ dimensions. Sets a random value to each alternative, where this
+// value ranges from 0 to colsz
 // TODO: Problem generating options' ids
 void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vector<int>::size_type colsz ){
 
+    // Initializes ROWSIZE and COLUMNSIZE to rowsz and colsz
     rowsize = rowsz;
     columnsize = colsz;
 
+    // Generates a profile of colsz size. Every option in this profile is initialized
+    // to its default values
     Profile setofalts( colsz );
 
+    // Workaroung below. Begin
 	int aux{ 30 };
 
     // Maps int into chars, store in a stack, assign it to a string
@@ -66,6 +75,7 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 
 		++aux;
 	}
+    // Workaround above. End
 
 	// Sets alternatives' values
 	for( std::vector<int>::size_type i = 0; i < rowsz; ++i ){
@@ -81,9 +91,9 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 	}
 }
 
-/* Getters */
+/// Getters
 
-/* Operators */
+/// Operators
 
 // Overloaded assignment operator
 Preferencematrix& Preferencematrix::operator=( const Preferencematrix& copy ){
@@ -104,11 +114,24 @@ bool Preferencematrix::operator==( const Preferencematrix& rhs ) const{
 		return false;
 }
 
+/// Helpers
+
+// Deletes an specific row. Used in Agent.h class
+void Preferencematrix::delete_row( int rowindex ){
+
+    matrix.erase( matrix.begin( ) + rowindex );
+}
+
+/// Non-member helpers
+
+// Prints PreferenceMatrix
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
 
+    // Gets the number of profiles
     std::vector<int>::size_type rowsz = matrix.get_matrix( ).size( );
-    std::vector<int>::size_type colsz = matrix[ static_cast<std::vector<int>::size_type>( rand( ) ) % rowsz ].size( );
 
+    // Gets the number of options in each profile
+    std::vector<int>::size_type colsz = matrix[ static_cast<std::vector<int>::size_type>( rand( ) ) % rowsz ].size( );
 
     os << "Preference Matrix\n\n" << "\t\t\tOptions/Alternatives Columns\n\n";
 
@@ -126,12 +149,4 @@ std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
     }
 
     return os;
-}
-
-/* Helpers */
-
-// Deletes an specific row. Used in Agent.h class
-void Preferencematrix::delete_row( int rowindex ){
-
-	matrix.erase( matrix.begin( ) + rowindex );
 }

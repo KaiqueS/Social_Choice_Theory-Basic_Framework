@@ -6,20 +6,21 @@ CONFIG -= qt
 SOURCES += \
         main.cpp \
     agent.cpp \
-    aggregation_rules.cpp \
     exceptionhandler.cpp \
-    helper_functions.cpp \
     options.cpp \
     socialprefnode.cpp \
     pairsofopts.cpp \
     pairwiserank.cpp \
     preferencematrix.cpp \
     sctheory.cpp \
-    sct_algos.cpp \
     sctgraph.cpp \
     sctrank.cpp \
     population.cpp \
-    profile.cpp
+    profile.cpp \
+    procedure.cpp \
+    plurality_rules.cpp \
+    majoritarian_rules.cpp \
+    proportional_rules.cpp
 
 HEADERS += \
     exceptionhandler.hpp \
@@ -28,7 +29,6 @@ HEADERS += \
     pairsofopts.hpp \
     pairwiserank.hpp \
     preferencematrix.hpp \
-    sct_algos.hpp \
     agent.hpp \
     options.hpp \
     pairsofopts.hpp \
@@ -37,8 +37,10 @@ HEADERS += \
     sctgraph.hpp \
     socialprefnode.hpp \
     sctrank.hpp \
-    helper_functions.hpp \
-    aggregation_rules.hpp \
     sctheory.hpp \
     population.hpp \
-    profile.hpp
+    profile.hpp \
+    procedure.hpp \
+    plurality_rules.hpp \
+    majoritarian_rules.hpp \
+    proportional_rules.hpp

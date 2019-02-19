@@ -1,6 +1,6 @@
 #include "agent.hpp"
 
-/* Constructors */
+/// Constructors
 
 // Default Constructor
 Agent::Agent( ){
@@ -25,7 +25,7 @@ Agent::~Agent( ){
     std::vector<Options>( ).swap( preferences.get_alternatives( ) );
 }
 
-/* Setters */
+/// Setters
 
 // Sets agent's preferences. Takes a random row from PrefMatrix and set it to be the agent's preferences.
 // Deletes the used row at the end: Avoids repeated preferences for different agents
@@ -40,9 +40,9 @@ void Agent::set_preferences( Preferencematrix& prefmatrix ){
 
 void Agent::set_id( std::string tag ){ id = tag; }
 
-/* Getters */
+/// Getters
 
-/* Operators */
+/// Operators
 
 // Overloaded assignment operator.
 Agent& Agent::operator=( const Agent& one ){
@@ -52,6 +52,30 @@ Agent& Agent::operator=( const Agent& one ){
     preferences = one.preferences;
 
     return *this;
+}
+
+/// Helpers
+
+// Sorts an agent's preferences in decreasing order, according to an option's value
+void Agent::sort_preferences( ){
+
+    auto order = [ ]( Options& left, Options& right ){
+
+        return left.get_value( ) > right.get_value( );
+    };
+
+    std::sort( preferences.begin( ), preferences.end( ), order );
+}
+
+std::ostream& operator<<( std::ostream& os, Agent& agt ){
+
+    os << agt.get_id( ) << " preferences: ";
+
+    for( Options opt : agt.get_preferences( ) )
+
+        os << "( " << opt << " )";
+
+    return os;
 }
 
 // Comparing agents
@@ -75,28 +99,4 @@ bool operator!=( Agent& one, Agent& two ){
     else
 
         return false;
-}
-
-/* Helpers */
-
-// Sorts an agent's preferences in decreasing order, according to an option's value
-void Agent::sort_preferences( ){
-
-    auto order = [ ]( Options& left, Options& right ){
-
-        return left.get_value( ) > right.get_value( );
-    };
-
-    std::sort( preferences.begin( ), preferences.end( ), order );
-}
-
-std::ostream& operator<<( std::ostream& os, Agent& agt ){
-
-    os << agt.get_id( ) << " preferences: ";
-
-    for( Options opt : agt.get_preferences( ) )
-
-        os << "( " << opt << " )";
-
-    return os;
 }

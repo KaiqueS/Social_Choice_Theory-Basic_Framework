@@ -68,6 +68,7 @@ private:
     std::vector<Profile> matrix{ };
 };
 
+// Non-member helpers
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix );
 
 #endif // PREFERENCEMATRIX_H

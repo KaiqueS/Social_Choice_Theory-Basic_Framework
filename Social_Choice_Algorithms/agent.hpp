@@ -49,4 +49,7 @@ private:
 
 std::ostream& operator<<( std::ostream& os, Agent& agt );
 
+bool operator==( Agent& one, Agent& two );
+bool operator!=( Agent& one, Agent& two );
+
 #endif // AGENT_H

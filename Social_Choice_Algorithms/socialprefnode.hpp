@@ -99,6 +99,7 @@ private:
     std::vector<SocialPrefNode*> indifference{ };
 };
 
+// Non-member helpers
 std::ostream& operator<<( std::ostream& os, SocialPrefNode& node );
 
 #endif // SOCIALPREFNODE_H

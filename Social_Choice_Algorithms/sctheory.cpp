@@ -6,7 +6,7 @@
 
 // Checks if the pareto principle is violated or not - Working(?) - TODO: Check for transitivity problems
 // TODO: overload pareto principle so that it only deals with graph or rank, but not both
-bool SCT::Pareto_Principle::operator( )( sct::Procedure& procedure ){
+bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 
     Options pareto{ };
 
@@ -176,7 +176,7 @@ bool SCT::Pareto_Principle::operator( )( sct::Procedure& procedure ){
 // the relation between x and z or y and z in the social ranking
 // TODO: maybe a bool key? The same as validity above
 // TODO: remember to pass a PROCEDURE as argument
-bool SCT::Irrelevant_Alternatives::operator( )( sct::Procedure& procedure ){
+bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 
     // THIS IS GAMBIARRAAAAAAAAAAAAAAAAAAAAA
     Population& people = this -> population;
@@ -346,7 +346,7 @@ bool SCT::Irrelevant_Alternatives::operator( )( sct::Procedure& procedure ){
 // If is that the case that another person also prefers x to y, then the clause is not
 // valid
 // TODO: revise this
-bool SCT::Non_Dictatorship::operator( )( sct::Procedure& procedure ){
+bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
 
 	// FULL GAMBIARRA MODE ON
 	Population& people = population;
@@ -558,13 +558,13 @@ bool SCT::Condorcet_Paradox::operator( )( Profile& profile ){
 
 bool SCT::Single_Peakedness::operator( )( Rank& rank, Graph& graph ){
 
-
+    return true;
 }
 
 // If not true: analyze the profiles of preferences, both individual and social, then search for some kind of structure,
 // i.e., single peakedness degree, individual impact on social profile, etc.
 // If true, search for single peakedness or known structures/feats that causes the truthness
-bool SCT::Arrow_Impossibility::operator( )( sct::Procedure& procedure ){
+bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
 
     // If it is the case that every conditions is satisfied, then, check the structure of the preferences for single-
     // peakedness or anything that might have made it possible for the result to hold

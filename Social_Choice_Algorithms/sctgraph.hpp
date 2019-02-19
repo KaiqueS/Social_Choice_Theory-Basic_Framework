@@ -52,6 +52,7 @@ private:
     std::vector<SocialPrefNode> nodes{ };
 };
 
+// Non-member helpers
 std::ostream& operator<<( std::ostream& os, Graph& graph );
 
 void print_graph( Graph& graph );

@@ -1,6 +1,6 @@
 #include "options.hpp"
 
-/* Constructors & Destructor */
+/// Constructors & Destructor
 
 // Default constructor. Initializes private properties to its default values
 Options::Options( ){
@@ -22,7 +22,7 @@ Options::Options( const Options& copy ){
 	value = copy.value;
 }
 
-/* Setters */
+/// Setters
 
 // Sets alternatives according to the argument passed through
 void Options::set_opt( std::string newalt ){ opt = newalt; }
@@ -32,7 +32,7 @@ void Options::set_status( bool value  ){ status = value; }
 // Sets values according to value passed as parameter
 void Options::set_value( int val ){ value = val; }
 
-/* Operators */
+/// Operators
 
 // Overloaded assignment operator
 Options& Options::operator=( const Options& copy ){
@@ -49,7 +49,8 @@ Options& Options::operator=( const Options& copy ){
 // Overloaded increment operator
 Options& Options::operator++( ){
 
-    value = value + 1;
+    //value = value + 1;
+    ++value;
 
     return *this;
 }
@@ -74,11 +75,24 @@ bool Options::operator<( const Options& rhs ){
 
 void Options::operator+=( const int val ){ value += val; }
 
+/// Non-member helpers
+
 // Prints option
 std::ostream& operator<<( std::ostream& os, Options& opt ){
 
     os << "[ " << opt.get_opt( ) << ", " << opt.get_value( ) << " ]" ;
 
     return os;
+}
+
+bool operator==( Options& left, Options& right ){
+
+    if( left.get_opt( ) == right.get_opt( ) )
+
+        return true;
+
+    else
+
+        return false;
 }
 

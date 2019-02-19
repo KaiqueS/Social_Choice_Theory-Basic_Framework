@@ -2,8 +2,10 @@
 #define SCTHEORY_H
 
 #include "sctrank.hpp"
-#include "aggregation_rules.hpp"
-#include "sct_algos.hpp"
+#include "sctgraph.hpp"
+#include "majoritarian_rules.hpp"
+#include "plurality_rules.hpp"
+#include "proportional_rules.hpp"
 
 namespace SCT{
 
@@ -16,7 +18,7 @@ public:
     Pareto_Principle( const Pareto_Principle& copy ){ rank = copy.rank; }
 	~Pareto_Principle( ){ rank.clear( ); }
 
-    bool operator( )( sct::Procedure& procedure );
+    bool operator( )( SCT::Procedure& procedure );
 
 private:
 
@@ -33,7 +35,7 @@ public:
     ~Irrelevant_Alternatives( ){ matrix.clear( );
                                  population.clear( ); }
 
-    bool operator( )( sct::Procedure& procedure );
+    bool operator( )( SCT::Procedure& procedure );
 
 private:
 
@@ -48,12 +50,12 @@ public:
 
     Non_Dictatorship( ){ }
     Non_Dictatorship( Population& pop, Rank& newrank, Graph& newgraph ) : population( pop ), rank( newrank ), graph( newgraph ){ }
-    Non_Dictatorship( const Non_Dictatorship& copy );
+    Non_Dictatorship( const Non_Dictatorship& copy ){ population = copy.population; rank = copy.rank; graph = copy.graph; }
 	~Non_Dictatorship( ){ population.clear( );
 						  rank.clear( );
 						  graph.clear( ); }
 
-    bool operator( )( sct::Procedure& procedure );
+    bool operator( )( SCT::Procedure& procedure );
 
 private:
 
@@ -88,7 +90,7 @@ public:
 
     Single_Peakedness( ){ }
     Single_Peakedness( Rank& newrank, Graph& newgraph ) : rank( newrank ), graph( newgraph ){ }
-    Single_Peakedness( const Single_Peakedness& copy );
+    Single_Peakedness( const Single_Peakedness& copy ){ rank = copy.rank; graph = copy.graph; }
     ~Single_Peakedness( ){ rank.clear( );
                            graph.clear( ); }
 
@@ -113,10 +115,11 @@ public:
 
     Arrow_Impossibility( Pareto_Principle& par, Irrelevant_Alternatives& alts, Non_Dictatorship& dic, Single_Peakedness& peak ) :
                          pareto( par ), irrelevant( alts ), dictator( dic ), singlePeak( peak ){ }
-    Arrow_Impossibility( const Arrow_Impossibility& arrow ){ *this = arrow; }
+    Arrow_Impossibility( const Arrow_Impossibility& copy ){ pareto = copy.pareto; irrelevant = copy.irrelevant;
+                                                            dictator = copy.dictator; singlePeak = copy.singlePeak; }
     ~Arrow_Impossibility( ){ }
 
-    bool operator( )( sct::Procedure& procedure );
+    bool operator( )( SCT::Procedure& procedure );
 
 private:
 

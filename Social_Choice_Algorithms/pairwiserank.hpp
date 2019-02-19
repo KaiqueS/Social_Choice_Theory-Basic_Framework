@@ -12,10 +12,8 @@ public:
 
     // Constructors & Destructor
     PairWiseRank( );
-    PairWiseRank( Options xopt, Options yopt, int valx, int valy, int vali ) :
-        optx( xopt ), opty( yopt ),
-        xval( valx ), yval( valy ), ival( vali ){ }
-
+    PairWiseRank( Options xopt, Options yopt, int valx, int valy, int vali ) : optx( xopt ), opty( yopt ),
+                                                                               xval( valx ), yval( valy ), ival( vali ){ }
     PairWiseRank( const PairWiseRank& copy );
 
     ~PairWiseRank( ){ }
@@ -52,6 +50,8 @@ private:
     int yval{ };
     int ival{ };
 };
+
+// Non-member helpers
 
 bool operator<( PairWiseRank& left, PairWiseRank& right );
 

@@ -36,12 +36,9 @@ public:
     std::vector<Agent, std::allocator<Agent>>::iterator end( ){ return population.end( ); }
 
 	void initialize_population( Preferencematrix mtx );
-
     void order_preferences( );
-
     void push_back( Agent& agt ){ population.push_back( agt ); }
     void pop_back( ){ population.pop_back( ); }
-
 	void clear( ){ population.clear( ); }
 
 private:
