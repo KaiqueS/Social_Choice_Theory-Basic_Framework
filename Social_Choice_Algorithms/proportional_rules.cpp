@@ -1,5 +1,25 @@
 #include "proportional_rules.hpp"
 
+void SCT::Proportional::operator( )( Profile& profile ){
+
+    int quotient{ };
+
+    std::cout << "Enter a quotient between 1 and " << profile.size( ) << ": ";
+
+    std::cin >> quotient;
+
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
+
+        if( profile[ i ].get_value( ) >= quotient )
+
+            profile[ i ].set_status( true );
+
+        else
+
+            profile[ i ].set_status( false );
+    }
+}
+
 Profile& SCT::Proportional::operator( )( Population& population ){
 
     int quotient{ 0 };

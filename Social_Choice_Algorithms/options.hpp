@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-// TODO: create a < operator
+// TODO: create a < or > operator
 
 class Options{
 

@@ -7,6 +7,8 @@
 #include "plurality_rules.hpp"
 #include "proportional_rules.hpp"
 
+// Every axiom must have an instance of Rank and Population in its private fields
+
 namespace SCT{
 
 class Pareto_Principle{
@@ -14,15 +16,16 @@ class Pareto_Principle{
 public:
 
     Pareto_Principle( ){ }
-    Pareto_Principle( Rank& newrank ) : rank( newrank ){ }
-    Pareto_Principle( const Pareto_Principle& copy ){ rank = copy.rank; }
-	~Pareto_Principle( ){ rank.clear( ); }
+    Pareto_Principle( Rank& newrank, Population& pop ) : rank( newrank ), population( pop ){ }
+	Pareto_Principle( const Pareto_Principle& copy ){ rank = copy.rank; population = copy.population; }
+	~Pareto_Principle( ){ rank.clear( ); population.clear( ); }
 
     bool operator( )( SCT::Procedure& procedure );
 
 private:
 
     Rank rank{ };
+	Population population{ };
 };
 
 class Irrelevant_Alternatives{
@@ -31,9 +34,8 @@ public:
 
     Irrelevant_Alternatives( ){ }
     Irrelevant_Alternatives( Preferencematrix& mtx, Population& pop ) : matrix( mtx ), population( pop ){ }
-    Irrelevant_Alternatives( const Irrelevant_Alternatives& copy );
-    ~Irrelevant_Alternatives( ){ matrix.clear( );
-                                 population.clear( ); }
+	Irrelevant_Alternatives( const Irrelevant_Alternatives& copy ){ matrix = copy.matrix; population = copy.population; }
+    ~Irrelevant_Alternatives( ){ matrix.clear( ); population.clear( ); }
 
     bool operator( )( SCT::Procedure& procedure );
 
@@ -109,14 +111,14 @@ public:
 
 	Arrow_Impossibility( ){ }
     Arrow_Impossibility( Preferencematrix& mtx, Rank& rank, Population& pop, Graph& graph ) :
-                         pareto( Pareto_Principle( rank ) ),
-                         irrelevant( Irrelevant_Alternatives( mtx, pop ) ),
-                         dictator( Non_Dictatorship( pop, rank, graph ) ){ }
+                            pareto( Pareto_Principle( rank, pop ) ),
+                            irrelevant( Irrelevant_Alternatives( mtx, pop ) ),
+                            dictator( Non_Dictatorship( pop, rank, graph ) ){ }
 
     Arrow_Impossibility( Pareto_Principle& par, Irrelevant_Alternatives& alts, Non_Dictatorship& dic, Single_Peakedness& peak ) :
-                         pareto( par ), irrelevant( alts ), dictator( dic ), singlePeak( peak ){ }
+                            pareto( par ), irrelevant( alts ), dictator( dic ), singlePeak( peak ){ }
     Arrow_Impossibility( const Arrow_Impossibility& copy ){ pareto = copy.pareto; irrelevant = copy.irrelevant;
-                                                            dictator = copy.dictator; singlePeak = copy.singlePeak; }
+                                                                    dictator = copy.dictator; singlePeak = copy.singlePeak; }
     ~Arrow_Impossibility( ){ }
 
     bool operator( )( SCT::Procedure& procedure );

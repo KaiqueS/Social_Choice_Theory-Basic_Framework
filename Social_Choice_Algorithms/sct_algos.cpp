@@ -35,6 +35,31 @@
 }
 */
 
+Profile& sct::Qualified_majority_rule::operator( )( Population& population ){
+
+    winnerset = make_social_order( population );
+
+    for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+        if( winnerset[ i ].get_value( ) >= static_cast<int>( winnerset.size( ) / 2 ) )
+
+            winnerset[ i ].set_status( true );
+
+        else
+
+            winnerset[ i ].set_status( false );
+    }
+
+    auto order = [ ]( Options& left, Options& right ){
+
+        return left.get_value( ) > right.get_value( );
+    };
+
+    std::sort( winnerset.begin( ), winnerset.end( ), order );
+
+    return winnerset;
+}
+
 Profile& sct::Qualified_majority_rule::operator( )( Rank& rank ){
 
     winnerset = make_social_order( rank );
@@ -53,7 +78,7 @@ Profile& sct::Qualified_majority_rule::operator( )( Rank& rank ){
     return winnerset;
 }
 
-Profile& sct::Simple_majority_rule::Procedure::operator( )( Population& population ){
+Profile& sct::Simple_majority_rule::operator( )( Population& population ){
 
     winnerset = make_social_order( population );
 
@@ -62,7 +87,7 @@ Profile& sct::Simple_majority_rule::Procedure::operator( )( Population& populati
     return winnerset;
 }
 
-Profile& sct::Simple_majority_rule::Procedure::operator( )( Rank& rank ){
+Profile& sct::Simple_majority_rule::operator( )( Rank& rank ){
 
     winnerset = make_social_order( rank );
 
@@ -136,6 +161,55 @@ Profile& sct::Borda_count::operator( )( Rank& rank ){
 	}
 
 	return winnerset;
+}
+
+Profile& sct::Proportional::operator( )( Population& population ){
+
+    int quotient{ 0 };
+
+    std::cout << "Enter a quotient between 1 and " << population.begin( ) -> get_preferences( ).size( ) << ": ";
+
+    std::cin >> quotient;
+
+    winnerset = make_social_order( population );
+
+    for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+        if( winnerset[ i ].get_value( ) >= quotient )
+
+            winnerset[ i ].set_status( true );
+
+        else
+
+            winnerset[ i ].set_status( false );
+    }
+
+    return winnerset;
+}
+
+Profile& sct::Proportional::operator( )( Rank& rank ){
+
+    int quotient{ 0 };
+
+    winnerset = make_social_order( rank );
+
+    std::cout << "Enter a quotient between 1 and " << winnerset.size( ) << ": ";
+
+    std::cin >> quotient;
+
+    for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+        if( winnerset[ i ].get_value( ) >= quotient ){
+
+            winnerset[ i ].set_status( true );
+        }
+
+        else
+
+            winnerset[ i ].set_status( false );
+    }
+
+    return winnerset;
 }
 
 // DEPRECATED

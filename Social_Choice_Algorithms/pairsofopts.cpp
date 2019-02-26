@@ -38,8 +38,9 @@ std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
 
     std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
 
-    std::vector<int>::size_type listsize = listofagents.size( );
-    std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
+    //std::vector<int>::size_type listsize = listofagents.size( );
+    //std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
+    std::vector<int>::size_type prefsize = listofagents.begin( ) -> get_preferences( ).size( );
 
     // gets all possible combination of pairs, including repeated pairs
     for( std::vector<int>::size_type i = 0; i < prefsize; ++i ){
@@ -51,6 +52,37 @@ std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
             if( j != i ){
 
                 compairs.ypref = listofagents[ randagt ][ j ];
+
+                paircomp.push_back( compairs );
+            }
+        }
+    }
+
+    // returns all combinations without repetitions
+    return paircomp;
+}
+
+std::vector<PairsOfOpts> pair_generation( Preferencematrix& mtx ){
+
+    PairsOfOpts compairs{ };
+
+    std::vector<PairsOfOpts> paircomp{ };
+
+    std::vector<int>::size_type randrow = static_cast<std::vector<int>::size_type>( rand( ) ) % mtx.size( );
+
+    //std::vector<int>::size_type listsize = mtx.size( );
+    std::vector<int>::size_type prefsize = mtx.begin( ) -> get_alternatives( ).size( );
+
+    // gets all possible combination of pairs, including repeated pairs
+    for( std::vector<int>::size_type i = 0; i < prefsize; ++i ){
+
+        compairs.xpref = mtx[ randrow ][ i ];
+
+        for( std::vector<int>::size_type j = i + 1; j < prefsize; ++j ){
+
+            if( j != i ){
+
+                compairs.ypref = mtx[ randrow ][ j ];
 
                 paircomp.push_back( compairs );
             }

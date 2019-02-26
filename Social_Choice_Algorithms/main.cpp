@@ -22,9 +22,85 @@
 // the latter, it becomes the winner or one of the winners. Add that to GUI
 // TODO: let the user decide between majority or list based procedures
 
+void prime_profile_generating( Preferencematrix& original, SCT::Procedure& procedure ){
+
+    // generate a second set of individual profiles s.t. it:
+    //		has the same set of alternatives
+    //		has the same relations between any two alternatives
+    //		is different from the initial set
+
+    Preferencematrix prime{ };
+
+    prime.set_matrix( original.get_columnsz( ), original.get_rowsz( ) );
+
+    if( original == prime ){
+
+        return;
+    }
+
+    else{
+
+        // since the relation P is based on a procedure, I mean, is determined by the relation
+        // expressed, integrated, to a procedure, then, form the pairs x,y according to a procedure
+    }
+
+    Rank originalrank{ };
+    Rank primerank{ };
+
+    for( std::vector<int>::size_type i = 0; i < original.size( ); ++i ){
+
+        // wrong for borda count
+        procedure( original[ i ] );
+        procedure( prime[ i ] );
+    }
+
+    originalrank.generate_ranking( original );
+    primerank.generate_ranking( prime );
+
+    if( originalrank != primerank ){
+
+        // modify primerank until it holds the same relations as originalrank
+    }
+
+    // How to do so?
+    // Generate a preferencematrix prime
+    // Check if it is equal to the original preference matrix
+    // if it is not, check if the relations between the alternatives are the same
+    // if the relations are not the same, modify the prime matrix until it has the same preference relations
+    // how so?
+    // repeat
+//	|-->	// get the first pair x, y whose relation was determined in accordance to original matrix and a procedure
+//	|	// check if the relation holds in prime
+//	|		// if it does not hold, go to the point that make the relation not hold, i.e., the profile that nulifies it
+//	|			// exchange the position of x, y in the profile
+//	|----------- // go back to the beginning
+            // if it does, go to the next pair
+
+    // apply the procedure to each individual profile, pass each profile to a row in prefmatrix
+    // generate a sctrank from prefmatrix
+    // compare prime rank with original rank
+    // if they are not equal, modify prime rank until it holds the same relations as the ones in
+    // original rank
+
+
+    // should I generate a sctrank where xval, yval values are taken from the procedure?
+
+
+
+    // Use preferencematrix
+}
+
 int main( ){
 
-    srand( static_cast<unsigned int>( time( nullptr ) ) );
+    Preferencematrix mtx{ };
+
+    mtx.set_matrix( 4, 4 );
+
+    SCT::Borda_count bordinha;
+
+    prime_profile_generating( mtx, bordinha );
+
+    /*srand( static_cast< unsigned int >( time( nullptr ) ) );
 
     Preferencematrix newmtx{ };
 
@@ -81,19 +157,21 @@ int main( ){
 
     SCT::Arrow_Impossibility arrow( newmtx, rank, listofagents, graph );
 
-    SCT::Qualified_majority_rule maj;
+    sct::Qualified_majority_rule maj;
 
-    Profile simplemaj = SCT::Simple_majority_rule( )( listofagents );
+    maj( listofagents );
 
-    SCT::Proportional proport;
+    sct::Simple_majority_rule majority;
 
-    SCT::Borda_count borda;
+    sct::Proportional proport;
+
+    sct::Borda_count borda;
 
     Profile count = borda( listofagents );
 
     Profile res = proport( listofagents );
 
-    SCT::Borda_count bordinha;
+    sct::Borda_count bordinha;
 
     bordinha( listofagents );
 
@@ -104,17 +182,16 @@ int main( ){
             std::cout << res[ i ] << " ";
     }
 
-    std::cout << "\n";
-
     bool truth = arrow( maj );
 
     if( truth )
 
-        std::cout << "All right.\n\n";
+    std::cout << "All right.\n\n";
 
     else
 
-        std::cout << "Oh, damn!.\n\n";
+    std::cout << "Oh, damn!.\n\n";
+    */
 
     /*Graph graph{ };
 
@@ -124,9 +201,9 @@ int main( ){
 
     mtx.set_matrix( 45, 45 );
 
-	Population population( mtx.get_matrix( ).size( ) );
+    Population population( mtx.get_matrix( ).size( ) );
 
-	population.initialize_population( mtx );
+    population.initialize_population( mtx );
 
     rank.generate_ranking( population );
 
@@ -134,13 +211,13 @@ int main( ){
 
     graph.make_graph( mtx, rank );
 
-	sct::Qualified_majority_rule maj{ };
+    sct::Qualified_majority_rule maj{ };
 
     sct::Borda_count count{ };
 
     sct::Simple_majority_rule simple{ };
 
-	Profile social = simple( population );
+    Profile social = simple( population );
 
     //sct::Procedure newproc = { sct::Qualified_majority_rule( ) };
 

@@ -24,6 +24,7 @@ public:
     void set_rank( PairWiseRank pair );
     void set_rank( std::vector<PairWiseRank> order );
 	void generate_ranking( Population& listofagents );
+    void generate_ranking( Preferencematrix& mtx );
 
     // Getters
     std::vector<PairWiseRank> get_rank( ){ return ranking; }
@@ -53,5 +54,8 @@ private:
 void initialize_opts( Rank& rank, Profile& profile );
 
 Profile make_social_order( Rank& rank );
+
+bool operator==( Rank& left, Rank& right );
+bool operator!=( Rank& left, Rank& right );
 
 #endif // SCTRANK_H

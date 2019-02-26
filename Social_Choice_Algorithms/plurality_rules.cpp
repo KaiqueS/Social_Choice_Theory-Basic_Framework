@@ -1,5 +1,34 @@
 #include "plurality_rules.hpp"
 
+void SCT::Borda_count::operator( )( Profile& profile ){
+
+    auto order = [ ]( Options& left, Options& right ){
+
+        return left.get_value( ) > right.get_value( );
+    };
+
+    std::sort( profile.begin( ), profile.end( ), order );
+
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
+
+        for( std::vector<int>::size_type j = i + 1; j < profile.size( ); ++j ){
+
+            if( profile[ j ].get_value( ) == profile[ i ].get_value( ) ){
+
+                profile[ i ].set_value( static_cast<int>( profile.size( ) - i ) );
+
+                profile[ j ].set_value( profile[ i ].get_value( ) );
+
+                ++i;
+            }
+
+            else
+
+                profile[ i ].set_value( static_cast<int>( profile.size( ) - i ) );
+        }
+    }
+}
+
 Profile& SCT::Borda_count::operator( )( Population& population ){
 
     initialize_opts( population, winnerset );

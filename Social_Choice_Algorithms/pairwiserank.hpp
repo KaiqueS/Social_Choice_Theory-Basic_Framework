@@ -41,6 +41,8 @@ public:
     // Operators
     PairWiseRank& operator=( const PairWiseRank& copy );
 
+    bool operator==( const PairWiseRank right );
+
 private:
 
     Options optx{ };
@@ -56,5 +58,8 @@ private:
 bool operator<( PairWiseRank& left, PairWiseRank& right );
 
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank );
+
+bool operator==( PairWiseRank left, PairWiseRank right );
+bool operator!=( PairWiseRank left, PairWiseRank right );
 
 #endif // PAIRWISERANK_H

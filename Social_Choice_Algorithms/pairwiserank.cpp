@@ -79,6 +79,21 @@ PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
     return *this;
 }
 
+bool PairWiseRank::operator==( const PairWiseRank right ){
+
+    if( optx == right.optx &&
+        opty == right.opty &&
+        xval == right.xval &&
+        yval == right.yval &&
+        ival == right.ival )
+
+        return true;
+
+    else
+
+        return false;
+}
+
 /// Non-member helpers
 
 // Comparison operator. Returns true when the average of optx + opty of LEFT is smaller than
@@ -99,4 +114,34 @@ std::ostream& operator<<( std::ostream& os, PairWiseRank& rank ){
        << "\tIval: " << rank.get_ival( );
 
     return os;
+}
+
+bool operator==( PairWiseRank left, PairWiseRank right ){
+
+    if( left.get_optx( ) == right.get_optx( ) &&
+        left.get_opty( ) == right.get_opty( ) &&
+        left.get_xval( ) == right.get_xval( ) &&
+        left.get_yval( ) == right.get_yval( ) &&
+        left.get_ival( ) == right.get_ival( ) )
+
+        return true;
+
+    else
+
+        return false;
+}
+
+bool operator!=( PairWiseRank left, PairWiseRank right ){
+
+    if( left.get_optx( ) == right.get_optx( ) &&
+        left.get_opty( ) == right.get_opty( ) &&
+        left.get_xval( ) == right.get_xval( ) &&
+        left.get_yval( ) == right.get_yval( ) &&
+        left.get_ival( ) == right.get_ival( ) )
+
+        return false;
+
+    else
+
+        return true;
 }

@@ -4,173 +4,59 @@
 // one has to guarantee that the parameter function will return something that have the below nec
 // essary methods, like, e.g., .size( ).
 
-// Checks if the pareto principle is violated or not - Working(?) - TODO: Check for transitivity problems
-// TODO: overload pareto principle so that it only deals with graph or rank, but not both
 bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 
-    Options pareto{ };
+	population.order_preferences( );
 
-    bool validity{ true };
+	Options optimum{ };
 
-    Profile winner{ };
+	for( std::vector<int>::size_type i = 0; i < population.size( ); ++i ){
 
-    winner = procedure( rank );
+		for( std::vector<int>::size_type j = 0; j < population[ i ].get_preferences( ).size( ); ++j ){
 
-    std::vector<int>::size_type ranksize = winner.size( );
+			for( std::vector<int>::size_type k = j + 1; k < population[ i ].get_preferences( ).size( ); ++k ){
 
-    // Reads PairWiseRank. Since it considers how each pair is being ranked on every individual
-    // profile of preferences WITHOUT being a social order, one can proceed as follows:
-    for( std::vector<int>::size_type i = 0; i < ranksize; ++i ){
+				if( population[ i ][ j ].get_value( ) == population[ i ][ k ].get_value( ) ){
 
-        // Get an option in rank
-        // TODO: implement something to make it possible for optx or opty to be selected randomly
-        Options opt( rank[ i ].get_optx( ).get_opt( ), false, 0  );
+					return true;
+				}
 
-        // Get every option in rank
-        for( PairWiseRank pair : rank ){
+				else{
 
-            // Check if opt is equal to one of the alternatives in pair
-            if( opt.get_opt( ) == pair.get_optx( ).get_opt( ) ){
+					optimum = population[ i ][ j ];
 
-                // If it is, then check if opt beats its adversary
-                if( pair.get_xval( ) > pair.get_yval( ) ){
+					optimum.set_status( true );
 
-                    // If it beats, then increment the value of opt
-                    ++opt;
-                }
-            }
+					continue;
+				}
+			}
+		}
+	}
 
-            else if( opt.get_opt( ) == pair.get_opty( ).get_opt( ) ){
+	if( optimum.get_opt( ) != procedure( population ).get_alternatives( ).begin( ) -> get_opt( ) )
 
-                if( pair.get_xval( ) < pair.get_yval( ) ){
+		return false;
 
-                    ++opt;
-                }
-            }
-        }
+	else
 
-        // If it is the case that opt is UNANIMOUSLY select by the agents
-        if( opt.get_value( ) == static_cast<int>( ranksize ) - 1 ){
-
-            // Make pareto = opt
-            pareto = opt;
-        }
-
-        // PROBLEM HERE: Think about some way of using this else to report relevant message
-        else{
-
-            //pareto = Options( "NULL", -1 );
-
-            continue;
-        }
-    }
-
-    // Now, the second part: If there is a pareto option
-    if( pareto.get_opt( ) != "NULL" ){
-
-        // Get the first element of socialorder. Remember, this vector ir ordered from the most to
-        // the least preferred alternative
-        std::vector<Options, std::allocator<Options>>::iterator index = winner.begin( );
-
-        // If it is the case that pareto equals the first element of socialorder
-        if( pareto.get_opt( ) == index -> get_opt( ) ){
-
-            // Then the axiom is not being violated
-            validity = true;
-        }
-
-        // Else, it is being violated
-        else if( pareto.get_opt( ) != index -> get_opt( ) ){
-
-            validity = false;
-        }
-    }
-
-    // Returns final validity
-    return validity;
+		return true;
 }
 
+bool irrelevant_alternative( SCT::Procedure& procedure ){
 
-/*bool SCT::pareto_principle( Graph& graph , Rank& rank, Profile& procedure ){
+	// this is all about relative positioning of alternatives. If, for any two profiles p and p', the rela
+	// tive positions of its alternatives are the same, then, f( p ) and f( p' ) will keep their relative
+	// positions equal
 
-    Options pareto{ };
+	// Try to construct two p and p' s.t. p != p' but, for any x,y in p, p', x and y have the same relative
+	// positions -> It is possible, indeed, for two profiles to be different and have same relative posit
+	// ions for any two alternatives
 
-    bool validity{ true };
+	// I'll have to make an algorithm to generate a secondary profile p' s.t. it maintains the same rela
+	// tive positions of its alternatives with respect to a first profile p
 
-    std::vector<int>::size_type ranksize = rank.size( );
-
-    // Reads PairWiseRank. Since it considers how each pair is being ranked on every individual
-    // profile of preferences WITHOUT being a social order, one can proceed as follows:
-    for( std::vector<int>::size_type i = 0; i < ranksize; ++i ){
-
-        // Get an option in rank
-        // TODO: implement something to make it possible for optx or opty to be selected randomly
-        Options opt( rank[ i ].get_optx( ).get_opt( ), false, 0  );
-
-        // Get every option in rank
-        for( PairWiseRank pair : rank ){
-
-            // Check if opt is equal to one of the alternatives in pair
-            if( opt.get_opt( ) == pair.get_optx( ).get_opt( ) ){
-
-                // If it is, then check if opt beats its adversary
-                if( pair.get_xval( ) > pair.get_yval( ) ){
-
-                    // If it beats, then increment the value of opt
-                    ++opt;
-                }
-            }
-
-            else if( opt.get_opt( ) == pair.get_opty( ).get_opt( ) ){
-
-                if( pair.get_xval( ) < pair.get_yval( ) ){
-
-                    ++opt;
-                }
-            }
-        }
-
-        // If it is the case that opt is UNANIMOUSLY select by the agents
-        if( opt.get_value( ) == static_cast<int>( procedure.size( ) ) - 1 ){
-
-            // Make pareto = opt
-            pareto = opt;
-        }
-
-        // PROBLEM HERE: Think about some way of using this else to report relevant message
-        else{
-
-            //pareto = Options( "NULL", -1 );
-
-            continue;
-        }
-    }
-
-    // Now, the second part: If there is a pareto option
-    if( pareto.get_opt( ) != "NULL" ){
-
-        // Get the first element of socialorder. Remember, this vector ir ordered from the most to
-        // the least preferred alternative
-        std::vector<Options, std::allocator<Options>>::iterator index = procedure.begin( );
-
-        // If it is the case that pareto equals the first element of socialorder
-        if( pareto.get_opt( ) == index -> get_opt( ) ){
-
-            // Then the axiom is not being violated
-            validity = true;
-        }
-
-        // Else, it is being violated
-        else if( pareto.get_opt( ) != index -> get_opt( ) ){
-
-            validity = false;
-        }
-    }
-
-    // Returns final validity
-    return validity;
+    return true;
 }
-*/
 
 // Checks if , for any x, y, and z, the relation between x and y is modified by
 // the relation between x and z or y and z in the social ranking
@@ -373,6 +259,8 @@ bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
         }
     }
 
+	//std::cout << "Dic problem 1.\n";
+
     for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
 
         for( std::vector<int>::size_type j = 0; j < people[ i ].get_preferences( ).size( ); ++j ){
@@ -386,6 +274,8 @@ bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
         }
     }
 
+	//std::cout << "Dic problem 2.\n";
+
     for( std::vector<int>::size_type i = 0; i < dictators.size( ); ++i ){
 
         for( std::vector<int>::size_type j = 0; j < dictators.size( ); ++j )
@@ -394,6 +284,8 @@ bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
 
                 dictators.pop_back( );
     }
+
+	//std::cout << "Dic problem 3.\n";
 
     if( dictators.size( ) > 1 ){
 
@@ -570,7 +462,7 @@ bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
     // peakedness or anything that might have made it possible for the result to hold
 	bool validity{ true };
 
-    //Profile newprof = procedure(  );
+	//std::cout << "Problem line 1\n";
 
     if( pareto( procedure ) == false ){
 
@@ -579,6 +471,8 @@ bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
         std::cout << "Pareto principle violated.\n";
     }
 
+	//std::cout << "Problem line 2\n";
+
     if( irrelevant( procedure ) == false ){
 
         validity = false;
@@ -586,12 +480,17 @@ bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
         std::cout << "Irrelevant alternatives violated.\n";
     }
 
+	//std::cout << "Problem line 3\n";
+
+	// PROBLEM HERE MA BOI
     if( dictator( procedure ) == false ){
 
         validity = false;
 
         std::cout << "Nondictatorship violated.\n";
 	}
+
+	//std::cout << "Problem line 4\n";
 
     if( validity == true ){
 
