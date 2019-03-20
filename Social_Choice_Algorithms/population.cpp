@@ -65,10 +65,13 @@ bool Population::empty( ){ return population.empty( ); }
 void Population::initialize_population( Preferencematrix mtx ){
 
     // If POPULATION happens to be empty
-	if( population.empty( ) )
+    if( population.empty( ) ){
 
         // Then resize it
 		*this = Population( mtx.size( ) );
+
+		return initialize_population( mtx );
+	}
 
     // Else
 	else{
@@ -117,7 +120,7 @@ void initialize_opts( Population& listofagents, Profile& opts ){
     if( !listofagents[ randagt ].get_preferences( ).empty( ) ){
 
         // Set OPTS to the agent's profile
-        opts = listofagents[ randagt ].get_preferences( ).get_alternatives( );
+        opts = listofagents[ randagt ].get_preferences( );
 
         for( std::vector<int>::size_type i = 0; i < opts.size( ); ++i )
 

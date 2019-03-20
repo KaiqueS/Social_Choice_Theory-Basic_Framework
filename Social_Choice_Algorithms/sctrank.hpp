@@ -17,7 +17,6 @@ public:
     Rank( );
     Rank( std::vector<PairWiseRank> ordering ) : ranking( ordering ){ }
     Rank( const Rank& copy );
-
     ~Rank( );
 
     // Setters
@@ -43,7 +42,9 @@ public:
 	bool empty( );
 
 	void push_back( PairWiseRank& rank ){ ranking.push_back( rank ); }
-    void clear( ){ ranking.clear( ); }
+	void clear( );
+
+	void order_ranking( );
 
 private:
 
@@ -51,11 +52,15 @@ private:
 };
 
 // Non-member helpers
+std::ostream& operator<< ( std::ostream& os, Rank& rank );
+
 void initialize_opts( Rank& rank, Profile& profile );
 
 Profile make_social_order( Rank& rank );
 
 bool operator==( Rank& left, Rank& right );
 bool operator!=( Rank& left, Rank& right );
+
+bool rank_relations( Rank& left, Rank& right );
 
 #endif // SCTRANK_H

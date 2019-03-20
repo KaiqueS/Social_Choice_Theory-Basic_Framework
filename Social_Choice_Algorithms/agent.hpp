@@ -17,7 +17,6 @@ public:
     Agent( );
     Agent( Profile list, std::string tag ) : preferences( list ), id( tag ){ }
     Agent( const Agent& copy );
-
     ~Agent( );
 
     // Setters

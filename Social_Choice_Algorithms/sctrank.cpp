@@ -1,5 +1,5 @@
 #include "sctrank.hpp"
-#include "helper_functions.cpp"
+#include "pairsofopts.hpp"
 
 /// Constructors & Destructor
 
@@ -10,12 +10,7 @@ Rank::Rank( ){ ranking = { }; }
 Rank::Rank( const Rank& copy ){ ranking = copy.ranking; }
 
 // Destructor. Clears RANKING from memory
-Rank::~Rank( ){
-
-    clear( );
-
-    std::vector<PairWiseRank>( ).swap( ranking );
-}
+Rank::~Rank( ){ clear( ); }
 
 /// Setters
 
@@ -116,7 +111,6 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
     std::vector<int>::size_type listsize = mtx.size( );
 
     // Number of options in each profile
-    //std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
     std::vector<int>::size_type prefsize = mtx.begin( ) -> get_alternatives( ).size( );
 
     // Checks how a pair ( x, y ) is ranked for each agent
@@ -230,6 +224,50 @@ bool Rank::empty( ){
 		return false;
 }
 
+void Rank::clear( ){
+
+	ranking.clear( );
+
+	std::vector<PairWiseRank>( ).swap( ranking );
+}
+
+void Rank::order_ranking( ){
+
+	for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
+
+		if( ranking[ i ].get_optx( ).get_opt( ) > ranking[ i ].get_opty( ).get_opt( ) ){
+
+			Options x = ranking[ i ].get_optx( );
+			x.set_value( ranking[ i ].get_xval( ) );
+
+			ranking[ i ].set_optx( ranking[ i ].get_opty( ) );
+			ranking[ i ].set_xval( ranking[ i ].get_yval( ) );
+
+			ranking[ i ].set_opty( x );
+			ranking[ i ].set_yval( x.get_value( ) );
+		}
+	}
+
+	for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
+
+		for( std::vector<int>::size_type j = i + 1; j < ranking.size( ); ++j ){
+
+			if( ranking[ i ].get_optx( ).get_opt( ) > ranking[ j ].get_optx( ).get_opt( ) ){
+
+				std::swap( ranking[ i ], ranking[ j ] );
+			}
+
+			else if( ranking[ i ].get_optx( ).get_opt( ) == ranking[ j ].get_optx( ).get_opt( ) ){
+
+				if( ranking[ i ].get_opty( ).get_opt( ) > ranking[ j ].get_opty( ).get_opt( ) ){
+
+					std::swap( ranking[ i ], ranking[ j ] );
+				}
+			}
+		}
+	}
+}
+
 // Initializes a Profile with options in RANK, withouth repetition.
 void initialize_opts( Rank& rank, Profile& profile ){
 
@@ -311,6 +349,17 @@ Profile make_social_order( Rank& rank ){
 
 /// Non-member Helpers
 
+std::ostream& operator<<( std::ostream& os, Rank& rank ){
+
+    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i )
+
+        os << rank[ i ] << "\n";
+
+    os << "\n";
+
+    return os;
+}
+
 bool operator==( Rank& left, Rank& right ){
 
     if( left.get_rank( ) == right.get_rank( ) )
@@ -331,4 +380,20 @@ bool operator!=( Rank& left, Rank& right ){
     else
 
         return true;
+}
+
+bool rank_relations( Rank& left, Rank& right ){
+
+	for( std::vector<int>::size_type i = 0; i < left.size( ); ++i ){
+
+		if( relation_comparison( left[ i ], right[ i ] ) == false )
+
+			return false;
+
+		else
+
+			continue;
+	}
+
+	return true;
 }

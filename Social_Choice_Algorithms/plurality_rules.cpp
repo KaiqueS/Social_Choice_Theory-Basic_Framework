@@ -1,6 +1,6 @@
 #include "plurality_rules.hpp"
 
-void SCT::Borda_count::operator( )( Profile& profile ){
+Profile SCT::Borda_count::operator( )( Profile& profile ){
 
     auto order = [ ]( Options& left, Options& right ){
 
@@ -27,6 +27,43 @@ void SCT::Borda_count::operator( )( Profile& profile ){
                 profile[ i ].set_value( static_cast<int>( profile.size( ) - i ) );
         }
     }
+
+    return profile;
+}
+
+Profile SCT::Borda_count::operator( )( Preferencematrix& matrix ){
+
+	initialize_opts( matrix, winnerset );
+
+	winnerset.sort_by_value( );
+
+	for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
+
+		for( std::vector<int>::size_type j = 0; j < matrix[ i ].get_alternatives( ).size( ); ++j ){
+
+			for( std::vector<int>::size_type k = 0; k < winnerset.size( ); ++k ){
+
+				if( matrix[ i ][ j ].get_opt( ) == winnerset[ k ].get_opt( ) ){
+
+					// THIS IS THE SHIT
+					std::vector<int>::size_type bordaranking = matrix[ i ].get_alternatives( ).size( ) - j;
+
+					winnerset[ k ] += static_cast<int>( bordaranking );
+				}
+			}
+		}
+	}
+
+	auto order = [ ]( Options& left, Options& right ){
+
+		return left.get_value( ) > right.get_value( );
+	};
+
+	std::sort( winnerset.begin( ), winnerset.end( ), order );
+
+	std::max_element( winnerset.begin( ), winnerset.end( ) )->set_status( true );
+
+	return winnerset;
 }
 
 Profile& SCT::Borda_count::operator( )( Population& population ){
@@ -92,4 +129,19 @@ Profile& SCT::Borda_count::operator( )( Rank& rank ){
     }
 
     return winnerset;
+}
+
+Profile& SCT::Borda_count::operator+=( Profile& profile ){
+
+    return profile;
+}
+
+Profile& SCT::Borda_count::operator+=( Preferencematrix& matrix ){
+
+
+}
+
+Profile& SCT::Borda_count::operator+=( Rank& rank ){
+
+
 }

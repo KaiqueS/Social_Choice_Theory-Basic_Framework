@@ -15,9 +15,14 @@ class Procedure{
         virtual ~Procedure( ) = 0;
 
         // Operators
-        virtual void operator( )( Profile& profile ) = 0;
+        virtual Profile operator( )( Profile& profile ) = 0;
+        virtual Profile operator( )( Preferencematrix& matrix ) = 0;
         virtual Profile& operator( )( Population& population ) = 0;
         virtual Profile& operator( )( Rank& rank ) = 0;
+
+        virtual Profile& operator+=( Profile& rhs ) = 0;
+        virtual Profile& operator+=( Preferencematrix& rhs ) = 0;
+        virtual Profile& operator+=( Rank& rhs ) = 0;
     };
 }
 

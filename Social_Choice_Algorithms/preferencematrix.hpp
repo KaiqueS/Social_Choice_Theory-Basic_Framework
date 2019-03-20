@@ -8,7 +8,7 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
-#include <profile.hpp>
+#include "profile.hpp"
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
 // The outermost vector represents the rows, while the innermost vector represents the
@@ -19,12 +19,10 @@ public:
 
 	// Constructors & Destructor
 	Preferencematrix( );
+	Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) :
+					  rowsize( row ), columnsize( col ), matrix( mtx ){ }
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
-    Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) :
-                      rowsize( row ), columnsize( col ), matrix( mtx ){ }
-
     Preferencematrix( const Preferencematrix& copymatrix );
-
 	~Preferencematrix( );
 
 	// Setters
@@ -53,11 +51,13 @@ public:
 	std::vector<Profile, std::allocator<Profile>>::iterator begin( ){ return matrix.begin( ); }
 	std::vector<Profile, std::allocator<Profile>>::iterator end( ){ return matrix.end( ); }
 
-	void delete_row( int rowindex );
+	bool empty( );
+
+	void erase_row( const std::vector<int>::size_type index );
 
 	void push_back( Profile& profile ){ matrix.push_back( profile ); }
 
-	void clear( ){ matrix.clear( ); }
+	void clear( );
 
 private:
 
@@ -70,5 +70,11 @@ private:
 
 // Non-member helpers
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix );
+
+Profile make_social_order( Profile& profile, Preferencematrix& matrix );
+
+bool operator!=( Preferencematrix& left, Preferencematrix& right );
+
+void initialize_opts( Preferencematrix& matrix, Profile& profile );
 
 #endif // PREFERENCEMATRIX_H

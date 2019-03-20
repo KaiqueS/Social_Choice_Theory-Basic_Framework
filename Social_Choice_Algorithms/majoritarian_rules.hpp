@@ -13,9 +13,14 @@ class Qualified_majority_rule : public Procedure{
        Qualified_majority_rule( Profile& winners ) : winnerset( winners ){ }
        ~Qualified_majority_rule( ){ winnerset.clear( ); }
 
-       virtual void operator( )( Profile& profile );
+	   virtual Profile operator( )( Profile& profile );
+	   virtual Profile operator( )( Preferencematrix& matrix );
        virtual Profile& operator( )( Population& population );
        virtual Profile& operator( )( Rank& rank );
+
+       virtual Profile& operator+=( Profile& rhs );
+       virtual Profile& operator+=( Preferencematrix& rhs );
+       virtual Profile& operator+=( Rank& rhs );
 
     private:
 
@@ -30,9 +35,14 @@ class Simple_majority_rule : public Procedure{
         Simple_majority_rule( Profile& winners ) : winnerset( winners ){ }
         ~Simple_majority_rule( ) override { winnerset.clear( ); }
 
-        virtual void operator( )( Profile& profile ) override;
+		virtual Profile operator( )( Profile& profile ) override;
+		virtual Profile operator( )( Preferencematrix& matrix ) override;
         virtual Profile& operator( )( Population& population ) override;
         virtual Profile& operator( )( Rank& rank ) override;
+
+        virtual Profile& operator+=( Profile& rhs ) override;
+        virtual Profile& operator+=( Preferencematrix& rhs ) override;
+        virtual Profile& operator+=( Rank& rhs ) override;
 
     private:
 

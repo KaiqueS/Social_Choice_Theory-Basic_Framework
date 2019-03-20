@@ -67,6 +67,17 @@ bool Options::operator==( const Options& rhs ) const{
 		return false;
 }
 
+bool Options::operator!=( const Options& rhs ) const{
+
+	if( opt != rhs.opt )
+
+		return true;
+
+	else
+
+		return false;
+}
+
 // Check for correctness later
 bool Options::operator<( const Options& rhs ){
 
@@ -96,3 +107,13 @@ bool operator==( Options& left, Options& right ){
         return false;
 }
 
+bool operator!=( Options& left, Options& right ){
+
+    if( left.get_opt( ) != right.get_opt( ) )
+
+        return true;
+
+    else
+
+        return false;
+}

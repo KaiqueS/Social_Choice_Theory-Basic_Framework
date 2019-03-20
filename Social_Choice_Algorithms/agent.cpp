@@ -27,15 +27,17 @@ Agent::~Agent( ){
 
 /// Setters
 
+// I do not like this. It would be better if I implemented a set of options, and let agents and matrixes
+// take the alternatives, which would be the same, from there.
 // Sets agent's preferences. Takes a random row from PrefMatrix and set it to be the agent's preferences.
 // Deletes the used row at the end: Avoids repeated preferences for different agents
 void Agent::set_preferences( Preferencematrix& prefmatrix ){
 
-    std::vector<int>::size_type randindex = static_cast<std::vector<int>::size_type>( rand( ) ) % prefmatrix.get_matrix( ).size( );
+    std::vector<int>::size_type randindex = static_cast<std::vector<int>::size_type>( rand( ) ) % prefmatrix.size( );
 
-    preferences = prefmatrix.get_matrix( )[ randindex ];
+    preferences = prefmatrix[ randindex ];
 
-    prefmatrix.delete_row( static_cast<int>( randindex ) );
+    prefmatrix.erase_row( randindex );
 }
 
 void Agent::set_id( std::string tag ){ id = tag; }

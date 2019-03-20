@@ -13,9 +13,14 @@ public:
     Proportional( Profile& winners ) : winnerset( winners ){ }
     ~Proportional( ) override { winnerset.clear( ); }
 
-    virtual void operator( )( Profile& profile ) override;
+	virtual Profile operator( )( Profile& profile ) override;
+	virtual Profile operator( )( Preferencematrix& matrix ) override;
     virtual Profile& operator( )( Population& population ) override;
     virtual Profile& operator( )( Rank& rank ) override;
+
+    virtual Profile& operator+=( Profile& profile ) override;
+    virtual Profile& operator+=( Preferencematrix& matrix ) override;
+    virtual Profile& operator+=( Rank& rank ) override;
 
 private:
 

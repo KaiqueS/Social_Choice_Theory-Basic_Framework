@@ -16,7 +16,6 @@ public:
 	Options( );
     Options( std::string alts, bool stats, int val ) : opt( alts ), status( stats ), value( val ){ }
 	Options( const Options& copy );
-
 	~Options( ){ }
 
 	// Setters
@@ -37,6 +36,7 @@ public:
     Options& operator++( );
 
 	bool operator==( const Options& rhs ) const;
+	bool operator!=( const Options& rhs ) const;
 
     bool operator<( const Options& rhs );
 
@@ -55,5 +55,7 @@ private:
 std::ostream& operator<<( std::ostream& os, Options& opt );
 
 bool operator==( Options& left, Options& right );
+
+bool operator!=( Options& left, Options& right );
 
 #endif // OPTIONS_H

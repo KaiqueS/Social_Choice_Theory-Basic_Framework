@@ -62,4 +62,6 @@ std::ostream& operator<<( std::ostream& os, PairWiseRank& rank );
 bool operator==( PairWiseRank left, PairWiseRank right );
 bool operator!=( PairWiseRank left, PairWiseRank right );
 
+bool relation_comparison( PairWiseRank& left, PairWiseRank& right );
+
 #endif // PAIRWISERANK_H

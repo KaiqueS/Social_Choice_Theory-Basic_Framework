@@ -145,3 +145,18 @@ bool operator!=( PairWiseRank left, PairWiseRank right ){
 
         return true;
 }
+
+bool relation_comparison( PairWiseRank& left, PairWiseRank& right ){
+
+	if( ( left.get_xval( ) > left.get_yval( ) && right.get_xval( ) > right.get_yval( ) ) ||
+		( left.get_yval( ) > left.get_xval( ) && right.get_yval( ) > right.get_xval( ) ) ||
+		( left.get_yval( ) == left.get_xval( ) && right.get_yval( ) == right.get_xval( ) ) ){
+
+		return true;
+	}
+
+	else{
+
+		return false;
+	}
+}

@@ -1,6 +1,6 @@
 #include "proportional_rules.hpp"
 
-void SCT::Proportional::operator( )( Profile& profile ){
+Profile SCT::Proportional::operator( )( Profile& profile ){
 
     int quotient{ };
 
@@ -18,6 +18,32 @@ void SCT::Proportional::operator( )( Profile& profile ){
 
             profile[ i ].set_status( false );
     }
+
+    return winnerset;
+}
+
+Profile SCT::Proportional::operator( )( Preferencematrix& matrix ){
+
+	int quotient{ 0 };
+
+	std::cout << "Enter a quotient between 1 and " << matrix.begin( )-> get_alternatives( ).size( ) << ": ";
+
+	std::cin >> quotient;
+
+	make_social_order( winnerset, matrix );
+
+	for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+		if( winnerset[ i ].get_value( ) >= quotient )
+
+			winnerset[ i ].set_status( true );
+
+		else
+
+			winnerset[ i ].set_status( false );
+	}
+
+	return winnerset;
 }
 
 Profile& SCT::Proportional::operator( )( Population& population ){
@@ -67,4 +93,19 @@ Profile& SCT::Proportional::operator( )( Rank& rank ){
     }
 
     return winnerset;
+}
+
+Profile& SCT::Proportional::operator+=( Profile& profile ){
+
+
+}
+
+Profile& SCT::Proportional::operator+=( Preferencematrix& matrix ){
+
+
+}
+
+Profile& SCT::Proportional::operator+=( Rank& rank ){
+
+
 }

@@ -30,19 +30,14 @@ Preferencematrix::Preferencematrix( const Preferencematrix& copymatrix ){
 }
 
 // Destructor. Clears the vector MATRIX from memory
-Preferencematrix::~Preferencematrix( ){
-
-	clear( );
-
-	std::vector<Profile>( ).swap( matrix );
-}
+Preferencematrix::~Preferencematrix( ){ clear( ); }
 
 /// Setters
 
-// Sets ROWSIZE to row
+// Sets ROWSIZE to row - TODO: modify this
 void Preferencematrix::set_rowsz( std::vector<int>::size_type row ){ rowsize = row; }
 
-// Sets COLUMNSIZE to col
+// Sets COLUMNSIZE to col - TODO: modify this
 void Preferencematrix::set_columnsz( std::vector<int>::size_type col ){ columnsize = col; }
 
 // Set a matrix of RowSZ x ColSZ dimensions. Sets a random value to each alternative, where this
@@ -116,10 +111,25 @@ bool Preferencematrix::operator==( const Preferencematrix& rhs ) const{
 
 /// Helpers
 
-// Deletes an specific row. Used in Agent.h class
-void Preferencematrix::delete_row( int rowindex ){
+// Deletes an specific row. Used in Agent.h class - TODO: erase-remove idiom
+void Preferencematrix::erase_row( const std::vector<int>::size_type index ){ matrix.erase( std::remove( matrix.begin( ), matrix.end( ), index ), matrix.end( ) ); }
 
-    matrix.erase( matrix.begin( ) + rowindex );
+bool Preferencematrix::empty( ){
+
+    if( matrix.empty( ) )
+
+        return true;
+
+    else
+
+        return false;
+}
+
+void Preferencematrix::clear( ){
+
+    matrix.clear( );
+
+    std::vector<Profile>( ).swap( matrix );
 }
 
 /// Non-member helpers
@@ -149,4 +159,67 @@ std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
     }
 
     return os;
+}
+
+Profile make_social_order( Profile& profile, Preferencematrix& matrix ){
+
+    // Instantiates the resulting profile
+    Profile socialorder{ };
+
+    if( matrix.empty( ) ){
+
+        initialize_opts( matrix, profile );
+    }
+
+    else{
+
+        // For every profile in MATRIX
+        for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
+
+            // For every option in every matrix PROFILE
+            for( std::vector<int>::size_type j = 0; j < matrix[ i ].get_alternatives( ).size( ); ++j ){
+
+                // Searches, in SOCIALORDER, for every option in every matrix's profile i
+                for( std::vector<int>::size_type k = 0; k < socialorder.size( ); ++k ){
+
+                    // If it is the case that an option in SOCIALORDER is the same as an option
+                    // in an matrix's profile
+                    if( socialorder[ k ].get_opt( ) == matrix[ i ][ j ].get_opt( ) ){
+
+                        // Then, increment SOCIALORDER[ k ]'s value
+                        // WTF: where did this 4 come from? Should not it be POPULATION.SIZE instead?
+                        // TODO: debug this
+                        socialorder[ k ] += ( static_cast<int>( ( socialorder.size( ) - j ) / 4 ) );
+                    }
+                }
+            }
+        }
+    }
+
+    return socialorder;
+}
+
+bool operator!=( Preferencematrix& left, Preferencematrix& right ){
+
+    if( left.get_matrix( ) != right.get_matrix( ) )
+
+        return true;
+
+    else
+
+        return false;
+}
+
+void initialize_opts( Preferencematrix& matrix, Profile& profile ){
+
+	std::cout << "Is the error here?./n";
+
+	profile = *matrix.begin( );
+
+	std::cout << "Is the error here?./n";
+
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
+
+        profile[ i ].set_value( 0 );
+    }
 }

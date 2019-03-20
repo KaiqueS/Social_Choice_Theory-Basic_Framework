@@ -4,9 +4,153 @@
 // one has to guarantee that the parameter function will return something that have the below nec
 // essary methods, like, e.g., .size( ).
 
+
+
+void processed_profile( Preferencematrix& matrix, SCT::Procedure& procedure ){
+
+	for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
+
+		procedure( matrix[ i ] );
+	}
+}
+
+
+
+
+// Check for a case where pair1 == pair2 but pair1.xval/yval != pair2.xval/yval, i.e., a case where the relation between
+// optx and opty of two pairs is the same but their values are different
+// Maybe it would be best if randprofile were not used, and the algorithm went to different pairs?
+Rank ranking_comparison( Rank& originalrank, Rank& primerank, Preferencematrix& primemtx, SCT::Procedure& procedure ){
+
+	// Problem here: original != prime even though original holds the same relations as prime
+	while( originalrank != primerank && rank_relations( originalrank, primerank ) == false ){
+
+		for( std::vector<int>::size_type i = 0; i < originalrank.size( ); ++i ){
+
+			// wtf primerank is NULL my BALLS
+			if( originalrank[ i ] != primerank[ i ] && relation_comparison( originalrank[ i ], primerank[ i ] ) == false ){
+
+				// maybe i should cut this off? and use the conditional above to identify the point that need to be changed?
+				std::vector<int>::size_type randprofile = static_cast<std::vector<int>::size_type>( rand( ) ) % primemtx.size( );
+
+				std::vector<int>::size_type x = find_opt( primemtx[ randprofile ], primerank[ i ].get_optx( ) );
+				std::vector<int>::size_type y = find_opt( primemtx[ randprofile ], primerank[ i ].get_opty( ) );
+
+				//std::swap( primemtx[ indX ], primemtx[ indY ] );
+				Options holder = primemtx[ randprofile ][ x ];
+
+				primemtx[ randprofile ][ x ].set_opt( primemtx[ randprofile ][ y ].get_opt( ) );
+				primemtx[ randprofile ][ y ].set_opt( holder.get_opt( ) );
+
+				processed_profile( primemtx, procedure );
+
+				primerank = { };
+
+				primerank.generate_ranking( primemtx );
+				primerank.order_ranking( );
+			}
+
+			else
+
+				continue;
+		}
+	}
+
+	primerank.order_ranking( );
+
+	return primerank;
+}
+
+Rank prime_profile_generating( Preferencematrix& original, SCT::Procedure& procedure ){
+
+	// generate a second set of individual profiles s.t. it:
+	//		has the same set of alternatives
+	//		has the same relations between any two alternatives
+	//		is different from the initial set
+
+	processed_profile( original, procedure );
+
+	Preferencematrix prime{ };
+	prime.set_matrix( original.get_columnsz( ), original.get_rowsz( ) );
+	processed_profile( prime, procedure );
+
+	// since ranks have the same alternatives, order each rank alphabetically, makes comparing easier
+	Rank originalrank{ };
+	originalrank.generate_ranking( original );
+	originalrank.order_ranking( );
+
+	Rank primerank{ };
+	//primerank.generate_ranking( prime );
+	primerank.generate_ranking( prime );
+	primerank.order_ranking( );
+	primerank = ranking_comparison( originalrank, primerank, prime, procedure );
+
+	// This may call options == operator, which is defined only for options id's.
+	// It may happen that original and prime have the same options in the same order, but
+	// different values, and thus, different relations.
+	// Fix this
+	if( ( original == prime ) && ( rank_relations( originalrank, primerank ) == true ) ){
+
+		return originalrank;
+	}
+
+	else if( ( original != prime ) && ( rank_relations( originalrank, primerank ) == true ) ){
+
+		return originalrank;
+	}
+
+	else if( ( original != prime ) && ( rank_relations( originalrank, primerank ) == false ) ){
+
+		//primerank = ranking_comparison( originalrank, primerank, original, procedure );
+
+		//order_ranking( primerank );
+
+		return prime_profile_generating( original, procedure );
+	}
+
+	else
+
+		return primerank;
+
+	// since the relation P is based on a procedure, I mean, is determined by the relation
+	// expressed, integrated, to a procedure, then, form the pairs x, y according to a procedure
+
+
+	// How to do so?
+	// Generate a preferencematrix prime
+	// Check if it is equal to the original preference matrix
+	// if it is not, check if the relations between the alternatives are the same
+	// if the relations are not the same, modify the prime matrix until it has the same preference relations
+	// how so?
+	// repeat
+//	|-->	// get the first pair x, y whose relation was determined in accordance to original matrix and a procedure
+//	|	// check if the relation holds in prime
+//	|		// if it does not hold, go to the point that make the relation not hold, i.e., the profile that nulifies it
+//	|			// exchange the position of x, y in the profile
+//	|----------- // go back to the beginning
+			// if it does, go to the next pair
+
+	// apply the procedure to each individual profile, pass each profile to a row in prefmatrix
+	// generate a sctrank from prefmatrix
+	// compare prime rank with original rank
+	// if they are not equal, modify prime rank until it holds the same relations as the ones in
+	// original rank
+
+
+	// should I generate a sctrank where xval, yval values are taken from the procedure?
+
+	// Use preferencematrix
+
+}
+
+///
+
 bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 
+	// Problem here: agents with no preferences
 	population.order_preferences( );
+
+	//std::cout << "Debug 1.\n";
 
 	Options optimum{ };
 
@@ -33,6 +177,8 @@ bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 		}
 	}
 
+	//std::cout << "Debug 2.\n";
+
 	if( optimum.get_opt( ) != procedure( population ).get_alternatives( ).begin( ) -> get_opt( ) )
 
 		return false;
@@ -42,7 +188,41 @@ bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 		return true;
 }
 
-bool irrelevant_alternative( SCT::Procedure& procedure ){
+bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
+	
+	Rank originalrank{ };
+	originalrank.generate_ranking( matrix );
+
+	Preferencematrix prime{	};
+	prime.set_matrix( matrix.get_rowsz( ), matrix.get_columnsz( ) );
+
+	Rank primerank = prime_profile_generating( prime, procedure );
+
+	if( ( originalrank == primerank ) && ( rank_relations( originalrank, primerank ) == true ) ){
+
+		if( procedure( originalrank ) != procedure( primerank ) )
+
+			return false;
+
+		else
+
+			return true;
+	}
+
+	else if( ( originalrank != primerank ) && ( rank_relations( originalrank, primerank ) == true ) ){
+
+		if( procedure( originalrank ) == procedure( primerank ) )
+
+			return true;
+
+		else
+
+			return false;
+	}
+
+	else
+
+		return false;
 
 	// this is all about relative positioning of alternatives. If, for any two profiles p and p', the rela
 	// tive positions of its alternatives are the same, then, f( p ) and f( p' ) will keep their relative
@@ -54,179 +234,7 @@ bool irrelevant_alternative( SCT::Procedure& procedure ){
 
 	// I'll have to make an algorithm to generate a secondary profile p' s.t. it maintains the same rela
 	// tive positions of its alternatives with respect to a first profile p
-
-    return true;
 }
-
-// Checks if , for any x, y, and z, the relation between x and y is modified by
-// the relation between x and z or y and z in the social ranking
-// TODO: maybe a bool key? The same as validity above
-// TODO: remember to pass a PROCEDURE as argument
-bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
-
-    // THIS IS GAMBIARRAAAAAAAAAAAAAAAAAAAAA
-    Population& people = this -> population;
-
-    bool validity{ true };
-
-    // generate a second profile R' of preferences
-    Preferencematrix primeMtx( matrix.get_rowsz( ), matrix.get_columnsz( ) );
-
-    Population population( primeMtx.size( ) );
-
-    population.initialize_population( primeMtx );
-
-    // To optmize: search for the way to falsify the axiom -> check for the case where
-    // the condition is true, but the consequence is false
-
-    // Sort agents preferences according to value, will make things here easier
-    for( std::vector<int>::size_type i = 0; i < people.size( ) && population.size( ); ++i ){
-
-        people[ i ].sort_preferences( );
-        population[ i ].sort_preferences( );
-    }
-
-    // if it is the case that, for any two alternatives x and y, and for every person i
-    // xRiy iff xR'iy
-    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
-
-        for( std::vector<int>::size_type j = 0; j < population.size( ); ++j ){
-
-            if( people[ i ].get_preferences( ) != population[ j ].get_preferences( ) ){
-
-                validity = true;
-
-                return validity;
-            }
-
-            // A SHITPOINT, BERG, BE CAREFUL
-            else
-
-                validity = false;
-        }
-    }
-
-    // TODO: workaround below
-
-    Population newpop( people );
-
-    Rank rank{ };
-    rank.generate_ranking( newpop );
-
-    Rank primerank{ };
-    primerank.generate_ranking( newpop );
-
-    // END of workaround
-
-    Graph graph{ };
-    graph.make_graph( matrix, rank );
-
-    Graph primegraph{ };
-    primegraph.make_graph( primeMtx, rank );
-
-    // then, generate a social order for each profile and check if x and y are ranked equally in both profiles
-    // TODO: this should compare the social orders generated by an ARBITRARY aggregation procedure. REMEMBER to
-    // allow for user-specified procedure later
-    // NOTE: Q_Majority_rule used for debug purposes only
-    if( procedure( rank ) == procedure( primerank ) ){
-
-        // If that is the case, the axiom is not being violated, return true
-        validity = true;
-
-        return validity;
-    }
-
-    // Else, the axiom is being violated, return false
-    // TODO: Print something here, to let one know what was wrong
-    else{
-
-        validity = false;
-
-        return validity;
-    }
-}
-
-/*bool SCT::irrelevant_alternatives( Preferencematrix& mtx, Population& people ){
-
-    bool validity{ true };
-
-    // generate a second profile R' of preferences
-    Preferencematrix primeMtx( mtx.get_rowsz( ), mtx.get_columnsz( ) );
-
-    Population population( primeMtx.get_matrix( ).size( ) );
-
-    population.initialize_population( primeMtx );
-
-    // To optmize: search for the way to falsify the axiom -> check for the case where
-    // the condition is true, but the consequence is false
-
-    // Sort agents preferences according to value, will make things here easier
-    for( std::vector<int>::size_type i = 0; i < people.size( ) && population.size( ); ++i ){
-
-        people[ i ].sort_preferences( );
-        population[ i ].sort_preferences( );
-    }
-
-    // if it is the case that, for any two alternatives x and y, and for every person i
-    // xRiy iff xR'iy
-    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
-
-        for( std::vector<int>::size_type j = 0; j < population.size( ); ++j ){
-
-            if( people[ i ].get_preferences( ) != population[ j ].get_preferences( ) ){
-
-                validity = true;
-
-                return validity;
-            }
-
-            // A SHITPOINT, BERG, BE CAREFUL
-            else
-
-                validity = false;
-        }
-    }
-
-	// TODO: fiz workaround below
-
-	Population newpop( people );
-
-    Rank rank{ };
-	rank.generate_ranking( newpop );
-
-    Rank primerank{ };
-	primerank.generate_ranking( newpop );
-
-	// END of workaround
-
-    Graph graph{ };
-    graph.make_graph( mtx, rank );
-
-    Graph primegraph{ };
-    primegraph.make_graph( primeMtx, rank );
-
-    // then, generate a social order for each profile and check if x and y are ranked equally in both profiles
-    // TODO: this should compare the social orders generated by an ARBITRARY aggregation procedure. REMEMBER to
-    // allow for user-specified procedure later
-    // NOTE: Q_Majority_rule used for debug purposes only
-    if( qualified_majority_rule( graph ) == qualified_majority_rule( primegraph ) ){
-
-        // If that is the case, the axiom is not being violated, return true
-        validity = true;
-
-        return validity;
-    }
-
-    // Else, the axiom is being violated, return false
-    // TODO: Print something here, to let one know what was wrong
-    else{
-
-        validity = false;
-
-        return validity;
-    }
-}
-*/
 
 // Find an agent that, whenever ONLY HER prefers x to y, the social order becomes xPy
 // If is that the case that another person also prefers x to y, then the clause is not
@@ -234,85 +242,7 @@ bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 // TODO: revise this
 bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
 
-	// FULL GAMBIARRA MODE ON
-	Population& people = population;
 
-	people.order_preferences( );
-
-    Profile dictatedopts{ };
-
-    Population dictators{ };
-
-    // TODO: revise this. Maybe there is a case where x == y == 1, since there is repe
-    // tition in pairwiserank
-    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
-
-        // if only one person prefers x to y
-        if( rank[ i ].get_xval( ) == 1 ){
-
-            dictatedopts.push_back( rank[ i ].get_optx( ) );
-        }
-
-        else if( rank[ i ].get_yval( ) == 1 ){
-
-            dictatedopts.push_back( rank[ i ].get_opty( ) );
-        }
-    }
-
-	//std::cout << "Dic problem 1.\n";
-
-    for( std::vector<int>::size_type i = 0; i < people.size( ); ++i ){
-
-        for( std::vector<int>::size_type j = 0; j < people[ i ].get_preferences( ).size( ); ++j ){
-
-            for( std::vector<int>::size_type k = 0; k < dictatedopts.size( ); ++k ){
-
-                if( people[ i ][ j ].get_opt( ) == dictatedopts[ k ].get_opt( ) )
-
-                    dictators.push_back( people[ i ] );
-            }
-        }
-    }
-
-	//std::cout << "Dic problem 2.\n";
-
-    for( std::vector<int>::size_type i = 0; i < dictators.size( ); ++i ){
-
-        for( std::vector<int>::size_type j = 0; j < dictators.size( ); ++j )
-
-            if( j != i && dictators[ i ].get_id( ) == dictators[ j ].get_id( ) )
-
-                dictators.pop_back( );
-    }
-
-	//std::cout << "Dic problem 3.\n";
-
-    if( dictators.size( ) > 1 ){
-
-        //std::cout << "There is more than one dictator. Axiom not violated, return true.\n";
-
-        return true;
-    }
-
-    else if( dictators.size( ) == 1 ){
-
-        std::cout << "There is a dictator: " << dictators.begin( ) -> get_id( ) << ". Axiom violated, return false.\n";
-
-        return false;
-    }
-
-    else if( dictators.empty( ) ){
-
-        return true;
-    }
-        // If it is the case that, for one agent i, only i have xPiy
-            // Check the social order
-                // If it is the case that xPy in the social order
-                    // Return false and the agent i is a dictator
-                // Else, return true
-    else
-
-        return true;
 }
 
 // TODO: use this only for the case where there are only three alternatives,
@@ -464,6 +394,7 @@ bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
 
 	//std::cout << "Problem line 1\n";
 
+    // PROBLEM HERE
     if( pareto( procedure ) == false ){
 
         validity = false;
@@ -471,7 +402,7 @@ bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
         std::cout << "Pareto principle violated.\n";
     }
 
-	//std::cout << "Problem line 2\n";
+    //std::cout << "Problem line 2\n";
 
     if( irrelevant( procedure ) == false ){
 
@@ -480,7 +411,7 @@ bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
         std::cout << "Irrelevant alternatives violated.\n";
     }
 
-	//std::cout << "Problem line 3\n";
+    //std::cout << "Problem line 3\n";
 
 	// PROBLEM HERE MA BOI
     if( dictator( procedure ) == false ){
