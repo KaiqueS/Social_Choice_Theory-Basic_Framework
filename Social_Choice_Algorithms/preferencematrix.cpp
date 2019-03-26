@@ -91,22 +91,11 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 /// Operators
 
 // Overloaded assignment operator
-Preferencematrix& Preferencematrix::operator=( const Preferencematrix& copy ){
+Preferencematrix& Preferencematrix::operator=( Preferencematrix copy ){
 
-	matrix = copy.matrix;
+	std::swap( *this, copy );
 
 	return *this;
-}
-
-bool Preferencematrix::operator==( const Preferencematrix& rhs ) const{
-
-	if( matrix == rhs.matrix )
-
-		return true;
-
-	else
-
-		return false;
 }
 
 /// Helpers
@@ -197,17 +186,6 @@ Profile make_social_order( Profile& profile, Preferencematrix& matrix ){
     }
 
     return socialorder;
-}
-
-bool operator!=( Preferencematrix& left, Preferencematrix& right ){
-
-    if( left.get_matrix( ) != right.get_matrix( ) )
-
-        return true;
-
-    else
-
-        return false;
 }
 
 void initialize_opts( Preferencematrix& matrix, Profile& profile ){

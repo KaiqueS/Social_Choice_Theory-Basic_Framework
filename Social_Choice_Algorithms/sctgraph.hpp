@@ -16,6 +16,7 @@ public:
     Graph( );
     Graph( SocialPrefNode node );
     Graph( std::vector<SocialPrefNode> vertices ) : nodes( vertices ){ }
+	Graph( std::initializer_list<SocialPrefNode> init ) : nodes( std::move( init ) ){ }
     Graph( const Graph& copy );
 
     ~Graph( );
@@ -26,10 +27,10 @@ public:
     void set_graph( SocialPrefNode node );
 
     // Getters
-    std::vector<SocialPrefNode> get_graph( ){ return nodes; }
+    std::vector<SocialPrefNode> get_graph( ) const{ return nodes; }
 
     // Operators
-    Graph& operator=( const Graph& copy );
+    Graph& operator=( Graph copy );
 
     SocialPrefNode& operator[ ]( const std::vector<int>::size_type index );
 
@@ -42,10 +43,10 @@ public:
 
     std::vector<int>::size_type size( ){ return nodes.size( ); }
 
-    bool empty( );
-
     std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator begin( ){ return nodes.begin( ); }
     std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); }
+
+	bool empty( );
 
 private:
 
@@ -54,6 +55,18 @@ private:
 
 // Non-member helpers
 std::ostream& operator<<( std::ostream& os, Graph& graph );
+
+inline bool operator==( const Graph& left, const Graph& right ){
+
+	if( left.get_graph( ) == right.get_graph( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+inline bool operator!=( const Graph& left, const Graph& right ){ return !operator==( left, right ); }
 
 void print_graph( Graph& graph );
 

@@ -26,12 +26,12 @@ public:
     void set_id( std::string tag );
 
     // Getters
-    Profile get_preferences( ){ return preferences; }
+    Profile get_preferences( ) const{ return preferences; }
 
-    std::string get_id( ){ return id; }
+    std::string get_id( ) const{ return id; }
 
     // Operators
-    Agent& operator=( const Agent& one );
+    Agent& operator=( Agent one );
 
     Options& operator[ ]( const std::vector<int>::size_type& index ){ return preferences[ index ]; }
 
@@ -48,7 +48,21 @@ private:
 
 std::ostream& operator<<( std::ostream& os, Agent& agt );
 
-bool operator==( Agent& one, Agent& two );
-bool operator!=( Agent& one, Agent& two );
+inline bool operator==( const Agent& one, const Agent& two ){
+
+	// Modified: deleted && one.get_status( ) == two.get_status( )
+	if( one.get_id( ) == two.get_id( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+
+inline bool operator!=( const Agent& one, const Agent& two ){
+
+	return !operator==( one, two );
+}
 
 #endif // AGENT_H

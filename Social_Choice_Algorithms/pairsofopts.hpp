@@ -14,7 +14,7 @@ struct PairsOfOpts{
     ~PairsOfOpts( ){ }
 
     // Operators
-    PairsOfOpts& operator=( const PairsOfOpts& copy );
+    PairsOfOpts& operator=( PairsOfOpts copy );
 
     // Members
     Options xpref{ };
@@ -22,6 +22,7 @@ struct PairsOfOpts{
 };
 
 // Non-member helpers
+// std::vector<PairsOfOpts> pair_generation( Profile& profile );
 std::vector<PairsOfOpts> pair_generation( Population& listofagents );
 std::vector<PairsOfOpts> pair_generation( Preferencematrix& mtx );
 

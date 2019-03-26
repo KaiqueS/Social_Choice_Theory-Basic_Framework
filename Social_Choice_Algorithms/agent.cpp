@@ -47,11 +47,9 @@ void Agent::set_id( std::string tag ){ id = tag; }
 /// Operators
 
 // Overloaded assignment operator.
-Agent& Agent::operator=( const Agent& one ){
+Agent& Agent::operator=( Agent one ){
 
-    id = one.id;
-
-    preferences = one.preferences;
+	std::swap( *this, one );
 
     return *this;
 }
@@ -61,12 +59,7 @@ Agent& Agent::operator=( const Agent& one ){
 // Sorts an agent's preferences in decreasing order, according to an option's value
 void Agent::sort_preferences( ){
 
-    auto order = [ ]( Options& left, Options& right ){
-
-        return left.get_value( ) > right.get_value( );
-    };
-
-    std::sort( preferences.begin( ), preferences.end( ), order );
+	preferences.value_merge_sort( 0, preferences.size( ) - 1 );
 }
 
 std::ostream& operator<<( std::ostream& os, Agent& agt ){
@@ -78,27 +71,4 @@ std::ostream& operator<<( std::ostream& os, Agent& agt ){
         os << "( " << opt << " )";
 
     return os;
-}
-
-// Comparing agents
-bool operator==( Agent& one, Agent& two ){
-
-    // Modified: deleted && one.get_status( ) == two.get_status( )
-    if( one.get_id( ) == two.get_id( ) )
-
-        return true;
-
-    else
-
-        return false;
-}
-bool operator!=( Agent& one, Agent& two ){
-
-    if( one.get_id( ) != two.get_id( ) )
-
-        return true;
-
-    else
-
-        return false;
 }

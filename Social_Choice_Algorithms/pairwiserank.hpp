@@ -15,7 +15,6 @@ public:
     PairWiseRank( Options xopt, Options yopt, int valx, int valy, int vali ) : optx( xopt ), opty( yopt ),
                                                                                xval( valx ), yval( valy ), ival( vali ){ }
     PairWiseRank( const PairWiseRank& copy );
-
     ~PairWiseRank( ){ }
 
     // Setters
@@ -31,17 +30,18 @@ public:
     void incrementi( ){ ++ival; }
 
     // Getters
-    Options& get_optx( );
-    Options& get_opty( );
+	Options get_optx( ) const{ return optx; }
+	Options get_opty( ) const{ return opty; }
 
-    int get_xval( );
-    int get_yval( );
-    int get_ival( );
+	int get_xval( ) const{ return xval; }
+	int get_yval( ) const{ return yval; }
+	int get_ival( ) const{ return ival; }
 
     // Operators
-    PairWiseRank& operator=( const PairWiseRank& copy );
+    PairWiseRank& operator=( PairWiseRank copy );
 
-    bool operator==( const PairWiseRank right );
+	// Helpers
+	friend void swap( PairWiseRank& left, PairWiseRank& right );
 
 private:
 
@@ -55,13 +55,32 @@ private:
 
 // Non-member helpers
 
-bool operator<( PairWiseRank& left, PairWiseRank& right );
+
 
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank );
 
-bool operator==( PairWiseRank left, PairWiseRank right );
-bool operator!=( PairWiseRank left, PairWiseRank right );
+inline bool operator==( const PairWiseRank& left, const PairWiseRank& right ){
 
-bool relation_comparison( PairWiseRank& left, PairWiseRank& right );
+	if( left.get_optx( ) == right.get_optx( ) &&
+		left.get_opty( ) == right.get_opty( ) &&
+		left.get_xval( ) == right.get_xval( ) &&
+		left.get_yval( ) == right.get_yval( ) &&
+		left.get_ival( ) == right.get_ival( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+inline bool operator!=( const PairWiseRank& left, const PairWiseRank& right ){ return !operator==( left, right ); }
+
+inline bool operator<( const PairWiseRank& left, const PairWiseRank& right ){
+
+	return( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) < ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) );
+}
+inline bool operator>( const PairWiseRank& left, const PairWiseRank& right ){ return !operator<( left, right ); }
+
+bool relation_comparison( const PairWiseRank& left, const PairWiseRank& right );
 
 #endif // PAIRWISERANK_H

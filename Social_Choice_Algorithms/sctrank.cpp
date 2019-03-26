@@ -164,9 +164,9 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
 /// Operators
 
 // Overloaded assignment operator
-Rank& Rank::operator=( const Rank& copy ){
+Rank& Rank::operator=( Rank copy ){
 
-    ranking = copy.ranking;
+	std::swap( *this, copy );
 
     return *this;
 }

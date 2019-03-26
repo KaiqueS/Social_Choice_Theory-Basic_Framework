@@ -21,6 +21,7 @@ public:
 	Preferencematrix( );
 	Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) :
 					  rowsize( row ), columnsize( col ), matrix( mtx ){ }
+	Preferencematrix( std::initializer_list<Profile> init ) : matrix( std::move( init ) ){ }
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
     Preferencematrix( const Preferencematrix& copymatrix );
 	~Preferencematrix( );
@@ -32,18 +33,16 @@ public:
     void set_matrix( std::vector<int>::size_type rowsz, std::vector<int>::size_type colsz );
 
 	// Getters
-    std::vector<int>::size_type get_rowsz( ){ return rowsize; }
-    std::vector<int>::size_type get_columnsz( ){ return columnsize; }
+    std::vector<int>::size_type get_rowsz( ) const{ return rowsize; }
+    std::vector<int>::size_type get_columnsz( ) const{ return columnsize; }
 
     // Return a reference instead?
-	std::vector<Profile> get_matrix( ){ return matrix; }
+	std::vector<Profile> get_matrix( ) const{ return matrix; }
 
 	// Operators
     Profile& operator[ ]( const std::vector<int>::size_type& position ){ return matrix[ position ]; }
 
-	Preferencematrix& operator=( const Preferencematrix& copy );
-
-	bool operator==( const Preferencematrix& rhs ) const;
+	Preferencematrix& operator=( Preferencematrix copy );
 
 	// Helpers
 	std::vector<int>::size_type size( ){ return matrix.size( ); }
@@ -71,9 +70,19 @@ private:
 // Non-member helpers
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix );
 
-Profile make_social_order( Profile& profile, Preferencematrix& matrix );
+inline bool operator==( const Preferencematrix& left, const Preferencematrix& right ){
 
-bool operator!=( Preferencematrix& left, Preferencematrix& right );
+	if( left.get_matrix( ) == right.get_matrix( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+inline bool operator!=( const Preferencematrix& left, const Preferencematrix& right ){ return !operator==( left, right ); }
+
+Profile make_social_order( Profile& profile, Preferencematrix& matrix );
 
 void initialize_opts( Preferencematrix& matrix, Profile& profile );
 

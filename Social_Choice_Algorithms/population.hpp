@@ -20,10 +20,10 @@ public:
     void set_population( Agent& people );
 
     // Getters
-    std::vector<Agent>& get_population( ){ return  population; }
+    std::vector<Agent> get_population( ) const{ return population; } // removed return by reference
 
     // Operators
-    Population& operator=( const Population& copy );
+    Population& operator=( Population copy );
 
     Agent& operator[ ]( const std::vector<int>::size_type index ){ return population[ index ]; }
 

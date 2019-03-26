@@ -10,10 +10,6 @@ Population::Population( ){ population = { }; }
 Population::Population( std::vector<int>::size_type size ){
 
     population.resize( size );
-
-    for( std::vector<int>::size_type i = 0; i < population.size( ); ++i )
-
-        population[ i ] = Agent{ };
 }
 
 // Alternative parameterized constructor. Inserts an agent into POPULATION
@@ -46,9 +42,9 @@ void Population::set_population( Agent& people ){ population.push_back( people )
 /// Operators
 
 // Overloaded assignment operator
-Population& Population::operator=( const Population& copy ){
+Population& Population::operator=( Population copy ){
 
-    population = copy.population;
+	std::swap( *this, copy );
 
     return *this;
 }
@@ -68,7 +64,7 @@ void Population::initialize_population( Preferencematrix mtx ){
     if( population.empty( ) ){
 
         // Then resize it
-		*this = Population( mtx.size( ) );
+		population.resize( mtx.size( ) );
 
 		return initialize_population( mtx );
 	}

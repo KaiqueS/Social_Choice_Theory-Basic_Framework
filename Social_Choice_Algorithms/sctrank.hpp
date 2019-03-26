@@ -16,6 +16,7 @@ public:
     // Constructors & Destructor
     Rank( );
     Rank( std::vector<PairWiseRank> ordering ) : ranking( ordering ){ }
+	Rank( std::initializer_list<PairWiseRank> init ) : ranking( std::move( init ) ){ }
     Rank( const Rank& copy );
     ~Rank( );
 
@@ -26,12 +27,12 @@ public:
     void generate_ranking( Preferencematrix& mtx );
 
     // Getters
-    std::vector<PairWiseRank> get_rank( ){ return ranking; }
+    std::vector<PairWiseRank> get_rank( ) const{ return ranking; }
 
-    std::vector<int>::size_type size( ){ return ranking.size( ); }
+    std::vector<int>::size_type size( ) const{ return ranking.size( ); }
 
     // Operators
-    Rank& operator=( const Rank& copy );
+    Rank& operator=( Rank copy );
 
     PairWiseRank& operator[ ]( const std::vector<int>::size_type index  );
 
@@ -58,8 +59,17 @@ void initialize_opts( Rank& rank, Profile& profile );
 
 Profile make_social_order( Rank& rank );
 
-bool operator==( Rank& left, Rank& right );
-bool operator!=( Rank& left, Rank& right );
+inline bool operator==( const Rank& left, const Rank& right ){
+	
+	if( left.get_rank( ) == right.get_rank( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+inline bool operator!=( const Rank& left, const Rank& right ){ return !operator==( left, right ); }
 
 bool rank_relations( Rank& left, Rank& right );
 

@@ -32,13 +32,11 @@ public:
 
     // Constructors & Destructor
     SocialPrefNode( );
-    SocialPrefNode( std::string self, int ind, int link, bool stack, std::vector<SocialPrefNode*> pref,
-                    std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff ) :
-                    id( self ), index( ind ), lowlink( link ), onstack( stack ),
-                    preferences( pref ), worsethan( worse ), indifference( indiff ){ }
-
+    SocialPrefNode( std::string self, int ind, int link, bool stack, std::vector<SocialPrefNode*> pref, std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff ) :
+                    id( self ), index( ind ), lowlink( link ), onstack( stack ), preferences( pref ), worsethan( worse ), indifference( indiff ){ }
+	SocialPrefNode( std::initializer_list<SocialPrefNode*> prefs, std::initializer_list<SocialPrefNode*> worse, std::initializer_list<SocialPrefNode*> ind ) :
+					preferences( std::move( prefs ) ), worsethan( std::move( worse ) ), indifference( std::move( ind ) ){ }
     SocialPrefNode( const SocialPrefNode& copy );
-
     ~SocialPrefNode( );
 
     // Setters
@@ -59,23 +57,22 @@ public:
     void set_indiff( SocialPrefNode& indiff );
 
     // Getters
-    std::string get_id( ){ return id; }
+    std::string get_id( ) const{ return id; }
 
-	int get_index( ){ return index; }
-	int get_lowlink( ){ return lowlink; }
+	int get_index( ) const{ return index; }
+	int get_lowlink( ) const{ return lowlink; }
 
-	bool get_onstack( ){ return onstack; }
+	bool get_onstack( ) const{ return onstack; }
 
-    std::vector<SocialPrefNode*> get_preferences( ){ return preferences; }
-    std::vector<SocialPrefNode*> get_worse( ){ return worsethan; }
-    std::vector<SocialPrefNode*> get_indiff( ){ return indifference; }
+    std::vector<SocialPrefNode*> get_preferences( ) const{ return preferences; }
+    std::vector<SocialPrefNode*> get_worse( ) const{ return worsethan; }
+    std::vector<SocialPrefNode*> get_indiff( ) const{ return indifference; }
 
     // Operators
-    SocialPrefNode& operator=( const SocialPrefNode& copy );
+    SocialPrefNode& operator=( SocialPrefNode copy );
 
-    bool operator<( const SocialPrefNode& rhs );
-
-    void operator+=( const int val );
+	SocialPrefNode& operator+=( const SocialPrefNode& right );
+    SocialPrefNode& operator+=( const int val );
 
     using preferences_index = NamedType<std::ptrdiff_t, struct preferences_Parameter>;
     using worsethan_index = NamedType<std::ptrdiff_t, struct worsethan_Parameter>;
@@ -85,6 +82,10 @@ public:
     SocialPrefNode* operator[ ]( preferences_index i ){ return preferences[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
     SocialPrefNode* operator[ ]( worsethan_index i ){ return worsethan[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
     SocialPrefNode* operator[ ]( indifference_index i ){ return indifference[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
+
+	// Helpers
+
+	friend void swap( SocialPrefNode& left, SocialPrefNode& right );
 
 private:
 
@@ -102,5 +103,20 @@ private:
 
 // Non-member helpers
 std::ostream& operator<<( std::ostream& os, SocialPrefNode& node );
+
+inline bool operator==( const SocialPrefNode& left, const SocialPrefNode& right ){
+
+	if( left.get_id( ) == right.get_id( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+inline bool operator!=( const SocialPrefNode& left, const SocialPrefNode& right ){ return !operator==( left, right ); }
+
+inline bool operator<( const SocialPrefNode& left, const SocialPrefNode& right ){ return left.get_preferences( ).size( ) > right.get_preferences( ).size( ); }
+inline bool operator>( const SocialPrefNode& left, const SocialPrefNode& right ){ return !operator<( left, right ); }
 
 #endif // SOCIALPREFNODE_H

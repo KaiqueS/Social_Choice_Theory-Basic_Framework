@@ -64,9 +64,9 @@ void Graph::set_graph( SocialPrefNode node ){ nodes.push_back( node ); }
 /// Operators
 
 // Overloaded copy constructor
-Graph& Graph::operator=( const Graph& copy ){
+Graph& Graph::operator=( Graph copy ){
 
-    nodes = copy.nodes;
+	std::swap( *this, copy );
 
     return *this;
 }

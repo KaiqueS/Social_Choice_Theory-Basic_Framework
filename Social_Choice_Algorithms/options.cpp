@@ -35,13 +35,9 @@ void Options::set_value( int val ){ value = val; }
 /// Operators
 
 // Overloaded assignment operator
-Options& Options::operator=( const Options& copy ){
+Options& Options::operator=( Options copy ){
 
-	opt = copy.opt;
-
-    status = copy.status;
-
-	value = copy.value;
+	swap( *this, copy );
 
 	return *this;
 }
@@ -54,37 +50,28 @@ Options& Options::operator++( ){
 
     return *this;
 }
+Options Options::operator++( int value ){
 
-// Compares options
-bool Options::operator==( const Options& rhs ) const{
+	Options tmp( *this );
 
-	if( opt == rhs.opt && value == rhs.value )
+	operator++( );
 
-		return true;
-
-	else
-
-		return false;
+	return tmp;
 }
 
-bool Options::operator!=( const Options& rhs ) const{
+// Helpers
 
-	if( opt != rhs.opt )
+void swap( Options& left, Options& right ){
 
-		return true;
+	using std::swap;
 
-	else
-
-		return false;
+	swap( left.opt, right.opt );
+	swap( left.status, right.status );
+	swap( left.value, right.value );
 }
 
-// Check for correctness later
-bool Options::operator<( const Options& rhs ){
-
-    return value < rhs.value;
-}
-
-void Options::operator+=( const int val ){ value += val; }
+Options& Options::operator+=( const Options& val ){ value += val.value; }
+Options& Options::operator+=( const int val ){ value += val; }
 
 /// Non-member helpers
 
@@ -94,26 +81,4 @@ std::ostream& operator<<( std::ostream& os, Options& opt ){
     os << "[ " << opt.get_opt( ) << ", " << opt.get_value( ) << " ]" ;
 
     return os;
-}
-
-bool operator==( Options& left, Options& right ){
-
-    if( left.get_opt( ) == right.get_opt( ) )
-
-        return true;
-
-    else
-
-        return false;
-}
-
-bool operator!=( Options& left, Options& right ){
-
-    if( left.get_opt( ) != right.get_opt( ) )
-
-        return true;
-
-    else
-
-        return false;
 }

@@ -49,49 +49,27 @@ void PairWiseRank::set_ival( int val ){ ival = val; }
 
 /// Getters
 
-// Returns option x
-Options& PairWiseRank::get_optx( ){ return optx; }
-
-// Returns option y
-Options& PairWiseRank::get_opty( ){ return opty; }
-
-// Returns the number of votes given to x
-int PairWiseRank::get_xval( ){ return xval; }
-
-// Returns the number of votes given to y
-int PairWiseRank::get_yval( ){ return yval; }
-
-// Returns the number of votes given equally to both x and y
-int PairWiseRank::get_ival( ){ return ival; }
-
 /// Operators
 
 // Overloaded assignment operator
-PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
+PairWiseRank& PairWiseRank::operator=( PairWiseRank copy ){
 
-    optx = copy.optx;
-    opty = copy.opty;
-
-    xval = copy.xval;
-    yval = copy.yval;
-    ival = copy.ival;
+	swap( *this, copy );
 
     return *this;
 }
 
-bool PairWiseRank::operator==( const PairWiseRank right ){
+/// Helpers
 
-    if( optx == right.optx &&
-        opty == right.opty &&
-        xval == right.xval &&
-        yval == right.yval &&
-        ival == right.ival )
+void swap( PairWiseRank& left, PairWiseRank& right ){
 
-        return true;
+	using std::swap;
 
-    else
-
-        return false;
+	swap( left.optx, right.optx );
+	swap( left.opty, right.opty );
+	swap( left.xval, right.xval );
+	swap( left.yval, right.yval );
+	swap( left.ival, right.ival );
 }
 
 /// Non-member helpers
@@ -99,10 +77,7 @@ bool PairWiseRank::operator==( const PairWiseRank right ){
 // Comparison operator. Returns true when the average of optx + opty of LEFT is smaller than
 // opty + opty of Right. I.e., it means that a pair of options is greater than another when
 // its average is greater.
-bool operator<( PairWiseRank& left, PairWiseRank& right ){
 
-    return( ( ( left.get_xval( ) + left.get_yval( ) ) / 2 ) < ( ( right.get_xval( ) + right.get_yval( ) ) / 2 ) );
-}
 
 // Overloaded printing operator.
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank ){
@@ -116,37 +91,7 @@ std::ostream& operator<<( std::ostream& os, PairWiseRank& rank ){
     return os;
 }
 
-bool operator==( PairWiseRank left, PairWiseRank right ){
-
-    if( left.get_optx( ) == right.get_optx( ) &&
-        left.get_opty( ) == right.get_opty( ) &&
-        left.get_xval( ) == right.get_xval( ) &&
-        left.get_yval( ) == right.get_yval( ) &&
-        left.get_ival( ) == right.get_ival( ) )
-
-        return true;
-
-    else
-
-        return false;
-}
-
-bool operator!=( PairWiseRank left, PairWiseRank right ){
-
-    if( left.get_optx( ) == right.get_optx( ) &&
-        left.get_opty( ) == right.get_opty( ) &&
-        left.get_xval( ) == right.get_xval( ) &&
-        left.get_yval( ) == right.get_yval( ) &&
-        left.get_ival( ) == right.get_ival( ) )
-
-        return false;
-
-    else
-
-        return true;
-}
-
-bool relation_comparison( PairWiseRank& left, PairWiseRank& right ){
+bool relation_comparison( const PairWiseRank& left, const PairWiseRank& right ){
 
 	if( ( left.get_xval( ) > left.get_yval( ) && right.get_xval( ) > right.get_yval( ) ) ||
 		( left.get_yval( ) > left.get_xval( ) && right.get_yval( ) > right.get_xval( ) ) ||

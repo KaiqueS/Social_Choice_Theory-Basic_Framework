@@ -19,10 +19,9 @@ PairsOfOpts::PairsOfOpts( const PairsOfOpts& copy ){
 /// Operators
 
 // Overloaded assignment operator
-PairsOfOpts& PairsOfOpts::operator=( const PairsOfOpts& copy ){
+PairsOfOpts& PairsOfOpts::operator=( PairsOfOpts copy ){
 
-    xpref = copy.xpref;
-    ypref = copy.ypref;
+	std::swap( *this, copy );
 
     return *this;
 }
@@ -38,8 +37,6 @@ std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
 
     std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
 
-    //std::vector<int>::size_type listsize = listofagents.size( );
-    //std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
     std::vector<int>::size_type prefsize = listofagents.begin( ) -> get_preferences( ).size( );
 
     // gets all possible combination of pairs, including repeated pairs

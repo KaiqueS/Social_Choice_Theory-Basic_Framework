@@ -4,8 +4,6 @@
 // one has to guarantee that the parameter function will return something that have the below nec
 // essary methods, like, e.g., .size( ).
 
-
-
 void processed_profile( Preferencematrix& matrix, SCT::Procedure& procedure ){
 
 	for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
@@ -13,9 +11,6 @@ void processed_profile( Preferencematrix& matrix, SCT::Procedure& procedure ){
 		procedure( matrix[ i ] );
 	}
 }
-
-
-
 
 // Check for a case where pair1 == pair2 but pair1.xval/yval != pair2.xval/yval, i.e., a case where the relation between
 // optx and opty of two pairs is the same but their values are different

@@ -24,23 +24,23 @@ public:
 	void set_value( int val );
 
 	// Getters
-    std::string get_opt( ){ return opt; }
+    std::string get_opt( ) const{ return opt; }
 
-    bool get_status( ){ return status; }
+    bool get_status( ) const{ return status; }
 
-	int get_value( ){ return value; }
+	int get_value( ) const{ return value; }
 
 	// Operators
-	Options& operator=( const Options& copy );
+	Options& operator=( Options copy );
 
     Options& operator++( );
+	Options operator++( int value );
 
-	bool operator==( const Options& rhs ) const;
-	bool operator!=( const Options& rhs ) const;
+	Options& operator+=( const Options& val );
+    Options& operator+=( const int val );
 
-    bool operator<( const Options& rhs );
-
-    void operator+=( const int val );
+	// Helpers
+	friend void swap( Options& left, Options& right );
 
 private:
 
@@ -54,8 +54,25 @@ private:
 // Non-member helpers
 std::ostream& operator<<( std::ostream& os, Options& opt );
 
-bool operator==( Options& left, Options& right );
+// Not comparing for values may cause trouble on IIA. Make sure to check for .value over there
+inline bool operator==( const Options& left, const Options& right ){
 
-bool operator!=( Options& left, Options& right );
+	if( left.get_opt( ) == right.get_opt( ) )
+
+		return true;
+
+	else
+
+		return false;
+}
+inline bool operator!=( const Options& left, const Options& right ){ return !operator==( left, right ); }
+
+inline bool operator<( const Options& left, const Options& right ){
+
+	return left.get_value( ) < right.get_value( );
+}
+inline bool operator>( const Options& left, const Options& right ){ return !operator<( left, right ); }
+inline bool operator<=( const Options& left, const Options& right ){ return !operator>( left, right ); }
+inline bool operator>=( const Options& left, const Options& right ){ return !operator<( left, right ); }
 
 #endif // OPTIONS_H

@@ -97,27 +97,26 @@ void SocialPrefNode::set_indiff( SocialPrefNode& indiff ){ indifference.push_bac
 /// Operators
 
 // Overloaded assignment operator
-SocialPrefNode& SocialPrefNode::operator=( const SocialPrefNode& copy ){
+SocialPrefNode& SocialPrefNode::operator=( SocialPrefNode copy ){
 
-    id = copy.id;
-
-    index = copy.index;
-    lowlink = copy.lowlink;
-
-    onstack = copy.onstack;
-
-    preferences = copy.preferences;
-    worsethan = copy.worsethan;
-    indifference = copy.indifference;
+	swap( *this, copy );
 
     return *this;
 }
 
-// Compares two SocialPrefNodes, returns the one with greates PREFERENCES' size
-bool SocialPrefNode::operator<( const SocialPrefNode& rhs ){ return rhs.preferences.size( ) < preferences.size( ); }
-
 // Overloaded binary arithmetic operator
-void SocialPrefNode::operator+=( const int val ){ index += val; }
+SocialPrefNode& SocialPrefNode::operator+=( const SocialPrefNode& right ){ 
+	
+	index += right.index;
+	
+	return *this;
+}
+SocialPrefNode& SocialPrefNode::operator+=( const int val ){ 
+	
+	index += val;
+	
+	return *this;
+}
 
 // Overloaded ostream operator
 std::ostream& operator<<( std::ostream& os, SocialPrefNode& node ){
@@ -146,4 +145,19 @@ std::ostream& operator<<( std::ostream& os, SocialPrefNode& node ){
     os << "\n\n";
 
     return os;
+}
+
+/// Helpers
+
+void swap( SocialPrefNode& left, SocialPrefNode& right ){
+
+	using std::swap;
+
+	swap( left.id, right.id );
+	swap( left.index, right.index );
+	swap( left.lowlink, right.lowlink );
+	swap( left.onstack, right.onstack );
+	swap( left.preferences, right.preferences );
+	swap( left.worsethan, right.worsethan );
+	swap( left.indifference, right.indifference );
 }
