@@ -27,16 +27,10 @@ PairWiseRank::PairWiseRank( const PairWiseRank& copy ){
 /// Setters
 
 // Sets option x to opt
-void PairWiseRank::set_optx( Options& opt ){
-
-    optx = opt;
-}
+void PairWiseRank::set_optx( Options opt ){ optx = opt; }
 
 // Sets option y to opt
-void PairWiseRank::set_opty( Options& opt ){
-
-    opty = opt;
-}
+void PairWiseRank::set_opty( Options opt ){ opty = opt; }
 
 // Sets x's value as val. This value represents how x is ranked in the social ordering
 void PairWiseRank::set_xval( int val ){ xval = val; }

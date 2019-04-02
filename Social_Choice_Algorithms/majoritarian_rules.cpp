@@ -27,7 +27,7 @@ Profile SCT::Qualified_majority_rule::operator( )( Profile& profile ){
 
 Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
-    make_social_order( winnerset, matrix );
+    winnerset = make_social_order(  matrix );
 
     for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
@@ -101,7 +101,7 @@ Profile& SCT::Qualified_majority_rule::operator+=( Profile& rhs ){
     mtx.push_back( winnerset );
     mtx.push_back( rhs );
 
-    make_social_order( rhs, mtx );
+    winnerset = make_social_order( mtx );
 
 
 }
@@ -113,8 +113,6 @@ Profile& SCT::Qualified_majority_rule::operator+=( Preferencematrix& rhs ){
 Profile& SCT::Qualified_majority_rule::operator+=( Rank& rhs ){
 
 }
-
-
 
 /// Simple Majority Methods
 
@@ -134,7 +132,9 @@ Profile SCT::Simple_majority_rule::operator( )( Profile& profile ){
 
 Profile SCT::Simple_majority_rule::operator( )( Preferencematrix& matrix ){
 
-	make_social_order( winnerset, matrix );
+	winnerset.clear( );
+
+	winnerset = make_social_order( matrix );
 
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
 
@@ -143,14 +143,19 @@ Profile SCT::Simple_majority_rule::operator( )( Preferencematrix& matrix ){
 
 Profile& SCT::Simple_majority_rule::operator( )( Population& population ){
 
+    winnerset.clear( );
+
     winnerset = make_social_order( population );
 
+    // Problem here
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
 
     return winnerset;
 }
 
 Profile& SCT::Simple_majority_rule::operator( )( Rank& rank ){
+
+    winnerset.clear( );
 
     winnerset = make_social_order( rank );
 

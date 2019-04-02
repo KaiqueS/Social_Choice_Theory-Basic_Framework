@@ -8,6 +8,7 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
+#include <map>
 #include "profile.hpp"
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
@@ -21,7 +22,8 @@ public:
 	Preferencematrix( );
 	Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) :
 					  rowsize( row ), columnsize( col ), matrix( mtx ){ }
-	Preferencematrix( std::initializer_list<Profile> init ) : matrix( std::move( init ) ){ }
+	Preferencematrix( std::initializer_list<Profile> init ) : matrix( std::move( init ) ){ rowsize = matrix.size( );
+																						   columnsize = matrix.begin( ) -> size( ); }
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
     Preferencematrix( const Preferencematrix& copymatrix );
 	~Preferencematrix( );
@@ -53,9 +55,7 @@ public:
 	bool empty( );
 
 	void erase_row( const std::vector<int>::size_type index );
-
 	void push_back( Profile& profile ){ matrix.push_back( profile ); }
-
 	void clear( );
 
 private:
@@ -82,7 +82,9 @@ inline bool operator==( const Preferencematrix& left, const Preferencematrix& ri
 }
 inline bool operator!=( const Preferencematrix& left, const Preferencematrix& right ){ return !operator==( left, right ); }
 
-Profile make_social_order( Profile& profile, Preferencematrix& matrix );
+// MODIFIED: used to get two arguments ( Profile& profile, PreferenceMatrix& matrix )
+// Check for every instance that NOW gets only MATRIX as argument
+Profile make_social_order( Preferencematrix& matrix );
 
 void initialize_opts( Preferencematrix& matrix, Profile& profile );
 

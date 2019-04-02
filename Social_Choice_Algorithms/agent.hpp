@@ -38,6 +38,8 @@ public:
     // Helpers
     void sort_preferences( );
 
+    void clear( );
+
 private:
 
     // A row of the preferencematrix class. One row for each agent

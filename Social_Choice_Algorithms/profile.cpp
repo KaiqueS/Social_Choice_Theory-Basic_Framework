@@ -100,7 +100,7 @@ void Profile::merge_by_value( std::vector<int>::size_type start, std::vector<int
 		left[ i ] = alternatives[ start + i ];
 	}
 
-	for( int i = 0; i < n2; ++i ){
+	for( std::vector<int>::size_type i = 0; i < n2; ++i ){
 
 		right[ i ] = alternatives[ middle + i + 1 ];
 	}
@@ -112,7 +112,7 @@ void Profile::merge_by_value( std::vector<int>::size_type start, std::vector<int
 	std::vector<int>::size_type i = 0;
 	std::vector<int>::size_type j = 0;
 
-	for( int k = start; k <= end; ++k ){
+	for( std::vector<int>::size_type k = start; k <= end; ++k ){
 
 		if( left[ i ].get_value( ) <= right[ j ].get_value( ) ) {
 
@@ -127,7 +127,7 @@ void Profile::merge_by_value( std::vector<int>::size_type start, std::vector<int
 	}
 }
 
-// fix this later
+// fix this later - NEEDS TESTING
 void Profile::merge_by_opt( std::vector<int>::size_type start, std::vector<int>::size_type middle, std::vector<int>::size_type end ){
 
 	std::vector<int>::size_type n1 = middle - start + 1;
@@ -141,21 +141,21 @@ void Profile::merge_by_opt( std::vector<int>::size_type start, std::vector<int>:
 		left[ i ] = alternatives[ start + i ];
 	}
 
-	for( int i = 0; i < n2; ++i ){
+	for( std::vector<int>::size_type i = 0; i < n2; ++i ){
 
 		right[ i ] = alternatives[ middle + i + 1 ];
 	}
 
 	// Sentinel - Has to be larger than any element in the array
-	left[ n1 ].set_value( std::numeric_limits<int>::max( ) );
-	right[ n2 ].set_value( std::numeric_limits<int>::max( ) );
+	left[ n1 ].set_opt( std::to_string( std::numeric_limits<int>::max( ) ) );
+	right[ n2 ].set_opt( std::to_string( std::numeric_limits<int>::max( ) ) );
 
 	std::vector<int>::size_type i = 0;
 	std::vector<int>::size_type j = 0;
 
-	for( int k = start; k <= end; ++k ){
+	for( std::vector<int>::size_type k = start; k <= end; ++k ){
 
-		if( left[ i ].get_value( ) <= right[ j ].get_value( ) ) {
+		if( left[ i ].get_opt( ) <= right[ j ].get_opt( ) ) {
 
 			alternatives[ k ] = left[ i ];
 			++i;
@@ -217,7 +217,7 @@ void Profile::sort_by_opt( ){
 
 	auto order = [ ]( Options& left, Options& right ){
 
-		return left.get_opt( ) > right.get_opt( );
+		return left.get_opt( ) < right.get_opt( );
 	};
 
 	std::sort( alternatives.begin( ), alternatives.end( ), order );
@@ -250,7 +250,8 @@ std::ostream& operator<<( std::ostream& os, Profile& profile ){
 // Uses Binary-Search to find an option in a profile. Returns the position of a
 // given OPTION in PROFILE. Works only when the profile is ordered by opt, in a
 // scending order
-std::vector<int>::size_type find_opt( Profile profile, Options& opt ){
+// TODO: DEBUG THIS. SHIT IS HAPPENNING
+std::vector<int>::size_type find_opt( Profile profile, Options opt ){
 
     std::vector<int>::size_type begin{ 0 };
     std::vector<int>::size_type middle = static_cast<std::vector<int>::size_type>( std::floor( profile.size( ) / 2 ) );
@@ -299,7 +300,7 @@ std::vector<int>::size_type find_opt( Profile profile, Options& opt ){
 			else if( opt.get_opt( ) > profile[ middle ].get_opt( ) ){
 
 				begin = middle;
-				end = profile.size( ) - 1;
+				end = profile.size( );
 
 				middle = ( begin + end ) / 2;
 			}
@@ -313,7 +314,7 @@ std::vector<int>::size_type find_opt( Profile profile, Options& opt ){
     return middle;
 }
 
-void merge( Profile& profile, std::vector<int>::size_type start, std::vector<int>::size_type middle, std::vector<int>::size_type end ){
+/*void merge( Profile& profile, std::vector<int>::size_type start, std::vector<int>::size_type middle, std::vector<int>::size_type end ){
 
 	std::vector<int>::size_type n1 = middle - start + 1;
 	std::vector<int>::size_type n2 = end - middle;
@@ -326,7 +327,7 @@ void merge( Profile& profile, std::vector<int>::size_type start, std::vector<int
 		left[ i ] = profile[ start + i ];
 	}
 
-	for( int i = 0; i < n2; ++i ){
+	for( std::vector<int>::size_type i = 0; i < n2; ++i ){
 
 		right[ i ] = profile[ middle + i + 1 ];
 	}
@@ -338,7 +339,7 @@ void merge( Profile& profile, std::vector<int>::size_type start, std::vector<int
 	std::vector<int>::size_type i = 0;
 	std::vector<int>::size_type j = 0;
 
-	for( int k = start; k <= end; ++k ){
+	for( std::vector<int>::size_type k = start; k <= end; ++k ){
 
 		if( left[ i ].get_value( ) <= right[ j ].get_value( ) ) {
 			
@@ -366,4 +367,4 @@ void merge_sort( Profile& profile, std::vector<int>::size_type start, std::vecto
 	}
 
 	profile.sorted_by_value( true );
-}
+}*/

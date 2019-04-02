@@ -45,6 +45,13 @@ void Preferencematrix::set_columnsz( std::vector<int>::size_type col ){ columnsi
 // TODO: Problem generating options' ids
 void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vector<int>::size_type colsz ){
 
+    std::random_device rd;
+
+    //std::mt19937_64 mt( rd( ) );
+    std::mt19937 mt( rd( ) );
+
+    std::uniform_int_distribution<std::vector<int>::size_type> column( 0, ( colsz - 1 ) );
+
     // Initializes ROWSIZE and COLUMNSIZE to rowsz and colsz
     rowsize = rowsz;
     columnsize = colsz;
@@ -60,6 +67,7 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 	// Sets alternatives' id's
 	for( std::vector<int>::size_type i = 0; i < setofalts.size( ); ++i ){
 
+        // change to is alphabetical
         while( !isalnum( aux ) )
 
 			++aux;
@@ -79,7 +87,8 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 
 		for( std::vector<int>::size_type j = 0; j < colsz; ++j ){
 
-            int val = rand( ) % static_cast<int>( colsz );
+            //int val = rand( ) % static_cast<int>( colsz );
+            int val = static_cast<int>( column( mt ) );
 
 			matrix[ i ][ j ].set_value( val );
 		}
@@ -130,7 +139,8 @@ std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
     std::vector<int>::size_type rowsz = matrix.get_matrix( ).size( );
 
     // Gets the number of options in each profile
-    std::vector<int>::size_type colsz = matrix[ static_cast<std::vector<int>::size_type>( rand( ) ) % rowsz ].size( );
+    //std::vector<int>::size_type colsz = matrix[ static_cast<std::vector<int>::size_type>( rand( ) ) % rowsz ].size( );
+    std::vector<int>::size_type colsz = matrix.begin( ) -> get_alternatives( ).size( );
 
     os << "Preference Matrix\n\n" << "\t\t\tOptions/Alternatives Columns\n\n";
 
@@ -150,17 +160,25 @@ std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
     return os;
 }
 
-Profile make_social_order( Profile& profile, Preferencematrix& matrix ){
+// MODIFIED: used to get two arguments ( Profile& profile, PreferenceMatrix& matrix )
+Profile make_social_order( Preferencematrix& matrix ){
 
-    // Instantiates the resulting profile
-    Profile socialorder{ };
+    Profile profile;
+
+    initialize_opts( matrix, profile );
 
     if( matrix.empty( ) ){
 
         initialize_opts( matrix, profile );
+
+        make_social_order( matrix );
     }
 
     else{
+
+        for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i )
+
+            profile[ i ].set_value( 0 );
 
         // For every profile in MATRIX
         for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
@@ -169,32 +187,34 @@ Profile make_social_order( Profile& profile, Preferencematrix& matrix ){
             for( std::vector<int>::size_type j = 0; j < matrix[ i ].get_alternatives( ).size( ); ++j ){
 
                 // Searches, in SOCIALORDER, for every option in every matrix's profile i
-                for( std::vector<int>::size_type k = 0; k < socialorder.size( ); ++k ){
+                for( std::vector<int>::size_type k = 0; k < profile.size( ); ++k ){
 
                     // If it is the case that an option in SOCIALORDER is the same as an option
                     // in an matrix's profile
-                    if( socialorder[ k ].get_opt( ) == matrix[ i ][ j ].get_opt( ) ){
+                    if( profile[ k ].get_opt( ) == matrix[ i ][ j ].get_opt( ) ){
 
                         // Then, increment SOCIALORDER[ k ]'s value
                         // WTF: where did this 4 come from? Should not it be POPULATION.SIZE instead?
                         // TODO: debug this
-                        socialorder[ k ] += ( static_cast<int>( ( socialorder.size( ) - j ) / 4 ) );
+                        profile[ k ] += ( static_cast<int>( ( profile.size( ) - j ) ) );
                     }
                 }
             }
         }
     }
 
-    return socialorder;
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i )
+
+        // THIS IS BULLSHIT. Fix it later
+        profile[ i ].set_value( static_cast<int>( static_cast<std::vector<int>::size_type>( profile[ i ].get_value( ) ) / profile.size( ) ) );
+
+    return profile;
 }
 
 void initialize_opts( Preferencematrix& matrix, Profile& profile ){
 
-	std::cout << "Is the error here?./n";
-
+	// Hmmmmm.... potential bullshit behavior here
 	profile = *matrix.begin( );
-
-	std::cout << "Is the error here?./n";
 
     for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
 

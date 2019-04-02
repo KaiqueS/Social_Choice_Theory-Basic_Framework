@@ -73,6 +73,9 @@ private:
 // Non-Member Helpers
 std::ostream& operator<<( std::ostream& os, Profile& profile );
 
+// One must guarantee that lhs and rhs are sorted by opt, else, it may occur that
+// lhs and rhs have the same opts with the same values, but, being the opts in a
+// different order, the operator may understand that lhs != rhs
 inline bool operator==( const Profile& lhs, const Profile& rhs ){
 
 	if( lhs.get_alternatives( ) == rhs.get_alternatives( ) )
@@ -85,7 +88,7 @@ inline bool operator==( const Profile& lhs, const Profile& rhs ){
 }
 inline bool operator!=( const Profile& lhs, const Profile& rhs ){ return !operator==( lhs, rhs ); }
 
-std::vector<int>::size_type find_opt( Profile profile, Options& opt );
+std::vector<int>::size_type find_opt( Profile profile, Options opt );
 
 void merge( Profile& profile, std::vector<int>::size_type start, std::vector<int>::size_type middle, std::vector<int>::size_type end );
 void merge_sort( Profile& profile, std::vector<int>::size_type start, std::vector<int>::size_type end );

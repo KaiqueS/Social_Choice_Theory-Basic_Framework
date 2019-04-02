@@ -17,37 +17,69 @@ void processed_profile( Preferencematrix& matrix, SCT::Procedure& procedure ){
 // Maybe it would be best if randprofile were not used, and the algorithm went to different pairs?
 Rank ranking_comparison( Rank& originalrank, Rank& primerank, Preferencematrix& primemtx, SCT::Procedure& procedure ){
 
-	// Problem here: original != prime even though original holds the same relations as prime
-	while( originalrank != primerank && rank_relations( originalrank, primerank ) == false ){
+    std::random_device rd;
 
-		for( std::vector<int>::size_type i = 0; i < originalrank.size( ); ++i ){
+    //std::mt19937_64 mt( rd( ) );
+    std::mt19937 mt( rd( ) );
+
+	std::uniform_int_distribution<std::vector<int>::size_type> index( 0, ( primemtx.size( ) - 1 ) );
+
+	std::vector<int>::size_type size{ 0 };
+
+	// Problem here: original != prime even though original holds the same relations as prime - FIXED
+	while( /*originalrank != primerank &&*/ rank_relations( originalrank, primerank ) == false ){
+
+		std::vector<int>::size_type i{ 0 };
+
+		//for( std::vector<int>::size_type i = 0; i < originalrank.size( ); ++i ){
+		while( i < originalrank.size( ) && size < primemtx.size( ) ){
 
 			// wtf primerank is NULL my BALLS
-			if( originalrank[ i ] != primerank[ i ] && relation_comparison( originalrank[ i ], primerank[ i ] ) == false ){
+			if( /*( originalrank[ i ] != primerank[ i ] ) &&*/ ( relation_comparison( originalrank[ i ], primerank[ i ] ) == false ) ){
 
 				// maybe i should cut this off? and use the conditional above to identify the point that need to be changed?
-				std::vector<int>::size_type randprofile = static_cast<std::vector<int>::size_type>( rand( ) ) % primemtx.size( );
+				//std::vector<int>::size_type randprofile = static_cast<std::vector<int>::size_type>( rand( ) ) % primemtx.size( );
+				//std::vector<int>::size_type randprofile = index( mt );
 
-				std::vector<int>::size_type x = find_opt( primemtx[ randprofile ], primerank[ i ].get_optx( ) );
-				std::vector<int>::size_type y = find_opt( primemtx[ randprofile ], primerank[ i ].get_opty( ) );
+//				std::vector<int>::size_type x = find_opt( primemtx[ randprofile ], primerank[ i ].get_optx( ) );
+//				std::vector<int>::size_type y = find_opt( primemtx[ randprofile ], primerank[ i ].get_opty( ) );
+
+				std::vector<int>::size_type x = find_opt( primemtx[ ( primemtx.size( ) - 1 ) - size ], primerank[ i ].get_optx( ) );
+				std::vector<int>::size_type y = find_opt( primemtx[ ( primemtx.size( ) - 1 ) - size ], primerank[ i ].get_opty( ) );
 
 				//std::swap( primemtx[ indX ], primemtx[ indY ] );
-				Options holder = primemtx[ randprofile ][ x ];
+				//Options holder = primemtx[ randprofile ][ x ];
+				Options holder = primemtx[ ( primemtx.size( ) - 1 ) - size ][ x ];
 
-				primemtx[ randprofile ][ x ].set_opt( primemtx[ randprofile ][ y ].get_opt( ) );
-				primemtx[ randprofile ][ y ].set_opt( holder.get_opt( ) );
+//				primemtx[ randprofile ][ x ].set_opt( primemtx[ randprofile ][ y ].get_opt( ) );
+//				primemtx[ randprofile ][ y ].set_opt( holder.get_opt( ) );
 
-				processed_profile( primemtx, procedure );
+				primemtx[ ( primemtx.size( ) - 1 ) - size ][ x ].set_opt( primemtx[ ( primemtx.size( ) - 1 ) - size ][ y ].get_opt( ) );
+				primemtx[ ( primemtx.size( ) - 1 ) - size ][ y ].set_opt( holder.get_opt( ) );
 
-				primerank = { };
+
+				//processed_profile( primemtx, procedure );
+
+				primerank.clear( );
 
 				primerank.generate_ranking( primemtx );
 				primerank.order_ranking( );
+
+				size = 0;
 			}
 
-			else
+			else{
 
-				continue;
+				if( size < primemtx.size( ) - 1 )
+
+					++size;
+
+				else
+
+					++i;
+			}
+
+			++i;
 		}
 	}
 
@@ -63,11 +95,11 @@ Rank prime_profile_generating( Preferencematrix& original, SCT::Procedure& proce
 	//		has the same relations between any two alternatives
 	//		is different from the initial set
 
-	processed_profile( original, procedure );
+	//processed_profile( original, procedure );
 
 	Preferencematrix prime{ };
 	prime.set_matrix( original.get_columnsz( ), original.get_rowsz( ) );
-	processed_profile( prime, procedure );
+	//processed_profile( prime, procedure );
 
 	// since ranks have the same alternatives, order each rank alphabetically, makes comparing easier
 	Rank originalrank{ };
@@ -75,7 +107,6 @@ Rank prime_profile_generating( Preferencematrix& original, SCT::Procedure& proce
 	originalrank.order_ranking( );
 
 	Rank primerank{ };
-	//primerank.generate_ranking( prime );
 	primerank.generate_ranking( prime );
 	primerank.order_ranking( );
 	primerank = ranking_comparison( originalrank, primerank, prime, procedure );
@@ -88,6 +119,12 @@ Rank prime_profile_generating( Preferencematrix& original, SCT::Procedure& proce
 
 		return originalrank;
 	}
+
+	else if( original == prime && rank_relations( originalrank, primerank ) == false ){
+
+		return prime_profile_generating( original, procedure );
+	}
+
 
 	else if( ( original != prime ) && ( rank_relations( originalrank, primerank ) == true ) ){
 
@@ -183,15 +220,22 @@ bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 		return true;
 }
 
+
+// What about not using SCTRank? Instead, use PrefMatrix directly, produce a social
+// ordering from it( using procedure ), compare the ordering. If they are not equal
+// then modify matrix until they become equal. REMEMBER: need to modify procedure(
+// preferencematrix ) before.
 bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 	
 	Rank originalrank{ };
 	originalrank.generate_ranking( matrix );
+	originalrank.order_ranking( );
 
 	Preferencematrix prime{	};
 	prime.set_matrix( matrix.get_rowsz( ), matrix.get_columnsz( ) );
 
 	Rank primerank = prime_profile_generating( prime, procedure );
+	primerank.order_ranking( );
 
 	if( ( originalrank == primerank ) && ( rank_relations( originalrank, primerank ) == true ) ){
 
@@ -204,7 +248,10 @@ bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 			return true;
 	}
 
-	else if( ( originalrank != primerank ) && ( rank_relations( originalrank, primerank ) == true ) ){
+	// There might be a problem here: how can the ranks be different if the comparison operator
+	// compares by opt? This will never be false. rank_relations should suffice here, if the
+	// rankings are ordered
+	else if( /*( originalrank != primerank ) &&*/ ( rank_relations( originalrank, primerank ) == true ) ){
 
 		if( procedure( originalrank ) == procedure( primerank ) )
 
@@ -213,6 +260,11 @@ bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 		else
 
 			return false;
+	}
+
+	else if( /*( originalrank != primerank ) &&*/ ( rank_relations( originalrank, primerank ) == false ) ){
+
+		return true;
 	}
 
 	else
@@ -234,7 +286,7 @@ bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 // Find an agent that, whenever ONLY HER prefers x to y, the social order becomes xPy
 // If is that the case that another person also prefers x to y, then the clause is not
 // valid
-// TODO: revise this
+// To do so, define operator+= first
 bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
 
 

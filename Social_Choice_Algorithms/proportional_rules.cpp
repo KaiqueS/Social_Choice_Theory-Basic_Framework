@@ -30,7 +30,7 @@ Profile SCT::Proportional::operator( )( Preferencematrix& matrix ){
 
 	std::cin >> quotient;
 
-	make_social_order( winnerset, matrix );
+	winnerset = make_social_order( matrix );
 
 	for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 

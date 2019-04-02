@@ -18,12 +18,7 @@ Agent::Agent( const Agent& copy ){
     id = copy.id;
 }
 
-Agent::~Agent( ){
-
-    preferences.clear( );
-
-    std::vector<Options>( ).swap( preferences.get_alternatives( ) );
-}
+Agent::~Agent( ){ clear( ); }
 
 /// Setters
 
@@ -33,11 +28,19 @@ Agent::~Agent( ){
 // Deletes the used row at the end: Avoids repeated preferences for different agents
 void Agent::set_preferences( Preferencematrix& prefmatrix ){
 
-    std::vector<int>::size_type randindex = static_cast<std::vector<int>::size_type>( rand( ) ) % prefmatrix.size( );
+    std::random_device rd;
 
-    preferences = prefmatrix[ randindex ];
+    std::mt19937 mt( rd( ) );
 
-    prefmatrix.erase_row( randindex );
+    std::uniform_int_distribution<std::vector<int>::size_type> index( 0, ( prefmatrix.size( ) - 1 ) );
+
+    // std::vector<int>::size_type randindex = static_cast<std::vector<int>::size_type>( rand( ) ) % prefmatrix.size( );
+    //preferences = prefmatrix[ randindex ];
+    //prefmatrix.erase_row( randindex );
+
+    preferences = prefmatrix[ index( mt ) ];
+
+    prefmatrix.erase_row( index( mt ) );
 }
 
 void Agent::set_id( std::string tag ){ id = tag; }
@@ -55,6 +58,11 @@ Agent& Agent::operator=( Agent one ){
 }
 
 /// Helpers
+
+void Agent::clear( ){
+
+	preferences.clear( );
+}
 
 // Sorts an agent's preferences in decreasing order, according to an option's value
 void Agent::sort_preferences( ){

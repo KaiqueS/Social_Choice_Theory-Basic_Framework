@@ -2,18 +2,11 @@
 #include <algorithm>
 #include "sctheory.hpp"
 
-// REMEMBER: numbers associated with each option in a profile MEANS NOTHING. It is just a way to order
-// preferences, i.e., they( the numbers ) are purely ordinal. So, no procedure can manipulate those nu
-// mbers when generating a social profile
 // TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
 //       for emptiness
 // TODO: Rethink PairWiseRank -> Try to figure out how to, for any two PWR, if any of the two options
 //       that it holds are equal, then they ARE the SAME, i.e., have the same address. This way one
 //       can use majority rule for PWR withouht appealing to a middle-class
-// MODIFY: PreferenceMatrix: remove options, use string instead, no value for each alternative
-//         Agent: agents will set their own values, instead of taking from the matrix -> Smells like boilerplate
-// TODO: create a test for irrelevant alts. Case -> two identical profiles
-// MODIFY: Remember to change Options operator==. Check only for id, because of Irrelevant Alts
 // TODO: Revise Non-Dic
 // CONSIDER: .cpp files for graph algorithms and rank algorithms
 // BIG QUESTION: what should SCF return? Alternatives or profiles? If the latter, are they composed
@@ -24,18 +17,14 @@
 // TODO: when allowing for used-defined aggregation procedures, use as example a custom threshold
 // procedure, i.e., allow for the user to input a threshold that, when a given option surpasses
 // the latter, it becomes the winner or one of the winners. Add that to GUI
-// TODO: let the user decide between majority or list based procedures
+// TODO: let the user decide between majority or list based procedures - GUI
 // TODO: make it possible for one to enable/disable indifference
 // TODO: a method to check for transitivity. Use sctRank, if ( a, b ), ( b, c ) and ( c, a ), then transitivity is false
 // TODO: make a container of alternatives. Let the agents push back the alternatives and assign a random value to them,
 // this will make things more similar to how SCT works
 // TODO: define operator+= for each procedure
-// TODO: order by Merge_Sort and search with Binary Search!
-// TODO: Change random number generator! Rand sucks
 
-// ordering of SCRanks must be done by in class methods, at constructor or setting calls
-
-bool then( bool& argument ){
+bool then( bool argument ){
 
 	if( argument == true )
 
@@ -48,13 +37,11 @@ bool then( bool& argument ){
 
 void test1( ){
 
-	srand( static_cast< unsigned int >( time( nullptr ) ) );
-
 	Preferencematrix newmtx{ };
 
 	newmtx.set_matrix( 5, 5 );
 
-	Population listofagents( newmtx.get_matrix( ).size( ) );
+	Population listofagents( newmtx.size( ) );
 
 	std::cout << newmtx;
 
@@ -70,10 +57,7 @@ void test1( ){
 
 	rank.generate_ranking( listofagents );
 
-	for( PairWiseRank item : rank.get_rank( ) ){
-
-		std::cout << item << "\n";
-	}
+	std::cout << rank << "\n";
 
 	//majority_rule( rank );
 
@@ -117,28 +101,32 @@ void test1( ){
 
 	Profile count = borda( listofagents );
 
-	Profile res = proport( listofagents );
+	//Profile res = proport( listofagents );
 
 	SCT::Borda_count bordinha;
 
 	bordinha( listofagents );
 
-	for( std::vector<int>::size_type i = 0; i < res.size( ); ++i ){
+	/*for( std::vector<int>::size_type i = 0; i < res.size( ); ++i ){
 
 		if( res[ i ].get_status( ) == true )
 
 			std::cout << res[ i ] << " ";
-	}
+	}*/
 
-	bool truth = arrow( maj );
+//	std::cout << "\nProblem below!\n";
 
-	if( truth )
+//	bool truth = arrow( majority );
 
-	std::cout << "All right.\n\n";
+//	std::cout << "Problem above!\n";
 
-	else
+//	if( truth )
 
-	std::cout << "Oh, damn!.\n\n";
+//		std::cout << "All right.\n\n";
+
+//	else
+
+//		std::cout << "Oh, damn!.\n\n";
 }
 
 void test2( ){
@@ -177,11 +165,11 @@ void test2( ){
 
 	Profile newres = count( population );
 
-	std::cout << "The majority winner is: " << std::max_element( result.begin( ), result.end( ) ) -> get_opt( ) << "\n\n";
+	std::cout << "The majority winner is: " << result[ 0 ] << "\n\n";
 
-	std::cout << "The borda winner is: " << std::max_element( newres.begin( ), newres.end( ) ) -> get_opt( ) << "\n\n";
+	std::cout << "The borda winner is: " << std::max_element( newres.begin( ), newres.end( ) )->get_opt( ) << "\n\n";
 
-	std::cout << "The simple majority winner is: " << std::max_element( social.begin( ), social.end( ) ) -> get_opt( ) << "\n\n";
+	std::cout << "The simple majority winner is: " << std::max_element( social.begin( ), social.end( ) )->get_opt( ) << "\n\n";
 
 	for( std::vector<int>::size_type i = 0; i < result.size( ); ++i ){
 
@@ -204,9 +192,7 @@ void test2( ){
 	std::cout << "\n\n";
 }
 
-int main( ){
-
-	srand( static_cast<unsigned int>( time( nullptr ) ) );
+void test3( ){
 
 	Preferencematrix mtx{ };
 
@@ -248,4 +234,114 @@ int main( ){
 	SCT::Arrow_Impossibility arrow( mtx, rank, pop, graph );
 
 	//std::cout << arrow( newmaj ) << "\n";
+}
+
+void test4( ){
+
+	Profile testprof = { Options( "d", false, 3 ), Options( "b", false, 1 ), Options( "c", false, 2 ), Options( "a", false, 0 ) };
+	Profile testprof2 = { Options( "e", false, 4 ), Options( "d", false, 3 ), Options( "b", false, 1 ), Options( "c", false, 2 ), Options( "a", false, 0 ) };
+
+	//merge_sort( testprof, 0, testprof.size( ) - 1 );
+	//merge_sort( testprof2, 0, testprof2.size( ) - 1 );
+	testprof.value_merge_sort( 0, testprof.size( ) - 1);
+	testprof2.value_merge_sort( 0, testprof.size( ) - 1);
+
+	Profile profile = { Options( "d", false, 3 ), Options( "b", false, 1 ), Options( "c", false, 2 ), Options( "a", false, 0 ) };
+
+	profile.value_merge_sort( 0, profile.size( ) - 1 );
+
+	std::cout << testprof << "\n";
+
+	std::cout << testprof2 << "\n";
+
+	std::cout << profile << "\n";
+}
+
+void test5( ){
+
+	Profile profile = { Options( "a", false, 3 ) };
+
+	Agent one = { profile, "one" };
+
+	Agent two = one;
+
+	two.set_id( "two" );
+
+	if( one == two )
+
+		std::cout << "true\n";
+
+	else
+
+		std::cout << "false\n";
+
+	std::cout << one << "\n" << two << "\n";
+
+	Options opt{ "opt", false, 5 };
+	Options opt2{ "opt2", false, 3 };
+
+	if( opt > opt2 )
+
+		std::cout << "opt is greater than opt2\n";
+
+	if( opt != opt2 )
+
+		std::cout << "opt is not opt2\n";
+
+	std::cout << opt << "\n";
+
+	opt += opt2;
+
+	std::cout << opt;
+}
+
+void test6( ){
+
+	Preferencematrix original = { Profile( { Options( "a", false, 5 ), Options( "b", false, 4 ), Options( "c", false, 3 ), Options( "d", false, 2 ), Options( "e", false, 1 ) } ),
+								  Profile( { Options( "b", false, 5 ), Options( "c", false, 4 ), Options( "d", false, 3 ), Options( "e", false, 2 ), Options( "a", false, 1 ) } ),
+								  Profile( { Options( "c", false, 5 ), Options( "d", false, 4 ), Options( "e", false, 3 ), Options( "a", false, 2 ), Options( "b", false, 1 ) } ),
+								  Profile( { Options( "d", false, 5 ), Options( "e", false, 4 ), Options( "a", false, 3 ), Options( "b", false, 2 ), Options( "c", false, 1 ) } ),
+								  Profile( { Options( "e", false, 5 ), Options( "a", false, 4 ), Options( "b", false, 3 ), Options( "c", false, 2 ), Options( "d", false, 1 ) } ) };
+
+	Preferencematrix prime =	{ Profile( { Options( "c", false, 5 ), Options( "d", false, 4 ), Options( "e", false, 3 ), Options( "a", false, 2 ), Options( "b", false, 1 ) } ),
+								  Profile( { Options( "e", false, 5 ), Options( "d", false, 4 ), Options( "a", false, 3 ), Options( "b", false, 2 ), Options( "c", false, 1 ) } ),
+								  Profile( { Options( "c", false, 5 ), Options( "b", false, 4 ), Options( "a", false, 3 ), Options( "d", false, 2 ), Options( "e", false, 1 ) } ),
+								  Profile( { Options( "b", false, 5 ), Options( "d", false, 4 ), Options( "a", false, 3 ), Options( "c", false, 2 ), Options( "e", false, 1 ) } ),
+								  Profile( { Options( "e", false, 5 ), Options( "a", false, 4 ), Options( "b", false, 3 ), Options( "c", false, 2 ), Options( "d", false, 1 ) } ) };
+
+	Rank left( original );
+	Rank right( prime );
+
+	//left.order_ranking( );
+	//right.order_ranking( );
+
+	SCT::Simple_majority_rule maj;
+	SCT::Borda_count borda;
+
+	Profile first{ borda( original ) };
+	Profile second{ borda( prime ) };
+
+	std::cout << original << "\n\n" << prime << "\n";
+
+	std::cout << left << "\n" << right << "\n";
+
+	first.sort_by_opt( );
+	second.sort_by_opt( );
+
+	std::cout << first << "\n" << second << "\n";
+
+	if( first == second )
+
+		std::cout << "\ntrue\n\n";
+
+	else
+
+		std::cout << "\nfalse\n\n";
+}
+
+int main( ){
+
+	//srand( static_cast<unsigned int>( time( nullptr ) ) );
+
+	test1( );
 }

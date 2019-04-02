@@ -15,8 +15,9 @@ public:
 
     // Constructors & Destructor
     Rank( );
-    Rank( std::vector<PairWiseRank> ordering ) : ranking( ordering ){ }
-	Rank( std::initializer_list<PairWiseRank> init ) : ranking( std::move( init ) ){ }
+    Rank( Preferencematrix& matrix ){ generate_ranking( matrix ); order_ranking( ); }
+    Rank( std::vector<PairWiseRank> ordering ) : ranking( ordering ){ order_ranking( ); }
+    Rank( std::initializer_list<PairWiseRank> init ) : ranking( std::move( init ) ){ order_ranking( ); }
     Rank( const Rank& copy );
     ~Rank( );
 

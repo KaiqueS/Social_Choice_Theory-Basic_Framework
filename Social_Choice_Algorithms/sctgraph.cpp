@@ -79,11 +79,18 @@ SocialPrefNode& Graph::operator[ ]( const std::vector<int>::size_type index ){ r
 // Initializes a graph according to the options in an random agent's profile
 void Graph::initialize_graph( Population& population ){
 
-    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % population.size( );
+    std::random_device rd;
 
-    for( std::vector<int>::size_type i = 0; i < population[ randagt ].get_preferences( ).size( ); ++i ){
+    //std::mt19937_64 mt( rd( ) );
+    std::mt19937 mt( rd( ) );
 
-        nodes.push_back( SocialPrefNode( population[ randagt ][ i ].get_opt( ), { }, { }, { }, { }, { }, { } ) );
+    std::uniform_int_distribution<std::vector<int>::size_type> randagt( 0, ( population.size( ) - 1 ) );
+
+    //std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % population.size( );
+
+    for( std::vector<int>::size_type i = 0; i < population[ randagt( mt ) ].get_preferences( ).size( ); ++i ){
+
+        nodes.push_back( SocialPrefNode( population[ randagt( mt ) ][ i ].get_opt( ), { }, { }, { }, { }, { }, { } ) );
     }
 }
 

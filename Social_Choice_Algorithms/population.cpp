@@ -109,14 +109,22 @@ std::ostream& operator<<( std::ostream& os, Population& people ){
 // used to fill a Profile of options
 void initialize_opts( Population& listofagents, Profile& opts ){
 
+    std::random_device rd;
+
+    //std::mt19937_64 mt( rd( ) );
+    std::mt19937 mt( rd( ) );
+
+    std::uniform_int_distribution<std::vector<int>::size_type> index( 0, ( listofagents.size( ) - 1 ) );
+
     // Select a random agent from POPULATION
-    std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
+    //std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
 
     // If the agent's profile of preferences is not empty
-    if( !listofagents[ randagt ].get_preferences( ).empty( ) ){
+    if( /*!listofagents[ randagt ].get_preferences( ).empty( )*/ !listofagents[ index( mt ) ].get_preferences( ).empty( ) ){
 
         // Set OPTS to the agent's profile
-        opts = listofagents[ randagt ].get_preferences( );
+        //opts = listofagents[ randagt ].get_preferences( );
+        opts = listofagents[ index( mt ) ].get_preferences( );
 
         for( std::vector<int>::size_type i = 0; i < opts.size( ); ++i )
 
@@ -128,7 +136,8 @@ void initialize_opts( Population& listofagents, Profile& opts ){
     // Else, if the profile of the random agent is empty, print a warning message
     else{
 
-        std::cerr << "Agent " << listofagents[ randagt ].get_id( ) << " has no preferences.\n";
+        //std::cerr << "Agent " << listofagents[ randagt ].get_id( ) << " has no preferences.\n";
+        std::cerr << "Agent " << listofagents[ index( mt ) ].get_id( ) << " has no preferences.\n";
     }
 }
 

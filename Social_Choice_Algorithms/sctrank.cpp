@@ -15,14 +15,27 @@ Rank::~Rank( ){ clear( ); }
 /// Setters
 
 // Inserts a PairWiseRank at the end of RANKING
-void Rank::set_rank( PairWiseRank pair ){ ranking.push_back( pair ); }
+void Rank::set_rank( PairWiseRank pair ){
+
+    ranking.push_back( pair );
+
+    // Added this later
+    order_ranking( );
+}
 
 // Sets RANKING to order
-void Rank::set_rank( std::vector<PairWiseRank> order ){ ranking = order; }
+void Rank::set_rank( std::vector<PairWiseRank> order ){
 
-/* Ranks alternatives. The ranking has a form of a vector of quintuples ( x, y, xval, yval, ival ), where
+    ranking = order;
+
+    // Added this later
+    order_ranking( );
+}
+
+/* Ranks alternatives. The ranking has a form of quintuples ( x, y, xval, yval, ival ), where
  * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
- * represents indifference. The ranking operates in accord to how agents ranks pairs of alternatives */
+ * represents indifference.
+ */
 void Rank::generate_ranking( Population& listofagents ){
 
     // Holder for a pair of options
@@ -43,7 +56,8 @@ void Rank::generate_ranking( Population& listofagents ){
     std::vector<int>::size_type listsize = listofagents.size( );
 
     // Number of options in each profile
-    std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
+    //std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
+    std::vector<int>::size_type prefsize = listofagents.begin( ) -> get_preferences( ).size( );
 
     // Checks how a pair ( x, y ) is ranked for each agent
     for( std::vector<int>::size_type i = 0; i < ordersize; ++i ){
@@ -89,6 +103,9 @@ void Rank::generate_ranking( Population& listofagents ){
         // Resets the tuple for a new ranking
         paircomp = { };
     }
+
+    // Added this later
+    order_ranking( );
 }
 
 void Rank::generate_ranking( Preferencematrix& mtx ){
@@ -155,8 +172,12 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
         ranking.push_back( paircomp );
 
         // Resets the tuple for a new ranking
-        paircomp = { };
+        // paircomp = { };
+        paircomp = PairWiseRank( );
     }
+
+    // Added this later
+    order_ranking( );
 }
 
 /// Getters
@@ -231,6 +252,7 @@ void Rank::clear( ){
 	std::vector<PairWiseRank>( ).swap( ranking );
 }
 
+// Check for emptiness
 void Rank::order_ranking( ){
 
 	for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
@@ -287,14 +309,15 @@ void initialize_opts( Rank& rank, Profile& profile ){
 
                 if( profile[ i ].get_opt( ) == profile[ j ].get_opt( ) ){
 
-                    profile.erase( static_cast<int>( j ) );
+                    profile.erase( j );
                 }
             }
         }
     }
 }
 
-// Makes a generic social order, sorted in descending order
+// Makes a generic social order, sorted in descending order - I really think that a social order
+// should be generated from a procedure
 Profile make_social_order( Rank& rank ){
 
     // Holder for resulting social order
@@ -358,28 +381,6 @@ std::ostream& operator<<( std::ostream& os, Rank& rank ){
     os << "\n";
 
     return os;
-}
-
-bool operator==( Rank& left, Rank& right ){
-
-    if( left.get_rank( ) == right.get_rank( ) )
-
-        return true;
-
-    else
-
-        return false;
-}
-
-bool operator!=( Rank& left, Rank& right ){
-
-    if( left.get_rank( ) == right.get_rank( ) )
-
-        return false;
-
-    else
-
-        return true;
 }
 
 bool rank_relations( Rank& left, Rank& right ){
