@@ -66,7 +66,7 @@ Graphs can show more directly how are alternatives related to each other, also, 
 
 # Progress
 
-Implement Indifference relation: done. Under revision
+Implement Indifference relation: done.
 
 Implement Condorcert Paradox - done, but needs improvement. 
 
