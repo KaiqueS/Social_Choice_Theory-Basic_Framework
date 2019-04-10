@@ -47,7 +47,7 @@ public:
 	Preferencematrix& operator=( Preferencematrix copy );
 
 	// Helpers
-	std::vector<int>::size_type size( ){ return matrix.size( ); }
+	std::vector<int>::size_type size( ) const{ return matrix.size( ); }
 
 	std::vector<Profile, std::allocator<Profile>>::iterator begin( ){ return matrix.begin( ); }
 	std::vector<Profile, std::allocator<Profile>>::iterator end( ){ return matrix.end( ); }

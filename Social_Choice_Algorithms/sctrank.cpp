@@ -1,5 +1,6 @@
 #include "sctrank.hpp"
-#include "pairsofopts.hpp"
+//include "listofpairs.hpp"
+//#include "pairsofopts.hpp"
 
 /// Constructors & Destructor
 
@@ -33,8 +34,8 @@ void Rank::set_rank( std::vector<PairWiseRank> order ){
 }
 
 /* Ranks alternatives. The ranking has a form of quintuples ( x, y, xval, yval, ival ), where
- * x and y are the alternatives, and the vals represent how many agents prefer one over the other. ival
- * represents indifference.
+ * x and y are the alternatives, and the vals represent how many agents prefer one over the
+ * other. E.g.: xval > yval means that x is preferred to y
  */
 void Rank::generate_ranking( Population& listofagents ){
 
@@ -42,7 +43,16 @@ void Rank::generate_ranking( Population& listofagents ){
     PairsOfOpts compairs{ };
 
     // Generates all possible combinations of pairs, without repetitions
-    std::vector<PairsOfOpts> ordering = pair_generation( listofagents );
+    //std::vector<PairsOfOpts> ordering = pair_generation( listofagents );
+    //ListOfPairs ordering = ListOfPairs( ).pair_generation( listofagents );
+    ListOfPairs ordering{ };
+
+    std::thread t( [ &ordering, &listofagents ]( ){ ordering.pair_generation( listofagents ); } );
+
+    if( t.joinable( ) ){
+
+        t.join( );
+    }
 
     // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
     PairWiseRank paircomp{ };
@@ -114,7 +124,17 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
     PairsOfOpts compairs{ };
 
     // Generates all possible combinations of pairs, without repetitions
-    std::vector<PairsOfOpts> ordering = pair_generation( mtx );
+    //std::vector<PairsOfOpts> ordering = pair_generation( mtx );
+    //ListOfPairs ordering = ListOfPairs( ).pair_generation( mtx );
+    //ListOfPairs ordering( mtx );
+    ListOfPairs ordering{ };
+
+    std::thread t( [ &ordering, &mtx ]( ){ ordering.pair_generation( mtx ); } );
+
+    if( t.joinable( ) ){
+
+        t.join( );
+    }
 
     // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
     PairWiseRank paircomp{ };
@@ -255,38 +275,49 @@ void Rank::clear( ){
 // Check for emptiness
 void Rank::order_ranking( ){
 
-	for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
+	if( !ranking.empty( ) ){
 
-		if( ranking[ i ].get_optx( ).get_opt( ) > ranking[ i ].get_opty( ).get_opt( ) ){
+		for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
 
-			Options x = ranking[ i ].get_optx( );
-			x.set_value( ranking[ i ].get_xval( ) );
+			if( ranking[ i ].get_optx( ).get_opt( ) > ranking[ i ].get_opty( ).get_opt( ) ){
 
-			ranking[ i ].set_optx( ranking[ i ].get_opty( ) );
-			ranking[ i ].set_xval( ranking[ i ].get_yval( ) );
+				Options x = ranking[ i ].get_optx( );
+				x.set_value( ranking[ i ].get_xval( ) );
 
-			ranking[ i ].set_opty( x );
-			ranking[ i ].set_yval( x.get_value( ) );
-		}
-	}
+				ranking[ i ].set_optx( ranking[ i ].get_opty( ) );
+				ranking[ i ].set_xval( ranking[ i ].get_yval( ) );
 
-	for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
-
-		for( std::vector<int>::size_type j = i + 1; j < ranking.size( ); ++j ){
-
-			if( ranking[ i ].get_optx( ).get_opt( ) > ranking[ j ].get_optx( ).get_opt( ) ){
-
-				std::swap( ranking[ i ], ranking[ j ] );
+				ranking[ i ].set_opty( x );
+				ranking[ i ].set_yval( x.get_value( ) );
 			}
+		}
 
-			else if( ranking[ i ].get_optx( ).get_opt( ) == ranking[ j ].get_optx( ).get_opt( ) ){
+		for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
 
-				if( ranking[ i ].get_opty( ).get_opt( ) > ranking[ j ].get_opty( ).get_opt( ) ){
+			for( std::vector<int>::size_type j = i + 1; j < ranking.size( ); ++j ){
+
+				if( ranking[ i ].get_optx( ).get_opt( ) > ranking[ j ].get_optx( ).get_opt( ) ){
 
 					std::swap( ranking[ i ], ranking[ j ] );
 				}
+
+				else if( ranking[ i ].get_optx( ).get_opt( ) == ranking[ j ].get_optx( ).get_opt( ) ){
+
+					if( ranking[ i ].get_opty( ).get_opt( ) > ranking[ j ].get_opty( ).get_opt( ) ){
+
+						std::swap( ranking[ i ], ranking[ j ] );
+					}
+				}
 			}
 		}
+	}
+
+	// Think about this later
+	else{
+
+		std::cerr << "Cannot order an empty Rank.\n";
+
+		return;
 	}
 }
 
@@ -358,13 +389,14 @@ Profile make_social_order( Rank& rank ){
         }
 
     // Returns best ranked option
-    auto order = [ ]( Options& left, Options& right ){
+    /*auto order = [ ]( Options& left, Options& right ){
 
         return left.get_value( ) > right.get_value( );
     };
 
     // order vector from greatest to smallest, according to the value
-    std::sort( orderedrank.begin( ), orderedrank.end( ), order );
+    std::sort( orderedrank.begin( ), orderedrank.end( ), order );*/
+    orderedrank.value_merge_sort( 0, orderedrank.size( ) - 1 );
 
     // Return sorted profile
     return orderedrank;

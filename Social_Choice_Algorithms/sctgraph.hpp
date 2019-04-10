@@ -41,7 +41,7 @@ public:
     void push_back( SocialPrefNode& node ){ nodes.push_back( node ); }
     void clear( ){ nodes.clear( ); }
 
-    std::vector<int>::size_type size( ){ return nodes.size( ); }
+    std::vector<int>::size_type size( ) const{ return nodes.size( ); }
 
     std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator begin( ){ return nodes.begin( ); }
     std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); }

@@ -1,8 +1,8 @@
 #ifndef PROCEDURE_HPP
 #define PROCEDURE_HPP
 
-#include "population.hpp"
-#include "profile.hpp"
+//#include "population.hpp"
+//#include "profile.hpp"
 #include "sctrank.hpp"
 
 namespace SCT{

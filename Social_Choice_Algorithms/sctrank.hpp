@@ -4,8 +4,14 @@
 #define SCTRANK_H
 
 #include <vector>
+#include <thread>
+#include <pthread.h>
+#include <functional>
 #include "pairwiserank.hpp"
 #include "population.hpp"
+
+// TODO: solve problem when including listofpairs here. Problem solveng when removing #include population, profile from PROCEDURE class
+#include "listofpairs.hpp"
 
 /* Class Description */
 

@@ -29,7 +29,7 @@ PairsOfOpts& PairsOfOpts::operator=( PairsOfOpts copy ){
 /// Non-member helpers
 
 // Generates all possible combination of pairs of options, without repetitions
-std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
+/*std::vector<PairsOfOpts> pair_generation( Population& listofagents ){
 
     std::random_device rd;
 
@@ -108,4 +108,4 @@ std::vector<PairsOfOpts> pair_generation( Preferencematrix& mtx ){
 
     // returns all combinations without repetitions
     return paircomp;
-}
+}*/

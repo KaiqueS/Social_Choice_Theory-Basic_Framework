@@ -39,7 +39,7 @@ public:
     Options& operator[ ]( const std::vector<int>::size_type index ){ return alternatives[ index  ]; }
 
     // Helpers
-    std::vector<int>::size_type size( ){ return alternatives.size( ); }
+    std::vector<int>::size_type size( ) const{ return alternatives.size( ); }
 
     std::vector<Options, std::allocator<Options>>::iterator begin( ){ return alternatives.begin( ); }
     std::vector<Options, std::allocator<Options>>::iterator end( ){ return alternatives.end( ); }

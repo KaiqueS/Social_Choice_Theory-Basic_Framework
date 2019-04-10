@@ -23,7 +23,7 @@ struct PairsOfOpts{
 
 // Non-member helpers
 // std::vector<PairsOfOpts> pair_generation( Profile& profile );
-std::vector<PairsOfOpts> pair_generation( Population& listofagents );
-std::vector<PairsOfOpts> pair_generation( Preferencematrix& mtx );
+//std::vector<PairsOfOpts> pair_generation( Population& listofagents );
+//std::vector<PairsOfOpts> pair_generation( Preferencematrix& mtx );
 
 #endif // PAIRSOFOPTS_H

@@ -1,17 +1,14 @@
 #include <iostream>
 #include <algorithm>
+#include <thread>
 #include "sctheory.hpp"
 
-// TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
-//       for emptiness
-// TODO: Rethink PairWiseRank -> Try to figure out how to, for any two PWR, if any of the two options
-//       that it holds are equal, then they ARE the SAME, i.e., have the same address. This way one
-//       can use majority rule for PWR withouht appealing to a middle-class
-// TODO: Revise Non-Dic
-// CONSIDER: .cpp files for graph algorithms and rank algorithms
 // BIG QUESTION: what should SCF return? Alternatives or profiles? If the latter, are they composed
 // by only the alternatives that satisfies the aggregation procedure, or are they composed by every
 // alternative, sorted according to wheter they satisfy or not the procedure? - For Arrow, return profiles, for GS, return an alternative
+// TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
+//       for emptiness
+// TODO: Revise Non-Dic
 // TODO: allow choosing between a pure graph, i.e., graph not based on any aggregation procedure and
 // a graph based on procedures
 // TODO: when allowing for used-defined aggregation procedures, use as example a custom threshold
@@ -23,6 +20,7 @@
 // TODO: make a container of alternatives. Let the agents push back the alternatives and assign a random value to them,
 // this will make things more similar to how SCT works
 // TODO: define operator+= for each procedure
+// TODO: start parallelizing. SCTRank and PairsOfOpts, maybe Graph
 
 bool then( bool argument ){
 
@@ -67,7 +65,9 @@ void test1( ){
 
 	graph.initialize_graph( newmtx );
 
-	graph.make_graph( newmtx, rank );
+	std::thread graphthread( [ &graph, &newmtx, &rank ]( ){ graph.make_graph( newmtx, rank ); } );
+
+	graphthread.join( );
 
 	//graph.make_graph( newmtx, rank.get_rank( ) );
 
@@ -344,4 +344,6 @@ int main( ){
 	//srand( static_cast<unsigned int>( time( nullptr ) ) );
 
 	test1( );
+
+	//std::cout << std::thread::hardware_concurrency( ) << "\n";
 }

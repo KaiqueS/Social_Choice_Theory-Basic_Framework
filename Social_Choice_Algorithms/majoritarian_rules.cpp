@@ -96,6 +96,8 @@ Profile& SCT::Qualified_majority_rule::operator( )( Rank& rank ){
 // Working on it
 Profile& SCT::Qualified_majority_rule::operator+=( Profile& rhs ){
 
+    // The right thing to do here would be to create a rank from the profiles( using a prefmtx )
+    // and, from the rank, create a social profile
     Preferencematrix mtx{ };
 
     mtx.push_back( winnerset );
@@ -103,7 +105,7 @@ Profile& SCT::Qualified_majority_rule::operator+=( Profile& rhs ){
 
     winnerset = make_social_order( mtx );
 
-
+    return winnerset;
 }
 
 Profile& SCT::Qualified_majority_rule::operator+=( Preferencematrix& rhs ){
@@ -118,12 +120,14 @@ Profile& SCT::Qualified_majority_rule::operator+=( Rank& rhs ){
 
 Profile SCT::Simple_majority_rule::operator( )( Profile& profile ){
 
-    auto order = [ ]( Options& left, Options& right ){
+    /*auto order = [ ]( Options& left, Options& right ){
 
         return left.get_value( ) > right.get_value( );
     };
 
-    std::sort( profile.begin( ), profile.end( ), order );
+    std::sort( profile.begin( ), profile.end( ), order );*/
+
+    profile.value_merge_sort( 0, profile.size( ) - 1 );
 
     std::max_element( profile.begin( ), profile.end( ) ) -> set_value( true );
 

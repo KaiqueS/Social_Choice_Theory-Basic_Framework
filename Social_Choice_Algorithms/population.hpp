@@ -30,7 +30,7 @@ public:
     // Helpers
     bool empty( );
 
-    std::vector<int>::size_type size( ){ return population.size( ); }
+    std::vector<int>::size_type size( ) const{ return population.size( ); }
 
     std::vector<Agent, std::allocator<Agent>>::iterator begin( ){ return population.begin( ); }
     std::vector<Agent, std::allocator<Agent>>::iterator end( ){ return population.end( ); }
