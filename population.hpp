@@ -13,7 +13,7 @@ public:
     Population( std::vector<Agent> people ) : population( people ){ }
     Population( Agent person );
     Population( const Population& copy );
-    ~Population( );
+    ~Population( ){ clear( ); }
 
     // Setters
     void set_population( std::vector<Agent>& people );
@@ -28,18 +28,18 @@ public:
     Agent& operator[ ]( const std::vector<int>::size_type index ){ return population[ index ]; }
 
     // Helpers
-    bool empty( );
-
-    std::vector<int>::size_type size( ) const{ return population.size( ); }
-
     std::vector<Agent, std::allocator<Agent>>::iterator begin( ){ return population.begin( ); }
     std::vector<Agent, std::allocator<Agent>>::iterator end( ){ return population.end( ); }
+
+	std::vector<int>::size_type size( ) const{ return population.size( ); }
+
+	bool empty( );
 
 	void initialize_population( Preferencematrix mtx );
     void order_preferences( );
     void push_back( Agent& agt ){ population.push_back( agt ); }
     void pop_back( ){ population.pop_back( ); }
-	void clear( ){ population.clear( ); }
+    void clear( );
 
 private:
 
@@ -51,6 +51,7 @@ std::ostream& operator<<( std::ostream& os, Population& people );
 
 void initialize_opts( Population& listofagents, Profile& opts );
 
-Profile make_social_order( Population& population );
+// Deprecated - total NONSENSE
+//Profile make_social_order( Population& population );
 
 #endif // POPULATION_HPP

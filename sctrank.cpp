@@ -7,6 +7,18 @@
 // Default constructor
 Rank::Rank( ){ ranking = { }; }
 
+Rank::Rank( Population& population ){
+
+    generate_ranking( population );
+    order_ranking( );
+}
+
+Rank::Rank( Preferencematrix& matrix ){
+
+    generate_ranking( matrix );
+    order_ranking( );
+}
+
 // Copy constructor
 Rank::Rank( const Rank& copy ){ ranking = copy.ranking; }
 
@@ -228,7 +240,7 @@ PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
         // Else, if index is invalid
         else{
 
-            std::cerr << "Invalid index. Please, enter another value: ";
+            std::cerr << "Invalid index. Please, enter another value between 0 <= x < " << ranking.size( ) << ": ";
 
             std::vector<int>::size_type newindex{ };
 
@@ -242,7 +254,7 @@ PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
     // If RANKING is empty
     else{
 
-        std::cerr << "Ranking is empty!. Creating a default ordered pair instead.\n";
+        std::cerr << "Ranking is empty!. Creating a default ordered pair instead.\n\n";
 
         ranking.resize( 1 );
 
@@ -258,7 +270,7 @@ PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
 // and yval > zval, then xval > zval
 bool Rank::is_transitive( ){
 
-	class Transitivity{
+	/*class Transitivity{
 
 	public:
 
@@ -272,7 +284,7 @@ bool Rank::is_transitive( ){
 
 		PairWiseRank left{ };
 		PairWiseRank right{ };
-	};
+	};*/
 
 	for( std::vector<int>::size_type i = 0; i < ranking.size( ); ++i ){
 
@@ -280,6 +292,7 @@ bool Rank::is_transitive( ){
 
 			if( ranking[ j ].get_optx( ) == ranking[ i ].get_opty( ) ){
 
+				// maybe i should let k = 0?
 				for( std::vector<int>::size_type k = i + 1; k < ranking.size( ); ++k ){
 
 					if( ( ranking[ k ].get_optx( ) == ranking[ i ].get_optx( ) ) &&
@@ -289,12 +302,12 @@ bool Rank::is_transitive( ){
 							( ranking[ j ].get_xval( ) > ranking[ j ].get_yval( ) ) &&
 							( ranking[ k ].get_xval( ) > ranking[ k ].get_yval( ) ) ){
 
-							std::cout << ranking[ i ] << "\n" << ranking[ j ] << "\n" << ranking[ k ] << "\t is transitive.\n";
+							std::cout << ranking[ i ] << "\n" << ranking[ j ] << "\n" << ranking[ k ] << "\t is transitive.\n"; // debug only
 						}
 
 						else{
 
-							std::cout << ranking[ i ] << "\n" << ranking[ j ] << "\n" << ranking[ k ] << "\t is not transitive.\n";
+							std::cout << ranking[ i ] << "\n" << ranking[ j ] << "\n" << ranking[ k ] << "\t is not transitive.\n"; // debug only
 
 							return false;
 						}
@@ -450,14 +463,14 @@ Profile make_social_order( Rank& rank ){
             }
         }
 
-    // Returns best ranked option
     /*auto order = [ ]( Options& left, Options& right ){
 
         return left.get_value( ) > right.get_value( );
     };
 
-    // order vector from greatest to smallest, according to the value
     std::sort( orderedrank.begin( ), orderedrank.end( ), order );*/
+
+    // order vector from greatest to smallest, according to the value
     orderedrank.value_merge_sort( 0, orderedrank.size( ) - 1 );
 
     // Return sorted profile

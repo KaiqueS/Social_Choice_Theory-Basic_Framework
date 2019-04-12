@@ -2,11 +2,14 @@
 
 /// Qualified Majority Methods
 
+// Constructors
+
+// Operators
 Profile SCT::Qualified_majority_rule::operator( )( Profile& profile ){
 
     for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
 
-        if( profile[ i ].get_value( ) >= static_cast<int>( profile.size( ) / 2 ) )
+        if( profile[ i ].get_value( ) >= static_cast<int>( std::ceil( profile.size( ) / 2 ) ) )
 
             profile[ i ].set_status( true );
 
@@ -27,7 +30,11 @@ Profile SCT::Qualified_majority_rule::operator( )( Profile& profile ){
 
 Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
-    winnerset = make_social_order(  matrix );
+    winnerset.clear( );
+
+    Rank rank( matrix );
+
+    winnerset = make_social_order( rank );
 
     for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
@@ -52,7 +59,9 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
 Profile& SCT::Qualified_majority_rule::operator( )( Population& population ){
 
-    winnerset = make_social_order( population );
+    Rank rank( population );
+
+    winnerset = make_social_order( rank );
 
     for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
@@ -120,6 +129,9 @@ Profile& SCT::Qualified_majority_rule::operator+=( Rank& rhs ){
 
 /// Simple Majority Methods
 
+// Constructors
+
+// Operators
 Profile SCT::Simple_majority_rule::operator( )( Profile& profile ){
 
     /*auto order = [ ]( Options& left, Options& right ){
@@ -152,7 +164,9 @@ Profile SCT::Simple_majority_rule::operator( )( Preferencematrix& matrix ){
 
 	winnerset.clear( );
 
-	winnerset = make_social_order( matrix );
+	Rank rank( matrix );
+
+	winnerset = make_social_order( rank );
 
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
 
@@ -175,7 +189,9 @@ Profile& SCT::Simple_majority_rule::operator( )( Population& population ){
 
     winnerset.clear( );
 
-    winnerset = make_social_order( population );
+    Rank rank( population );
+
+    winnerset = make_social_order( rank );
 
     // Problem here
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );

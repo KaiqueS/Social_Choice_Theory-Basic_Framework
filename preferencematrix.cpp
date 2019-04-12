@@ -160,8 +160,8 @@ std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
     return os;
 }
 
-// MODIFIED: used to get two arguments ( Profile& profile, PreferenceMatrix& matrix )
-Profile make_social_order( Preferencematrix& matrix ){
+// MODIFIED: used to get two arguments ( Profile& profile, PreferenceMatrix& matrix ) - This method makes NO SENSE AT ALL
+/*Profile make_social_order( Preferencematrix& matrix ){
 
     Profile profile;
 
@@ -176,15 +176,16 @@ Profile make_social_order( Preferencematrix& matrix ){
 
     else{
 
-        for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i )
+        for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
 
             profile[ i ].set_value( 0 );
+        }
 
         // For every profile in MATRIX
         for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
 
             // For every option in every matrix PROFILE
-            for( std::vector<int>::size_type j = 0; j < matrix[ i ].get_alternatives( ).size( ); ++j ){
+            for( std::vector<int>::size_type j = 0; j < matrix[ i ].size( ); ++j ){
 
                 // Searches, in SOCIALORDER, for every option in every matrix's profile i
                 for( std::vector<int>::size_type k = 0; k < profile.size( ); ++k ){
@@ -209,7 +210,7 @@ Profile make_social_order( Preferencematrix& matrix ){
         profile[ i ].set_value( static_cast<int>( static_cast<std::vector<int>::size_type>( profile[ i ].get_value( ) ) / profile.size( ) ) );
 
     return profile;
-}
+}*/
 
 void initialize_opts( Preferencematrix& matrix, Profile& profile ){
 

@@ -7,27 +7,13 @@ Population::Population( ){ population = { }; }
 
 // Alternative parameterized constructor. Resizes and initializes every agent in POPULATI
 // ON to its default values
-Population::Population( std::vector<int>::size_type size ){
-
-    population.resize( size );
-}
+Population::Population( std::vector<int>::size_type size ){ population.resize( size ); }
 
 // Alternative parameterized constructor. Inserts an agent into POPULATION
 Population::Population( Agent person ){ population.push_back( person ); }
 
 // Copy constructor
 Population::Population( const Population& copy ){ population = copy.population; }
-
-// Destructor. Clears the vector POPULATION of memory
-Population::~Population( ){
-
-	//std::cout << "Population deleted.\n";
-
-    population.clear( );
-
-	// Freeing the vector from the memory
-	std::vector<Agent>( ).swap( population );
-}
 
 /// Setters
 
@@ -92,6 +78,13 @@ void Population::order_preferences( ){
         population[ i ].sort_preferences( );
 }
 
+void Population::clear( ){
+
+    population.clear( );
+
+    std::vector<Agent>( ).swap( population );
+}
+
 /// Non-member Helpers
 
 // Overloaded printing operator
@@ -142,8 +135,8 @@ void initialize_opts( Population& listofagents, Profile& opts ){
 }
 
 // Returns a generic social ordering of options, i.e., sorted profile. The ordering is based solely
-// in how many votes each option got in a given POPULATION
-Profile make_social_order( Population& population ){
+// in how many votes each option got in a given POPULATION - As NONSENSICAL as PrefMtx method
+/*Profile make_social_order( Population& population ){
 
     // Instantiates the resulting profile
     Profile socialorder{ };
@@ -178,4 +171,4 @@ Profile make_social_order( Population& population ){
     }
 
     return socialorder;
-}
+}*/

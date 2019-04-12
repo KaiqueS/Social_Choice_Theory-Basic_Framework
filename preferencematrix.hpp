@@ -20,8 +20,7 @@ public:
 
 	// Constructors & Destructor
 	Preferencematrix( );
-	Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) :
-					  rowsize( row ), columnsize( col ), matrix( mtx ){ }
+	Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col, std::vector<Profile> mtx ) : rowsize( row ), columnsize( col ), matrix( mtx ){ }
 	Preferencematrix( std::initializer_list<Profile> init ) : matrix( std::move( init ) ){ rowsize = matrix.size( );
 																						   columnsize = matrix.begin( ) -> size( ); }
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
@@ -33,6 +32,7 @@ public:
     void set_columnsz( std::vector<int>::size_type col );
 
     void set_matrix( std::vector<int>::size_type rowsz, std::vector<int>::size_type colsz );
+    void set_matrix( std::vector<Profile> mtx ){ matrix = mtx; }
 
 	// Getters
     std::vector<int>::size_type get_rowsz( ) const{ return rowsize; }
@@ -47,10 +47,10 @@ public:
 	Preferencematrix& operator=( Preferencematrix copy );
 
 	// Helpers
-	std::vector<int>::size_type size( ) const{ return matrix.size( ); }
-
 	std::vector<Profile, std::allocator<Profile>>::iterator begin( ){ return matrix.begin( ); }
 	std::vector<Profile, std::allocator<Profile>>::iterator end( ){ return matrix.end( ); }
+
+	std::vector<int>::size_type size( ) const{ return matrix.size( ); }
 
 	bool empty( );
 
@@ -84,7 +84,7 @@ inline bool operator!=( const Preferencematrix& left, const Preferencematrix& ri
 
 // MODIFIED: used to get two arguments ( Profile& profile, PreferenceMatrix& matrix )
 // Check for every instance that NOW gets only MATRIX as argument
-Profile make_social_order( Preferencematrix& matrix );
+//Profile make_social_order( Preferencematrix& matrix ); - Deprecated. Complete NONSENSE
 
 void initialize_opts( Preferencematrix& matrix, Profile& profile );
 

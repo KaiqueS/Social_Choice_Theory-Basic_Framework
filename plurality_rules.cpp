@@ -2,6 +2,8 @@
 
 Profile SCT::Borda_count::operator( )( Profile& profile ){
 
+    // winnerset.clear( );
+
     auto order = [ ]( Options& left, Options& right ){
 
         return left.get_value( ) > right.get_value( );
@@ -32,6 +34,8 @@ Profile SCT::Borda_count::operator( )( Profile& profile ){
 }
 
 Profile SCT::Borda_count::operator( )( Preferencematrix& matrix ){
+
+	// winnerset.clear( );
 
 	initialize_opts( matrix, winnerset );
 
@@ -67,6 +71,8 @@ Profile SCT::Borda_count::operator( )( Preferencematrix& matrix ){
 }
 
 Profile& SCT::Borda_count::operator( )( Population& population ){
+
+    // winnerset.clear( );
 
     initialize_opts( population, winnerset );
 
@@ -104,6 +110,8 @@ Profile& SCT::Borda_count::operator( )( Population& population ){
 }
 
 Profile& SCT::Borda_count::operator( )( Rank& rank ){
+
+    // winnerset.clear( );
 
     winnerset = make_social_order( rank );
 

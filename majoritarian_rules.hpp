@@ -24,6 +24,7 @@ class Qualified_majority_rule : public Procedure{
 
     private:
 
+        // is this really necessary? Cannot I deal only with temporaries of profiles?
         Profile winnerset{ };
     };
 
