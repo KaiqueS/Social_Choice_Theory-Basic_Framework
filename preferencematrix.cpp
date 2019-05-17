@@ -42,7 +42,6 @@ void Preferencematrix::set_columnsz( std::vector<int>::size_type col ){ columnsi
 
 // Set a matrix of RowSZ x ColSZ dimensions. Sets a random value to each alternative, where this
 // value ranges from 0 to colsz
-// TODO: Problem generating options' ids
 void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vector<int>::size_type colsz ){
 
     std::random_device rd;
@@ -60,21 +59,33 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
     // to its default values
     Profile setofalts( colsz );
 
-    // Workaroung below. Begin
-	int aux{ 30 };
+	// Workaroung below. Begin
+	int aux{ 65 };
 
     // Maps int into chars, store in a stack, assign it to a string
-	// Sets alternatives' id's
+    // Sets alternatives' id's - FIX THIS
 	for( std::vector<int>::size_type i = 0; i < setofalts.size( ); ++i ){
 
+        // if the number of options in the profiles is > 26, let numofchars[ setofalts.size / 26 ], where numofchars[ 0 ] = aux, [ 1 ] = aux2... and so on
+
         // change to is alphabetical
-        while( !isalnum( aux ) )
+        while( !isalpha( aux ) ){
 
 			++aux;
+		}
 
-        char id = static_cast<char>( aux );
+		char id = static_cast<char>( aux );
 
-        setofalts[ i ].set_opt( std::to_string( id ) );
+		if( isupper( id ) )
+
+			id = static_cast<char>( tolower( id ) );
+
+		std::string name{ id };
+
+		// There was a problem when using setofalts[ i ].set_opt( &id ). Taking the address to a char
+		// handles this char as an array, and, thus, the string takes everything from that array, inst
+		// ead of taking only one letter
+		setofalts[ i ].set_opt( name );
 
 		++aux;
 	}
@@ -90,7 +101,8 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
             //int val = rand( ) % static_cast<int>( colsz );
             int val = static_cast<int>( column( mt ) );
 
-			matrix[ i ][ j ].set_value( val );
+			//matrix[ i ][ j ].set_value( val );
+			matrix[ i ].no_indifference( );
 		}
 	}
 }
@@ -109,8 +121,8 @@ Preferencematrix& Preferencematrix::operator=( Preferencematrix copy ){
 
 /// Helpers
 
-// Deletes an specific row. Used in Agent.h class - TODO: erase-remove idiom
-void Preferencematrix::erase_row( const std::vector<int>::size_type index ){ matrix.erase( std::remove( matrix.begin( ), matrix.end( ), index ), matrix.end( ) ); }
+// Deletes an specific row. Used in Agent.h class - DEBUG THIS
+void Preferencematrix::erase_row( const std::vector<int>::size_type index ){ matrix.erase( matrix.begin( ) + index ); }
 
 bool Preferencematrix::empty( ){
 
@@ -128,6 +140,14 @@ void Preferencematrix::clear( ){
     matrix.clear( );
 
     std::vector<Profile>( ).swap( matrix );
+}
+
+void Preferencematrix::merge_sort_by_value( ){
+
+    for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
+
+        matrix[ i ].value_merge_sort( 0, matrix.size( ) - 1 );
+    }
 }
 
 /// Non-member helpers

@@ -60,12 +60,15 @@ public:
 	void sort_by_value( );
 	void sort_by_opt( );
 	
+	void no_indifference( );
+
 	friend void swap( Profile& left, Profile& right );
 
 private:
 
     bool _value_sorted{ false };
     bool _opt_sorted{ false };
+	bool indifference{ true };
 
     std::vector<Options> alternatives{ };
 };

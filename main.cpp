@@ -1,11 +1,10 @@
 #include <iostream>
 #include <algorithm>
-#include <thread>
+//#include <thread>
 #include "sctheory.hpp"
 
-// TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check
-//       for emptiness
-// TODO: Revise Non-Dic
+// TODO: Exceptions for all classes/functions/methods that deal with vectors/containers -> Check for emptiness
+// TODO: Revise Non-Dic - Focus on this now
 // TODO: allow choosing between a pure graph, i.e., graph not based on any aggregation procedure and
 // a graph based on procedures
 // TODO: when allowing for used-defined aggregation procedures, use as example a custom threshold
@@ -17,19 +16,7 @@
 // values in the vector. This will guarantee no-indifference
 // TODO: make a container of alternatives. Let the agents push back the alternatives and assign a random value to them,
 // this will make things more similar to how SCT works
-// TODO: start parallelizing. SCTRank and PairsOfOpts, maybe Graph. WORKING ON IT
-// TODO: consider dealing with rvalues of Profiles in each functor, instead of lvalues - EXCEPT scthery.hpp/.cpp
-
-bool then( bool argument ){
-
-	if( argument == true )
-
-		return true;
-
-	else
-
-		return false;
-}
+// TODO: consider dealing with rvalues of Profiles in each functor, instead of lvalues - EXCEPT sctheory.hpp/.cpp
 
 void test1( ){
 
@@ -63,9 +50,11 @@ void test1( ){
 
 	graph.initialize_graph( newmtx );
 
-	std::thread graphthread( [ &graph, &newmtx, &rank ]( ){ graph.make_graph( newmtx, rank ); } );
+	graph.make_graph( newmtx, rank );
 
-	graphthread.join( );
+	//std::thread graphthread( [ &graph, &newmtx, &rank ]( ){ graph.make_graph( newmtx, rank ); } );
+
+	//graphthread.join( );
 
 	//graph.make_graph( newmtx, rank.get_rank( ) );
 
@@ -295,6 +284,9 @@ void test5( ){
 
 void test6( ){
 
+	// Since I know that the second profile holds the same relations as the first, I could use it as a test case. Could test IIA's ranking_comparison to see if it generates the
+	// second profile from the first to check for correctness
+
 	Preferencematrix original = { Profile( { Options( "a", false, 5 ), Options( "b", false, 4 ), Options( "c", false, 3 ), Options( "d", false, 2 ), Options( "e", false, 1 ) } ),
 								  Profile( { Options( "b", false, 5 ), Options( "c", false, 4 ), Options( "d", false, 3 ), Options( "e", false, 2 ), Options( "a", false, 1 ) } ),
 								  Profile( { Options( "c", false, 5 ), Options( "d", false, 4 ), Options( "e", false, 3 ), Options( "a", false, 2 ), Options( "b", false, 1 ) } ),
@@ -315,18 +307,25 @@ void test6( ){
 
 	SCT::Simple_majority_rule maj;
 	SCT::Borda_count borda;
+	SCT::Qualified_majority_rule quali;
 
 	Profile first{ borda( original ) };
 	Profile second{ borda( prime ) };
+
+	Profile third{ maj( original ) };
+	Profile four{ maj( prime ) };
+
+	Profile five{ quali( original ) };
+	Profile six{ quali( prime ) };
 
 	std::cout << original << "\n\n" << prime << "\n";
 
 	std::cout << left << "\n" << right << "\n";
 
-	first.sort_by_opt( );
-	second.sort_by_opt( );
+	//first.sort_by_opt( );
+	//second.sort_by_opt( );
 
-	std::cout << first << "\n" << second << "\n";
+	std::cout << first << "\n" << second << "\n" << third << "\n" << four << "\n" << five << "\n" << six << "\n";
 
 	if( first == second )
 
@@ -359,8 +358,68 @@ void test7( ){
 	}
 }
 
+void test8( ){
+
+	Preferencematrix original = { Profile( { Options( "a", false, 5 ), Options( "b", false, 4 ), Options( "c", false, 3 ), Options( "d", false, 2 ), Options( "e", false, 1 ) } ),
+								  Profile( { Options( "b", false, 5 ), Options( "c", false, 4 ), Options( "d", false, 3 ), Options( "e", false, 2 ), Options( "a", false, 1 ) } ),
+								  Profile( { Options( "c", false, 5 ), Options( "d", false, 4 ), Options( "e", false, 3 ), Options( "a", false, 2 ), Options( "b", false, 1 ) } ),
+								  Profile( { Options( "d", false, 5 ), Options( "e", false, 4 ), Options( "a", false, 3 ), Options( "b", false, 2 ), Options( "c", false, 1 ) } ),
+								  Profile( { Options( "e", false, 5 ), Options( "a", false, 4 ), Options( "b", false, 3 ), Options( "c", false, 2 ), Options( "d", false, 1 ) } ) };
+
+    /*Preferencematrix prime = { Profile( { Options( "c", false, 5 ), Options( "d", false, 4 ), Options( "e", false, 3 ), Options( "a", false, 2 ), Options( "b", false, 1 ) } ),
+                                  Profile( { Options( "e", false, 5 ), Options( "d", false, 4 ), Options( "a", false, 3 ), Options( "b", false, 2 ), Options( "c", false, 1 ) } ),
+                                  Profile( { Options( "c", false, 5 ), Options( "b", false, 4 ), Options( "a", false, 3 ), Options( "d", false, 2 ), Options( "e", false, 1 ) } ),
+                                  Profile( { Options( "b", false, 5 ), Options( "d", false, 4 ), Options( "a", false, 3 ), Options( "c", false, 2 ), Options( "e", false, 1 ) } ),
+                                  Profile( { Options( "e", false, 5 ), Options( "a", false, 4 ), Options( "b", false, 3 ), Options( "c", false, 2 ), Options( "d", false, 1 ) } ) };*/
+
+	Rank one( original );
+
+    Preferencematrix prime{ };
+
+    //Preferencematrix prime = generate_prime_profile( original, one );
+    Rank two( prime );
+
+    std::cout << prime << "\n";
+
+    std::cout << one << "\n" << two << "\n";
+
+    if( SCT::Borda_count( ).operator( )( original ) != SCT::Borda_count( ).operator( )( two ) )
+
+		std::cout << "true\n";
+
+	else
+
+		std::cout << "false\n";
+}
+
+void test9( ){
+
+	bool test = true;
+
+	while( test ){
+
+	Preferencematrix original( 4, 4 );
+	Rank rank( original );
+
+	Preferencematrix prime{ };
+
+	//Preferencematrix prime = generate_prime_profile( original, rank );
+	Rank primerank( prime );
+
+	std::cout << original << "\n" << prime << "\n";
+
+	std::cout << rank << "\n" << primerank << "\n";
+
+	if( rank_relations( rank, primerank ) == false )
+
+		test = false;
+	}
+}
+
 int main( ){
 
+	Preferencematrix matrix( 4, 4 );
 
+	Preferencematrix prime = generate_prime_profile( matrix );
 }
 

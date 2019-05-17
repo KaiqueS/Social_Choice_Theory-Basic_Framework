@@ -258,4 +258,6 @@ private:
     };
 }
 
+Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix );
+
 #endif // SCTHEORY_H

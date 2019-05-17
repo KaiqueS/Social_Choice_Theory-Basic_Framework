@@ -59,12 +59,7 @@ void Rank::generate_ranking( Population& listofagents ){
     //ListOfPairs ordering = ListOfPairs( ).pair_generation( listofagents );
     ListOfPairs ordering{ };
 
-    std::thread t( [ &ordering, &listofagents ]( ){ ordering.pair_generation( listofagents ); } );
-
-    if( t.joinable( ) ){
-
-        t.join( );
-    }
+    ordering.pair_generation( listofagents );
 
     // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
     PairWiseRank paircomp{ };
@@ -141,12 +136,7 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
     //ListOfPairs ordering( mtx );
     ListOfPairs ordering{ };
 
-    std::thread t( [ &ordering, &mtx ]( ){ ordering.pair_generation( mtx ); } );
-
-    if( t.joinable( ) ){
-
-        t.join( );
-    }
+    ordering.pair_generation( mtx );
 
     // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
     PairWiseRank paircomp{ };

@@ -34,7 +34,7 @@ public:
 	Options& operator=( Options copy );
 
     Options& operator++( );
-	Options operator++( int value );
+    Options operator++( int value );
 
 	Options& operator+=( const Options& val );
     Options& operator+=( const int val );

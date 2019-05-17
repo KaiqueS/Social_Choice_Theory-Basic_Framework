@@ -4,8 +4,8 @@
 #define SCTRANK_H
 
 #include <vector>
-#include <thread>
-#include <functional>
+//#include <thread>
+//#include <functional>
 #include "pairwiserank.hpp"
 #include "population.hpp"
 

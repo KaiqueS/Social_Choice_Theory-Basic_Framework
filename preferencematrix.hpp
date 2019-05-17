@@ -7,8 +7,9 @@
 #include <vector>
 #include <random>
 #include <algorithm>
-#include <ctime>
-#include <map>
+//#include <ctime>
+//#include <map>
+#include <string>
 #include "profile.hpp"
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
@@ -57,6 +58,8 @@ public:
 	void erase_row( const std::vector<int>::size_type index );
 	void push_back( Profile& profile ){ matrix.push_back( profile ); }
 	void clear( );
+
+	void merge_sort_by_value( );
 
 private:
 

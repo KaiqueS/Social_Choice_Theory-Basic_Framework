@@ -8,7 +8,15 @@
 Profile::Profile( ){ alternatives = { }; }
 
 // Alternative parameterized constructor. Resizes ALTERNATIVES to size
-Profile::Profile( std::vector<int>::size_type size ){ alternatives.resize( size ); }
+Profile::Profile( std::vector<int>::size_type size ){
+
+    alternatives.resize( size );
+
+    for( std::vector<int>::size_type i = 0; i < alternatives.size( ); ++i ){
+
+        alternatives[ i ] = { };
+    }
+}
 
 // Alternative parameterized constructor. Inserts an Option opt at the
 // end of ALTERNATIVES
@@ -75,9 +83,11 @@ bool Profile::empty( ){
         return false;
 }
 
+// Problem here
 void Profile::erase( const std::vector<int>::size_type index  ){
 
-    alternatives.erase( std::remove( alternatives.begin( ), alternatives.end( ), index ), alternatives.end( ) );
+    //alternatives.erase( std::remove( alternatives.begin( ), alternatives.end( ), alternatives[ index ] ), alternatives.end( ) );
+    alternatives.erase( alternatives.begin( ) + index );
 }
 
 void Profile::clear( ){
@@ -223,6 +233,36 @@ void Profile::sort_by_opt( ){
 	std::sort( alternatives.begin( ), alternatives.end( ), order );
 
 	_opt_sorted = true;
+}
+
+void Profile::no_indifference( ){
+
+	std::vector<int> values( alternatives.size( ) );
+
+	for( std::vector<int>::size_type i = 0; i < values.size( ); ++i ){
+
+		values[ i ] = i;
+	}
+
+	std::random_device rd;
+
+	//std::mt19937_64 mt( rd( ) );
+	std::mt19937 mt( rd( ) );
+
+	for( std::vector<int>::size_type i = 0; i < alternatives.size( ); ++i ){
+
+		std::uniform_int_distribution<std::vector<int>::size_type> range( 0, ( values.size( ) - 1 ) );
+
+		auto opt = std::find( values.begin( ), values.end( ), values[ range( mt ) ] );
+
+		std::vector<int>::size_type distance = opt - values.begin( );
+
+		alternatives[ i ].set_value( *opt );
+
+		values.erase( values.begin( ) + distance );
+	}
+
+	indifference = false;
 }
 
 void swap( Profile& left, Profile& right ){
