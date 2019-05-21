@@ -156,7 +156,8 @@ Preferencematrix prime_profile( Preferencematrix& original ){
     return prime;
 }
 
-// Indifference is deadlocking the program. Remove indifference
+// Rankings must contain the same alternatives in the same order!
+// Still needs more fine tuning. ALMOST THERE, THOUGH
 Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ){
 
 	// Make this sort in descending order
@@ -218,7 +219,7 @@ Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ){
 			// Else, if there are k elements between x and y, put y at x and move x and its subsequents elements one place to the right
 			else if( distance > 1 ){
 
-				for( std::vector<int>::size_type k = xindex; k <= yindex; ++k ){
+				for( std::vector<int>::size_type k = std::min( xindex, yindex ); k <= std::max( xindex, yindex ); ++k ){
 
 					std::string holder{ primematrix[ prof ][ k ].get_opt( ) };
 
@@ -278,7 +279,7 @@ Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ){
 				// Else, if there are k elements between x and y, put y at x and move x and its subsequents elements one place to the right
 				else if( distance > 1 ){
 
-					for( std::vector<int>::size_type k = xindex; k <= yindex; ++k ){
+					for( std::vector<int>::size_type k = std::min( xindex, yindex ); k <= std::max( xindex, yindex ); ++k ){
 
 						std::string holder{ primematrix[ prof ][ k ].get_opt( ) };
 
@@ -340,7 +341,9 @@ Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ){
 				// Else, if there are k elements between x and y, put y at x and move x and its subsequents elements one place to the right
 				else if( distance > 1 ){
 
-					for( std::vector<int>::size_type k = xindex; k <= yindex; ++k ){
+					// problem here: xindex can be greater than yindex. This loop will not be executed - DEADLOCK - SOLVED
+					// second issue: is the move being done correctly? Is the program correctly reassigning options' names?
+					for( std::vector<int>::size_type k = std::min( xindex, yindex ); k <= std::max( xindex, yindex ); ++k ){
 
 						std::string holder{ primematrix[ prof ][ k ].get_opt( ) };
 
@@ -399,7 +402,7 @@ Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ){
 				// Else, if there are k elements between x and y, put y at x and move x and its subsequents elements one place to the right
 				else if( distance > 1 ){
 
-					for( std::vector<int>::size_type k = xindex; k <= yindex; ++k ){
+					for( std::vector<int>::size_type k = std::min( xindex, yindex ); k <= std::max( xindex, yindex ); ++k ){
 
 						std::string holder{ primematrix[ prof ][ k ].get_opt( ) };
 
@@ -414,7 +417,7 @@ Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ){
 				}
 			}
 		}
-}
+	}
 	
 
 		// nice, the relation is false. But what was the relation? x > y, y > x? I have to get this
