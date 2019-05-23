@@ -89,7 +89,7 @@ public:
 private:
 
     Preferencematrix matrix{ };
-    Population population{ };
+    Population population{ }; // useless
     };
 
 class Non_Dictatorship{
@@ -255,6 +255,8 @@ private:
 	Irrelevant_Alternatives irrelevant{ };
 	Non_Dictatorship dictator{ };
 	Single_Peakedness singlePeak{ };
+
+	bool validity{ true };
     };
 }
 

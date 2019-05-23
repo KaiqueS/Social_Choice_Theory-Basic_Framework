@@ -13,7 +13,7 @@ public:
 
     // Constructors & Destructor
     Profile( );
-    Profile( bool value, bool opt, std::vector<Options> alts ) : _value_sorted( value ), _opt_sorted( opt ), alternatives( alts ){ }
+    Profile( bool value, bool opt, bool indiff, std::vector<Options> alts ) : _value_sorted( value ), _opt_sorted( opt ), indifference( indiff ), alternatives( alts ){ }
 	Profile( std::initializer_list<Options> init ) : alternatives( std::move( init ) ){ }
     Profile( std::vector<int>::size_type size );
     Profile( Options opt );

@@ -29,6 +29,7 @@ public:
     PairsOfOpts& operator[ ]( const std::vector<int>::size_type index ){ return pairs[ index ]; }
 
     // Helpers
+	void pair_generation( Profile& profile );
     void pair_generation( Population& listofagents );
     void pair_generation( Preferencematrix& matrix );
 

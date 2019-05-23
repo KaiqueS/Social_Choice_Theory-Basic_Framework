@@ -45,6 +45,85 @@ void Rank::set_rank( std::vector<PairWiseRank> order ){
     order_ranking( );
 }
 
+// Test this later
+// The purpose here is to be able to check a profile's transitivity
+void Rank::generate_ranking( Profile& profile ){
+
+	// Holder for a pair of options
+	PairsOfOpts compairs{ };
+
+	// Generates all possible combinations of pairs, without repetitions
+	//std::vector<PairsOfOpts> ordering = pair_generation( mtx );
+	//ListOfPairs ordering = ListOfPairs( ).pair_generation( mtx );
+	//ListOfPairs ordering( mtx );
+	ListOfPairs ordering{ };
+
+	ordering.pair_generation( profile );
+
+	// quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
+	PairWiseRank paircomp{ };
+
+	//std::vector<PairWiseRank> ranking{ };
+
+	// Number of all possible combinations of pairs, without repetitions
+	std::vector<int>::size_type ordersize = ordering.size( );
+
+	// Number of profiles
+	std::vector<int>::size_type listsize = profile.size( );
+
+	// Number of options in each profile
+	std::vector<int>::size_type prefsize = profile.size( );
+
+	// Checks how a pair ( x, y ) is ranked for each agent
+	for( std::vector<int>::size_type i = 0; i < ordersize; ++i ){
+
+		// Holds both alternatives that will be checked
+		compairs.xpref = ordering[ i ].xpref;
+		compairs.ypref = ordering[ i ].ypref;
+
+		for( std::vector<int>::size_type j = 0; j < listsize; ++j ){
+
+			for( std::vector<int>::size_type k = 0; k < prefsize; ++k ){
+
+				// Search for x in agent's preferences
+				if( profile[ j ].get_opt( ) == compairs.xpref.get_opt( ) )
+
+					paircomp.set_optx( profile[ k ] );
+
+				// Search for y in agent's preferences -> ADDED: else
+				else if( profile[ j ].get_opt( ) == compairs.ypref.get_opt( ) )
+
+					paircomp.set_opty( profile[ k ] );
+			}
+
+			// Compares x and y values. If x > y, increment xval
+			if( paircomp.get_optx( ).get_value( ) > paircomp.get_opty( ).get_value( ) )
+
+				paircomp.incrementx( );
+
+			// Else, if x < y, increment yval
+			else if( paircomp.get_optx( ).get_value( ) < paircomp.get_opty( ).get_value( ) )
+
+				paircomp.incrementy( );
+
+			// Else, if x == y, increment ival
+			else if( paircomp.get_optx( ).get_value( ) == paircomp.get_opty( ).get_value( ) )
+
+				paircomp.incrementi( );
+		}
+
+		// Stores the ranked tuple
+		ranking.push_back( paircomp );
+
+		// Resets the tuple for a new ranking
+		// paircomp = { };
+		paircomp = PairWiseRank( );
+	}
+
+	// Added this later
+	order_ranking( );
+}
+
 /* Ranks alternatives. The ranking has a form of quintuples ( x, y, xval, yval, ival ), where
  * x and y are the alternatives, and the vals represent how many agents prefer one over the
  * other. E.g.: xval > yval means that x is preferred to y
@@ -200,6 +279,11 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
 
     // Added this later
     order_ranking( );
+}
+
+void Rank::generate_ranking( Profile& profile ){
+
+
 }
 
 /// Getters

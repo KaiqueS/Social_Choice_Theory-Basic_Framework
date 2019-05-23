@@ -25,6 +25,42 @@ ListOfPairs ListOfPairs::operator=( ListOfPairs copy ){
 
 /// Helpers
 
+void ListOfPairs::pair_generation( Profile& profile ){
+
+	clear( );
+
+	std::random_device rd;
+
+	std::mt19937 mt( rd( ) );
+
+	std::uniform_int_distribution<std::vector<int>::size_type> index( 0, ( profile.size( ) - 1 ) );
+
+	PairsOfOpts compairs{ };
+
+	//std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % listofagents.size( );
+	std::vector<int>::size_type randopt = index( mt );
+
+	std::vector<int>::size_type prefsize = profile.size( );
+
+	// gets all possible combination of pairs, including repeated pairs
+	for( std::vector<int>::size_type i = 0; i < prefsize; ++i ){
+
+		//compairs.xpref = listofagents[ randagt ][ i ];
+		compairs.xpref = profile[ randopt ];
+
+		for( std::vector<int>::size_type j = i + 1; j < prefsize; ++j ){
+
+			if( j != i ){
+
+				//compairs.ypref = listofagents[ randagt ][ j ];
+				compairs.ypref = profile[ randopt ];
+
+				pairs.push_back( compairs );
+			}
+		}
+	}
+}
+
 void ListOfPairs::pair_generation( Population& population ){
 
     clear( );

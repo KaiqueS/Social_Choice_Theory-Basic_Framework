@@ -30,6 +30,7 @@ public:
     // Setters
     void set_rank( PairWiseRank pair );
     void set_rank( std::vector<PairWiseRank> order );
+	void generate_ranking( Profile& profile );
 	void generate_ranking( Population& listofagents );
     void generate_ranking( Preferencematrix& mtx );
 

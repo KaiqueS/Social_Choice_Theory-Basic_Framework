@@ -11,7 +11,7 @@
 // procedure, i.e., allow for the user to input a threshold that, when a given option surpasses
 // the latter, it becomes the winner or one of the winners. Add that to GUI
 // TODO: let the user decide between majority or list based procedures - GUI
-// TODO: make it possible for one to enable/disable indifference -> FOCUS ON THIS!
+// TODO: make it possible for one to enable/disable indifference -> FOCUS ON THIS! 
 // TODO: make a container of alternatives. Let the agents push back the alternatives and assign a random value to them,
 // this will make things more similar to how SCT works
 // TODO: increasing_merge_sort and decreasing_merge_sort
@@ -416,7 +416,7 @@ void test9() {
 
 void test10( ){
 
-	Preferencematrix matrix( 9, 9 );
+	Preferencematrix matrix( 14, 14 );
 
 	Preferencematrix prime = generate_prime_profile( matrix );
 
