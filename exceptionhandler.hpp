@@ -15,19 +15,32 @@ public:
 
     // Constructors & Destructor
     ExceptionHandler( );
-    ExceptionHandler( std::string message, Population pop, Preferencematrix mtx, Rank ordering, Graph nodes ) :
-                      warning( message ), population( pop ), matrix( mtx ), rank( ordering ), graph( nodes ){ }
-    ~ExceptionHandler( );
 
+	// Get all data while constructing the object. This means no setters
+    ExceptionHandler( Options* opt, Profile* prof, Population* pop, Preferencematrix* mtx, Rank* ordering, Graph* nodes ) :
+                        options( opt ), profile( prof ), population( pop ), matrix( mtx ), rank( ordering ), graph( nodes ){ }
+	~ExceptionHandler( );
+
+	// Setters
+
+	// Getters
+
+	// Operators
+
+	// Helpers
+	void option_handler( );
+	void profile_handler( );
 
 private:
 
     std::string warning{ };
 
-    Population population{ };
-    Preferencematrix matrix{ };
-    Rank rank{ };
-    Graph graph{ };
+	Options* options{ };
+	Profile* profile{ };
+    Population* population{ };
+    Preferencematrix* matrix{ };
+    Rank* rank{ };
+    Graph* graph{ };
 };
 
 #endif // EXCEPTIONHANDLER_H

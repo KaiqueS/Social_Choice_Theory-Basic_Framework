@@ -11,7 +11,7 @@
 // procedure, i.e., allow for the user to input a threshold that, when a given option surpasses
 // the latter, it becomes the winner or one of the winners. Add that to GUI
 // TODO: let the user decide between majority or list based procedures - GUI
-// TODO: make it possible for one to enable/disable indifference -> FOCUS ON THIS!
+// TODO: make it possible for one to enable/disable indifference -> FOCUS ON THIS! 
 // TODO: make a container of alternatives. Let the agents push back the alternatives and assign a random value to them,
 // this will make things more similar to how SCT works
 // TODO: increasing_merge_sort and decreasing_merge_sort
@@ -286,16 +286,16 @@ void test6() {
 	// second profile from the first to check for correctness
 
 	Preferencematrix original = { Profile({ Options("a", false, 5), Options("b", false, 4), Options("c", false, 3), Options("d", false, 2), Options("e", false, 1) }),
-	                              Profile({ Options("b", false, 5), Options("c", false, 4), Options("d", false, 3), Options("e", false, 2), Options("a", false, 1) }),
-	                              Profile({ Options("c", false, 5), Options("d", false, 4), Options("e", false, 3), Options("a", false, 2), Options("b", false, 1) }),
-	                              Profile({ Options("d", false, 5), Options("e", false, 4), Options("a", false, 3), Options("b", false, 2), Options("c", false, 1) }),
-	                              Profile({ Options("e", false, 5), Options("a", false, 4), Options("b", false, 3), Options("c", false, 2), Options("d", false, 1) }) };
+								  Profile({ Options("b", false, 5), Options("c", false, 4), Options("d", false, 3), Options("e", false, 2), Options("a", false, 1) }),
+								  Profile({ Options("c", false, 5), Options("d", false, 4), Options("e", false, 3), Options("a", false, 2), Options("b", false, 1) }),
+								  Profile({ Options("d", false, 5), Options("e", false, 4), Options("a", false, 3), Options("b", false, 2), Options("c", false, 1) }),
+								  Profile({ Options("e", false, 5), Options("a", false, 4), Options("b", false, 3), Options("c", false, 2), Options("d", false, 1) }) };
 
 	Preferencematrix prime = { Profile({ Options("c", false, 5), Options("d", false, 4), Options("e", false, 3), Options("a", false, 2), Options("b", false, 1) }),
-	                              Profile({ Options("e", false, 5), Options("d", false, 4), Options("a", false, 3), Options("b", false, 2), Options("c", false, 1) }),
-	                              Profile({ Options("c", false, 5), Options("b", false, 4), Options("a", false, 3), Options("d", false, 2), Options("e", false, 1) }),
-	                              Profile({ Options("b", false, 5), Options("d", false, 4), Options("a", false, 3), Options("c", false, 2), Options("e", false, 1) }),
-	                              Profile({ Options("e", false, 5), Options("a", false, 4), Options("b", false, 3), Options("c", false, 2), Options("d", false, 1) }) };
+								  Profile({ Options("e", false, 5), Options("d", false, 4), Options("a", false, 3), Options("b", false, 2), Options("c", false, 1) }),
+								  Profile({ Options("c", false, 5), Options("b", false, 4), Options("a", false, 3), Options("d", false, 2), Options("e", false, 1) }),
+								  Profile({ Options("b", false, 5), Options("d", false, 4), Options("a", false, 3), Options("c", false, 2), Options("e", false, 1) }),
+								  Profile({ Options("e", false, 5), Options("a", false, 4), Options("b", false, 3), Options("c", false, 2), Options("d", false, 1) }) };
 
 	Rank left(original);
 	Rank right(prime);
@@ -359,10 +359,10 @@ void test7() {
 void test8() {
 
 	Preferencematrix original = { Profile({ Options("a", false, 5), Options("b", false, 4), Options("c", false, 3), Options("d", false, 2), Options("e", false, 1) }),
-	                              Profile({ Options("b", false, 5), Options("c", false, 4), Options("d", false, 3), Options("e", false, 2), Options("a", false, 1) }),
-	                              Profile({ Options("c", false, 5), Options("d", false, 4), Options("e", false, 3), Options("a", false, 2), Options("b", false, 1) }),
-	                              Profile({ Options("d", false, 5), Options("e", false, 4), Options("a", false, 3), Options("b", false, 2), Options("c", false, 1) }),
-	                              Profile({ Options("e", false, 5), Options("a", false, 4), Options("b", false, 3), Options("c", false, 2), Options("d", false, 1) }) };
+								  Profile({ Options("b", false, 5), Options("c", false, 4), Options("d", false, 3), Options("e", false, 2), Options("a", false, 1) }),
+								  Profile({ Options("c", false, 5), Options("d", false, 4), Options("e", false, 3), Options("a", false, 2), Options("b", false, 1) }),
+								  Profile({ Options("d", false, 5), Options("e", false, 4), Options("a", false, 3), Options("b", false, 2), Options("c", false, 1) }),
+								  Profile({ Options("e", false, 5), Options("a", false, 4), Options("b", false, 3), Options("c", false, 2), Options("d", false, 1) }) };
 
 	/*Preferencematrix prime = { Profile( { Options( "c", false, 5 ), Options( "d", false, 4 ), Options( "e", false, 3 ), Options( "a", false, 2 ), Options( "b", false, 1 ) } ),
 								  Profile( { Options( "e", false, 5 ), Options( "d", false, 4 ), Options( "a", false, 3 ), Options( "b", false, 2 ), Options( "c", false, 1 ) } ),

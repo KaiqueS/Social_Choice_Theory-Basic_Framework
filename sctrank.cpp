@@ -45,7 +45,7 @@ void Rank::set_rank( std::vector<PairWiseRank> order ){
     order_ranking( );
 }
 
-// Test this later
+// Test this later - DEBUG THIS
 // The purpose here is to be able to check a profile's transitivity
 void Rank::generate_ranking( Profile& profile ){
 
@@ -279,11 +279,6 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
 
     // Added this later
     order_ranking( );
-}
-
-void Rank::generate_ranking( Profile& profile ){
-
-
 }
 
 /// Getters
