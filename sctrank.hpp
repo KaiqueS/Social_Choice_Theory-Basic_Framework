@@ -9,8 +9,10 @@
 #include "pairwiserank.hpp"
 #include "population.hpp"
 
-// TODO: solve problem when including listofpairs here. Problem solveng when removing #include population, profile from PROCEDURE class
+// TODO: solve problem when including listofpairs here. Problem solven when removing #include population, profile from PROCEDURE class
 #include "listofpairs.hpp"
+
+// TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
 
 /* Class Description */
 
@@ -30,9 +32,9 @@ public:
     // Setters
     void set_rank( PairWiseRank pair );
     void set_rank( std::vector<PairWiseRank> order );
-	void generate_ranking( Profile& profile );
-	void generate_ranking( Population& listofagents );
-    void generate_ranking( Preferencematrix& mtx );
+    void generate_ranking( Profile& profile ); // TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
+    void generate_ranking( Population& listofagents ); // TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
+    void generate_ranking( Preferencematrix& mtx ); // TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
 
     // Getters
     std::vector<PairWiseRank> get_rank( ) const{ return ranking; }

@@ -27,6 +27,26 @@ class Borda_count : public Procedure{
 
         Profile winnerset{ };
     };
+
+class First_past_the_post : public Procedure{
+
+    public:
+
+        //Graph operator( )( Population& population );
+        virtual Profile operator( )( Profile& profile ) override;
+        virtual Profile operator( )( Preferencematrix& matrix ) override;
+        virtual Profile& operator( )( Population& population ) override;
+        virtual Profile& operator( )( Rank& rank ) override;
+
+        virtual Profile& operator+=( Profile& profile ) override;
+        virtual Profile& operator+=( Preferencematrix& matrix ) override;
+        virtual Profile& operator+=( Rank& rank ) override;
+
+    private:
+
+    Profile winnerset{ };
+};
+
 }
 
 #endif // PLURALITY_RULES_HPP

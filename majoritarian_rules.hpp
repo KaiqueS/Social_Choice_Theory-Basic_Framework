@@ -49,6 +49,28 @@ class Simple_majority_rule : public Procedure{
 
         Profile winnerset{ };
     };
+
+class Two_rounds : public Procedure{
+
+    public:
+
+        Two_rounds( ){ }
+        Two_rounds( Profile& winner ) : winnerset( winner ){ }
+        ~Two_rounds( ) override { winnerset.clear( ); }
+
+        virtual Profile operator( )( Profile& profile ) override;
+        virtual Profile operator( )( Preferencematrix& matrix ) override;
+        virtual Profile& operator( )( Population& population ) override;
+        virtual Profile& operator( )( Rank& rank ) override;
+
+        virtual Profile& operator+=( Profile& rhs ) override;
+        virtual Profile& operator+=( Preferencematrix& rhs ) override;
+        virtual Profile& operator+=( Rank& rhs ) override;
+
+    private:
+
+        Profile winnerset{ };
+    };
 }
 
 #endif // MAJORITARIAN_RULES_HPP

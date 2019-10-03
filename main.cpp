@@ -13,8 +13,9 @@
 // TODO: let the user decide between majority or list based procedures - GUI
 // TODO: make it possible for one to enable/disable indifference -> FOCUS ON THIS!
 // TODO: make a container of alternatives. Let the agents push back the alternatives and assign a random value to them,
-// this will make things more similar to how SCT works
+// this will make things more similar to how SCT works - This is not really necessary
 // TODO: increasing_merge_sort and decreasing_merge_sort
+// TODO: Miscounting when constructing a rank - URGENT! - Only happening with ICPC - Apparently it is not happening anymore - Stay alert
 
 void test1() {
 
@@ -425,6 +426,19 @@ void test10( ){
 
 int main() {
 
-	test1( );
+    int i = 0;
+
+    while( i != 50 ){
+
+    Preferencematrix matrix( 5,5 );
+
+    Rank rank( matrix );
+
+    std::cout << matrix << "\n";
+
+    std::cout << rank << "\n";
+
+    ++i;
+    }
 }
 

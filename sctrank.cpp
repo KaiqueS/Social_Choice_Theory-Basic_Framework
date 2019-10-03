@@ -228,7 +228,7 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
     // Number of profiles
     std::vector<int>::size_type listsize = mtx.size( );
 
-    // Number of options in each profile
+    // Number of options in each profile. Remember: profiles have the same size
     std::vector<int>::size_type prefsize = mtx.begin( ) -> get_alternatives( ).size( );
 
     // Checks how a pair ( x, y ) is ranked for each agent

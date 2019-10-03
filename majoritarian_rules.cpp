@@ -256,3 +256,80 @@ Profile& SCT::Simple_majority_rule::operator+=( Rank& rhs ){
 
 	return winnerset;
 }
+
+/// Two_round Simple majority Methods - NEEDS TESTING
+
+// Constructors
+
+// Operators
+Profile SCT::Two_rounds::operator( )( Profile& profile ){
+
+    profile.sort_by_value( );
+
+    std::cout << "The two most voted alternatives are: " << profile[ 0 ] << " and " << profile[ 1 ]
+              << ".\n";
+
+    if( profile[ 0 ] > profile[ 1 ] ){
+
+        profile[ 0 ].set_status( true );
+
+        std::cout << "The winner is " << profile[ 0 ] << ".\n";
+
+        for( std::vector<int>::size_type i = 1; i < profile.size( ); ++i ){
+
+            profile[ i ].set_status( false );
+        }
+    }
+
+    else if( profile[ 0 ] == profile[ 1 ] ){
+
+        profile[ 0 ].set_status( true );
+        profile[ 1 ].set_status( true );
+
+        std::cout << profile[ 0 ] << " and " << profile[ 1 ] << " are tied!\n";
+
+        for( std::vector<int>::size_type i = 2; i < profile.size( ); ++i ){
+
+            profile[ i ].set_status( false );
+        }
+    }
+
+    return profile;
+}
+Profile SCT::Two_rounds::operator( )( Preferencematrix& matrix ){
+
+    // Takes the two most voted alternatives
+    // Generates a ranking that considers only those two alternatives
+    // Checks the winner with qualified majority
+    Rank ranking( matrix );
+
+    winnerset = make_social_order( ranking );
+
+    return SCT::Two_rounds( ).operator( )( winnerset );
+}
+Profile& SCT::Two_rounds::operator( )( Population& population ){
+
+    Rank ranking( population );
+
+    winnerset = make_social_order( ranking );
+    winnerset = SCT::Two_rounds( ).operator( )( winnerset );
+
+    return winnerset;
+}
+Profile& SCT::Two_rounds::operator( )( Rank& rank ){
+
+    winnerset = make_social_order( rank );
+    winnerset = SCT::Two_rounds( ).operator( )( winnerset );
+
+    return winnerset;
+}
+
+Profile& SCT::Two_rounds::operator+=( Profile &rhs ){
+
+}
+Profile& SCT::Two_rounds::operator+=( Preferencematrix &rhs ){
+
+}
+Profile& SCT::Two_rounds::operator+=( Rank& rhs ){
+
+}
