@@ -1,4 +1,4 @@
-**Notice: all back-end code is being uploaded to SCT_Test branch, while the GUI related code is being uploaded to TestBranch( yeah, I know the naming is awful, will fix it later, though ).**
+**Notice: all non-GUI related code is being uploaded to SCT_Test branch, while the GUI related code is being uploaded to TestBranch( yeah, I know the naming is awful, will fix it later, though ).**
 
 # Social Choice Theory - A Toolbox
 
@@ -84,6 +84,7 @@ Add to this README file an visual representation of the Preferences Matrix Struc
 
 # Bibliography
 
+<br>ENDRISS, Ulle - Graph Aggregation<br>
 <br>GAERTNER, Wulf - A Primer In Social Choice<br>
 <br>TAYLOR, Michael - Graph-theoretic approaches to the theory of social choice<br>
 <br>List, Christian, "Social Choice Theory", The Stanford Encyclopedia of Philosophy (Winter 2013 Edition), Edward N. Zalta (ed.), URL = <https://plato.stanford.edu/archives/win2013/entries/social-choice/>.<br>
