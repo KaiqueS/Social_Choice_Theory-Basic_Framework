@@ -66,7 +66,7 @@ Graphs can show more directly how are alternatives related to each other, also, 
 
 Simple Majority
 
-Qualified Maajority
+Qualified Majority
 
 Borda Count
 
