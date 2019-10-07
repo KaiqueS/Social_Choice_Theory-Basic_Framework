@@ -90,7 +90,7 @@ Implement Gibbard-Sattertwaite Theorem - after GUI.
 
 # For later:
 
-Add to this README file an visual representation of the Preferences Matrix Structure.
+Add to this README file a visual representation of the Preferences Matrix Structure.
 
 # Bibliography
 
