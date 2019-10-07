@@ -64,6 +64,16 @@ Graphs can show more directly how are alternatives related to each other, also, 
 
 # About: Algorithms
 
+Simple Majority
+
+Qualified Maajority
+
+Borda Count
+
+Two-Rounds( simple and qualified majorities )
+
+List-based methods( still being done )
+
 # Progress
 
 Implement Indifference relation: done.
