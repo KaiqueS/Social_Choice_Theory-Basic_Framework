@@ -93,5 +93,5 @@ Add to this README file a visual representation of the Preferences Matrix Struct
 
 <br>ENDRISS, Ulle - Graph Aggregation<br>
 <br>GAERTNER, Wulf - A Primer In Social Choice<br>
-<br>TAYLOR, Michael - Graph-theoretic approaches to the theory of social choice<br>
 <br>List, Christian, "Social Choice Theory", The Stanford Encyclopedia of Philosophy (Winter 2013 Edition), Edward N. Zalta (ed.), URL = <https://plato.stanford.edu/archives/win2013/entries/social-choice/>.<br>
+<br>TAYLOR, Michael - Graph-theoretic approaches to the theory of social choice<br>
