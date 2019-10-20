@@ -16,7 +16,7 @@ In order to represent the above elements, the following data structures were imp
 
 Higher-level abstraction of the class ***Options***, a ***Profile*** is a container of the latter.
 
-Each *Option* in its respective *Profile* represents the alternatives which will be passed as arguments to the Social Decision Procedures. To guarantee ***Universal Domain***, they( the alternatives ) are randomly generated, without any previous restriction interferring with the generation.
+Each *Option* in its respective *Profile* represents the alternatives which will be passed as arguments to the Social Decision Procedures. To guarantee ***Universal Domain***, they( the alternatives ) are randomly generated, without any restriction.
 
 <p><li><strong>Preference Matrix</strong></li>
 
@@ -24,20 +24,17 @@ This class represents a Social Matrix of *Profiles*.
 
 The matrix has ***M x N*** dimensions, where each line in *M* represents an individual profile of preferences, and each column *N* represents an Option within the respective profile, as well as the *value*, or weight, of that Option for the corresponding profile.
 
-This value, or weight, makes it possible to represent an ordering of those preferences, where, for any alternatives x, y, and for any integers A, B, ( x, A ) and ( y, B ) are pairs s.t. A is the value of x in the ordering, and B of y.
+This value, or weight, makes it possible to order those preferences, where, for any alternatives x, y, and for any integers A, B, ( x, A ) and ( y, B ) are pairs s.t. A is the value of x in the ordering, and B of y.
 
-If A > B, then, one can conclude that x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then, one can infer that, for the respective profile, x = y, which can be interpreted as: the agent i is *Indifferent* between x and y.
+If A > B, then x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then x = y, which *Indifference* between x and y.
 
-Those values/weights should be taken as a purely ***ordinal*** way of ordering preferences for every agent. They are meaningless when taken for its cardinality. Also, they allow for the **Indifference** relation to be represented.
+Those values/weights should be taken as a purely ***ordinal*** way of ordering preferences. They are meaningless when taken for its cardinality.
 
 <p><li><strong>Social Choice Rank</strong></li>
 
-A generic Ranking generated through a *pairwise*( or round-robin tournament ) coparison between each possible combination of pairs of *Options*.
+A generic Ranking generated through a *pairwise* comparison of each possible combination of pairs of *Options*.
 
-To guarantee Completeness, each Option in the Preference Matrix will be compaired, pairwise, against every other option, so that
-every possible combination of pairs, without repetition, are taken in consideration. Along with that, the Rank will also show how many votes, i.e., in how many profiles one alternative beats its adversary, or if it is socially equal( read Indifferent ) to its adversary option.
-
-Also, has time complexity( upper bound ) of ( n( n - 1 ) / 2 ).
+To guarantee Completeness, each pair of Options in the Preference Matrix will be compaired, so that every possible combination of pairs, without repetition, are considered. Along with that, the Rank will also show how many votes, i.e., in how many profiles one alternative beats its adversary, or if it is socially equal( read Indifferent ) to its adversary option.
 
 <p><li><strong>Social Choice Graph</strong></li>
 
@@ -52,13 +49,13 @@ How?
 
 To begin, let one introduce how the graph is created.
 
-There are two way to create a graph:
+There are two ways to create a graph:
 
-* first, by taking a *Social Profile*, which is the result of aggregating all the profiles of preferences with a given aggregation procedure, and, then, relating each pair *x* and *y* of node accordingly to how each *Option*( represented, here, as a node ) is related to its adversaries through the aggregation procedure.
+* first, by taking a *Social Profile*, which is the result of aggregating all the profiles of preferences with a given aggregation procedure, and, then, relating each pair *x* and *y* of node accordingly to their relation, which is the result of the aggregation procedure.
 
 * second, by creating *edges* between nodes according to wether one alternative beats its adversary or not in the Rank. I.e., if, for any pair *( a, b )* in the **Social Ranking**, if *a* beats *b*, then, one edge ***from*** *a* to *b* will be created.
 
-Also, each node in the graph will hold information of how many and which node it beats, it is beaten by, and it is equal to.
+Also, each node in the graph will hold information of how many and which nodes it beats, it is beaten by, and it is equal to.
 
 Graphs can show more directly how are alternatives related to each other, also, cycles are easier to spot with graphs!
 
