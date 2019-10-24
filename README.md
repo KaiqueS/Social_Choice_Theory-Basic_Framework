@@ -69,7 +69,7 @@ Borda Count
 
 Two-Rounds( simple and qualified majorities )
 
-List-based methods( still being done )
+List-based methods( work in progress )
 
 # Progress
 
