@@ -17,7 +17,7 @@ public:
 
     // Constructors & Destructor
     Pareto_Principle( ){ }
-    Pareto_Principle( Rank& newrank, Population& pop ) : rank( newrank ), population( pop ){ }
+    Pareto_Principle( Rank& newrank, Population& pop ) : rank( newrank ), population( pop ){ } // Switch population with PreferenceMatrix
     Pareto_Principle( const Pareto_Principle& copy ){ rank = copy.rank; population = copy.population; }
     ~Pareto_Principle( ){ clear( ); }
 

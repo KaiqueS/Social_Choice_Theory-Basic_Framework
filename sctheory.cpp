@@ -321,6 +321,10 @@ bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 // This is all about relative positioning of alternatives. If, for any two profiles p and p', the rela
 // tive positions of its alternatives are the same, then, f( p ) and f( p' ) must keep their relative
 // positions equal
+// The secret: for a set A with n elements, generate all possible list, without repetitions of options,
+// of those elements. Then, for a matrix with k rows, generate all possible matrixes, with repetition
+// allowed, using the lists taken from all possible lists
+
 bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 
 	// Sorting here will enforce correctness on the matrix comparison conditional, i.e., they will
