@@ -12,12 +12,19 @@ Preferencematrix::Preferencematrix( ){
 }
 
 // Parameterize constructor. Sets a matrix of ROW x COL dimensions
-Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col ){
+Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col ){ // Test this laters
 
     rowsize = row;
     columnsize = col;
 
-    set_matrix( row, col );
+	matrix.resize(row);
+
+	for (std::vector<int>::size_type i = 0; i < matrix.size(); ++i) {
+
+		matrix[i] = Profile(col);
+	}
+
+    //set_matrix( row, col );
 }
 
 // Copy Constructor. Initializes values according to parameters
