@@ -22,7 +22,7 @@ Each *Option* in its respective *Profile* represents the alternatives which will
 
 This class represents a Social Matrix of *Profiles*.
 
-The matrix has ***M x N*** dimensions, where each line in *M* represents an individual profile of preferences, and each column *N* represents an Option within the respective profile, as well as the *value*, or weight, of that Option for the corresponding profile.
+The matrix has order ***M x N***, where each line in *M* represents an individual profile of preferences, and each column *N* represents an Option within the respective profile, as well as the *value*, or weight, of that Option for the corresponding profile.
 
 This value, or weight, makes it possible to order those preferences, where, for any alternatives x, y, and for any integers A, B, ( x, A ) and ( y, B ) are pairs s.t. A is the value of x in the ordering, and B of y.
 
