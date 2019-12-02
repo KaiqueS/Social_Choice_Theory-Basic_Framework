@@ -89,6 +89,8 @@ Implement Gibbard-Sattertwaite Theorem - after GUI.
 
 Add to this README file a visual representation of the Preferences Matrix Structure.
 
+Add GUI images of Social Choice Graphs
+
 # Bibliography
 
 <br>AUSTEN-SMITH, David; BANKS, Jeffrey S. - Positive Political Theory I<br>
