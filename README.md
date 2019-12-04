@@ -26,7 +26,7 @@ The matrix has order ***M x N***, where each line in *M* represents an individua
 
 This value, or weight, makes it possible to order those preferences, where, for any alternatives x, y, and for any integers A, B, ( x, A ) and ( y, B ) are pairs s.t. A is the value of x in the ordering, and B of y.
 
-If A > B, then x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then x = y, which *Indifference* between x and y.
+If A > B, then x is preferred to y, since it is higher valued in the ordering. If there is a case where A = B, then x = y, which expresses *Indifference* between x and y.
 
 Those values/weights should be taken as a purely ***ordinal*** way of ordering preferences. They are meaningless when taken for its cardinality.
 
