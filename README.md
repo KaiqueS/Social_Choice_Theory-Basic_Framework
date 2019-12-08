@@ -79,6 +79,8 @@ Implement Condorcert Paradox - done, but needs improvement.
 
 Implement Arrow's Impossibility Theorem - under revision.
 
+Implement Social Choice Graph Algorithms( only majorities are implemented until now )
+
 Implement GUI - almost done, adding analytical features.
 
 Release ver 1.0 - after GUI and Arrow
