@@ -2,11 +2,11 @@
 class Options:
 
     # Fields
-    opt = "NULL"
+    opt: "" = "NULL"
 
-    status = False
+    status: bool = False
 
-    value = -1
+    value: int = -1
 
     # Constructors & Destructor
     def __init__( self, id, truth, val ):
@@ -14,6 +14,14 @@ class Options:
         self.opt = id
         self.status = truth
         self.value = val
+
+    def __del__( self ):
+
+        self.opt = ""
+
+        self.status = False
+
+        self.value = -1
 
     # Setters
     def set_opt( self, id ):
@@ -41,14 +49,29 @@ class Options:
 
         return self.value
 
-def print_opt( Options ):
+    # Operators
 
-    print( Options.get_opt( ), Options.get_status( ), Options.get_value( ) )
+    # Helpers
+    def __str__( self ):
 
-x = Options( "a", False, 5 )
+        return "( " + str( self.opt ) + ", " + str( self.status ) + ", " + str( self.value ) + " )"
 
-print_opt( Options( "b", True, 56 ) )
 
-y = x
+# Testing methods below
+"""
+def test1():
+    
+    x = Options( "a", False, 5 )
 
-print_opt( y )
+    print( Options( "b", True, 56 ) )
+
+    y = x
+
+    print( y )
+
+    x.set_opt( "D" )
+    x.set_status( True )
+    x.set_value( 84 )
+
+    print( x )
+"""
