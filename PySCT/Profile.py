@@ -9,17 +9,17 @@ class Profile:
     opt_sorted: bool = False
     indifference: bool = False
 
-    #alternatives: List[ Options.Options ] = [ Options.Options( "NULL", False, -1 ) ]
     alternatives: [ Options.Options ] = []
 
     # Constructors & Destructor
-    def __init__( self, value_s: bool, opt_s: bool, indiff: bool, alts: [ Options.Options ] ):
+    def __init__( self, value_s: bool = None, opt_s: bool = None, 
+                  indiff: bool = None, alts: [ Options.Options ] = None ):
 
-        self.value_sorted = value_s
-        self.opt_sorted = opt_s
-        self.indifference = indiff
+        self.value_sorted = value_s if value_s is not None else False
+        self.opt_sorted = opt_s if opt_s is not None else False
+        self.indifference = indiff if indiff is not None else False
 
-        self.alternatives = alts
+        self.alternatives = alts if alts is not None else [ Options.Options( ) ]
 
     # Setters
     def set_alternatives( self, alts: [ Options.Options ] ):
@@ -43,6 +43,10 @@ class Profile:
         for Options.Options in self.alternatives:
 
             return str( self.alternatives )
+
+    def append( self, opt: Options.Options = None ):
+
+        self.alternatives.append( opt ) if opt is not None else print( "Cannot append nothing")
 
 # Testing methods below
 """def test2():
@@ -85,3 +89,10 @@ class Profile:
     print( x )
 """
 
+x: Profile = [ ( "A", False, 1 ), ( "B", False, 0 ) ]
+
+y: Options.Options = ( "C", False, 1 )
+
+x.append( y )
+
+print( x )

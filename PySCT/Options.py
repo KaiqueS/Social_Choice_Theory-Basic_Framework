@@ -9,11 +9,13 @@ class Options:
     value: int = -1
 
     # Constructors & Destructor
-    def __init__( self, id, truth, val ):
+    def __init__( self, id = None, truth = None, val = None ):
+        
+        self.opt = id if id is not None else "NULL"
 
-        self.opt = id
-        self.status = truth
-        self.value = val
+        self.stats = truth if truth is not None else False
+
+        self.value = val if val is not None else -1
 
     def __del__( self ):
 
@@ -75,3 +77,7 @@ def test1():
 
     print( x )
 """
+
+#x = Options(  )
+
+#print( x )
