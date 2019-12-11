@@ -2,65 +2,65 @@
 class Options:
 
     # Fields
-    opt: "" = "NULL"
+    #opt: "" = "NULL"
 
-    status: bool = False
+    #status: bool = False
 
-    value: int = -1
+    #value: int = -1
 
     # Constructors & Destructor
     def __init__( self, id = None, truth = None, val = None ):
         
-        self.opt = id if id is not None else "NULL"
+        self._opt: str = id if id is not None else "NULL"
 
-        self.stats = truth if truth is not None else False
+        self._stats: bool = truth if truth is not None else False
 
-        self.value = val if val is not None else -1
+        self._value: int = val if val is not None else -1
 
     def __del__( self ):
 
-        self.opt = ""
+        self._opt = ""
 
-        self.status = False
+        self._status = False
 
-        self.value = -1
+        self._value = -1
 
     # Setters
     def set_opt( self, id ):
 
-        self.opt = id
+        self._opt = id
 
     def set_status( self, truth ):
 
-        self.status = truth
+        self._status = truth
 
     def set_value( self, val ):
 
-        self.value = val
+        self._value = val
 
     # Getters
-    def get_opt( self ):
+    def get_opt( self ) ->  str:
 
-        return self.opt
+        return self._opt
     
-    def get_status( self ):
+    def get_status( self ) -> bool:
 
-        return self.status
+        return self._status
 
-    def get_value( self ):
+    def get_value( self ) -> int:
 
-        return self.value
+        return self._value
 
     # Operators
 
     # Helpers
     def __str__( self ):
 
-        return "( " + str( self.opt ) + ", " + str( self.status ) + ", " + str( self.value ) + " )"
+        return "( " + str( self._opt ) + ", " + str( self._value ) + " )"
 
 
 # Testing methods below
-"""
+
 def test1():
     
     x = Options( "a", False, 5 )
@@ -76,8 +76,9 @@ def test1():
     x.set_value( 84 )
 
     print( x )
-"""
 
-#x = Options(  )
+#test1()
+
+#x = Options( )
 
 #print( x )

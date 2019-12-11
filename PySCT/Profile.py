@@ -1,30 +1,40 @@
 import Options
 
-# Implement push_back, sorting methods, erase, clear, no indifference, 
+# Implement push_back, sorting methods, erase, clear, no indifference,
+# Search for a way to set a variable to a default instance of a class, 
+# e.g.: x = Options() = ( "NULL", False, -1 )
 
 class Profile:
 
     # Fields
-    value_sorted: bool = False
-    opt_sorted: bool = False
-    indifference: bool = False
+    #value_sorted: bool = False
+    #opt_sorted: bool = False
+    #indifference: bool = False
 
-    alternatives: [ Options.Options ] = []
+    #alternatives: [ Options.Options ] = []
 
     # Constructors & Destructor
     def __init__( self, value_s: bool = None, opt_s: bool = None, 
                   indiff: bool = None, alts: [ Options.Options ] = None ):
 
-        self.value_sorted = value_s if value_s is not None else False
-        self.opt_sorted = opt_s if opt_s is not None else False
-        self.indifference = indiff if indiff is not None else False
+        self.value_sorted: bool = value_s if value_s is not None else False
+        self.opt_sorted: bool = opt_s if opt_s is not None else False
+        self.indifference: bool = indiff if indiff is not None else False
 
-        self.alternatives = alts if alts is not None else [ Options.Options( ) ]
+        self.alternatives: [ Options.Options ] = alts if alts is not None else [ ]
 
     # Setters
+    def __setitem__( self, opt: Options.Options, index: int ):
+
+        self.alternatives[ index ] = opt
+
     def set_alternatives( self, alts: [ Options.Options ] ):
 
         self.alternatives = alts
+
+    def reserve( self, size: int ):
+
+        self.alternatives += [ self.alternatives ] * ( size - len( self.alternatives ) )
 
     # Getters
     def __getitem__( self, index: int ) -> Options.Options:
@@ -40,16 +50,15 @@ class Profile:
     # Helpers
     def __str__( self ) -> str:
 
-        for Options.Options in self.alternatives:
-
-            return str( self.alternatives )
+        return str( self.alternatives )
 
     def append( self, opt: Options.Options = None ):
 
-        self.alternatives.append( opt ) if opt is not None else print( "Cannot append nothing")
+        self.alternatives.append( opt ) if opt is not None else print( "Cannot append nothing" )
 
 # Testing methods below
-"""def test2():
+"""
+def test2():
 
     opt = Options.Options( "NULL", False, -1 )
 
@@ -89,10 +98,51 @@ class Profile:
     print( x )
 """
 
-x: Profile = [ ( "A", False, 1 ), ( "B", False, 0 ) ]
+"""
+def test3():
 
-y: Options.Options = ( "C", False, 1 )
+    x: Profile = [ ( "A", False, 1 ), ( "B", False, 0 ) ]
 
-x.append( y )
+    y: Options.Options = ( "C", False, 1 )
 
-print( x )
+    x.append( y )
+
+    print( x )
+"""
+
+"""
+def test4():
+
+    opt = Options.Options()
+
+    print( opt )
+
+    x: Profile = [ ( "A", False, 1 ), ( "B", False, 0 ) ]
+
+    prof = Profile()
+
+    print( prof )
+
+    y = Options.Options()
+    y.set_opt( "C" )
+
+    print( y )
+
+    x.append( y )
+
+    print( x[ 2 ] )
+"""
+
+prof = Profile()
+
+print( len( prof ) )
+
+prof.reserve( 6 )
+
+print( len( prof ) )
+
+print( prof )
+
+for i in range( len( prof ) ):
+
+    prof[ i ] = ( str( i ), False, i )

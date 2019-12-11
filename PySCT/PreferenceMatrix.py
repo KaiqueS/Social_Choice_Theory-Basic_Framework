@@ -3,10 +3,10 @@ import Profile
 class Preference_Matrix:
 
     # Fields
-    rowsize: int = 0
-    columnsize: int = 0
+    #rowsize: int = 0
+    #columnsize: int = 0
 
-    matrix: [ Profile.Profile ] = []
+    #matrix: [ Profile.Profile ] = []
 
     # Constructors & Destructor
     def __init__( self, row: int = None, column: int = None, mtx: [ Profile.Profile ] = None ):
@@ -23,10 +23,21 @@ class Preference_Matrix:
 
         self.matrix = []
 
+    def __str__( self ) -> str: # Think of a way of cumstomizing this
+
+        return str( self.matrix )
+
     # Setters
+    def set_matrix( row: int, column: int ):
+
+        
 
     # Getters
 
     # Operators
 
     # Helpers
+
+matrix: Preference_Matrix  = Preference_Matrix()
+
+print( matrix )
