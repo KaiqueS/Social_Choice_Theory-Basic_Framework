@@ -24,7 +24,7 @@ class Profile:
         self.alternatives: [ Options.Options ] = alts if alts is not None else [ ]
 
     # Setters
-    def __setitem__( self, opt: Options.Options, index: int ):
+    def __setitem__( self, index: int, opt: Options.Options ):
 
         self.alternatives[ index ] = opt
 
@@ -133,16 +133,21 @@ def test4():
     print( x[ 2 ] )
 """
 
-prof = Profile()
+"""
+def test5():
+    prof = Profile()
 
-print( len( prof ) )
+    print( len( prof ) )
 
-prof.reserve( 6 )
+    prof.reserve( 6 )
 
-print( len( prof ) )
+    print( len( prof ) )
 
-print( prof )
+    print( prof )
 
-for i in range( len( prof ) ):
+    for i in range( len( prof ) ):
 
-    prof[ i ] = ( str( i ), False, i )
+        prof[ i ] = ( str( i ), False, i )
+
+    print( prof )
+"""
