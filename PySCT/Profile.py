@@ -6,13 +6,6 @@ import Options
 
 class Profile:
 
-    # Fields
-    #value_sorted: bool = False
-    #opt_sorted: bool = False
-    #indifference: bool = False
-
-    #alternatives: [ Options.Options ] = []
-
     # Constructors & Destructor
     def __init__( self, value_s: bool = None, opt_s: bool = None, 
                   indiff: bool = None, alts: [ Options.Options ] = None ):

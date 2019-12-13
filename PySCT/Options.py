@@ -1,13 +1,6 @@
 
 class Options:
 
-    # Fields
-    #opt: "" = "NULL"
-
-    #status: bool = False
-
-    #value: int = -1
-
     # Constructors & Destructor
     def __init__( self, id = None, truth = None, val = None ):
         
