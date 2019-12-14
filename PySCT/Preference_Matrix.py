@@ -66,7 +66,7 @@ class Preference_Matrix:
     
         self.matrix += [ self.matrix ] * ( row - len( self.matrix ) )
 
-        for i in range( len( matrix ) ):
+        for i in range( len( self.matrix ) ):
 
             self.matrix[ i ] # I think the error is here
 
@@ -82,6 +82,7 @@ class Preference_Matrix:
 
 # Testing Zone
 
+"""
 matrix: Preference_Matrix  = Preference_Matrix()
 
 matrix.set_matrix( 4, 4 )
@@ -91,3 +92,4 @@ matrix.print()
 print( "\n" )
 
 print( matrix[ 1 ][ 2 ] )
+"""
