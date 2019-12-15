@@ -10,7 +10,7 @@ class Preference_Matrix:
         self.rowsize: int = row if row is not None else 0
         self.columnsize: int = column if column is not None else 0
 
-        self.matrix: [ Profile.Profile ] = mtx if mtx is not None else [ ]
+        self.matrix: list( Profile.Profile ) = mtx if mtx is not None else [ ] # Modified this. TESTING
 
     def __del__( self ):
 

@@ -10,12 +10,12 @@ class Rank:
     def __init__( self ):
 
         # A ranking is a list of quintuples( Option x._opt, Option y._opt, xval, yval, ival )
-        self.ranking: [ ( str, str, int, int, int ) ] = []
+        self.ranking: list( str, str, int, int, int ) = list( )
 
     # Destructor - resets Rank to its default value
     def __del__( self ):
 
-        self.ranking = [ ]
+        self.ranking = list( )
 
     # Setters
 
@@ -32,7 +32,7 @@ class Rank:
         self.__get_pairs( matrix[ random.randrange( 0, len( matrix ) ) ] )
 
         # Iterate over all pairs in combinations
-        for left, right, leftval, rightval, indiffval in self.ranking:
+        for pair in range( len( self.ranking ) ):
 
             # Iterate over all profiles in a matrix
             for profile in matrix:
@@ -47,19 +47,24 @@ class Rank:
 
                         if opt_x != opt_y:
 
-                            if left == opt_x and right == opt_y:
+                            # If the options are the same, i.e., have the same id
+                            if self.ranking[ pair ][ 0 ][ 0 ] == opt_x[ 0 ] and self.ranking[ pair ][ 1 ][ 0 ] == opt_y[ 0 ]:
 
-                                if opt_x.get_value( ) > opt_y.get_value( ): # cannot access methods here DAMN REFERENCING
+                                
+                                if opt_x[ 2 ] > opt_y[ 2 ]:
+                                    
+                                    self.ranking[ pair ] = list( self.ranking[ pair ] )
+                                    self.ranking[ pair ][ 2 ] += 1
 
-                                    rightval += 1
+                                elif opt_x[ 2 ] < opt_y[ 2 ]:
 
-                                elif opt_x.get_value( ) < opt_y.get_value( ):
-
-                                    leftval += 1
+                                    self.ranking[ pair ] = list( self.ranking[ pair ] )
+                                    self.ranking[ pair ][ 3 ] += 1
 
                                 else:
 
-                                    indiffval += 1
+                                    self.ranking[ pair ] = list( self.ranking[ pair ] )
+                                    self.ranking[ pair ][ 4 ] += 1
                             
                             else:
 
@@ -70,6 +75,14 @@ class Rank:
                             continue
 
     # Getters
+    def __getitem__( self, index: int ) -> [ ( str, str, int, int, int ) ]:
+
+        return self.ranking[ index ]
+
+    def __len__( self ):
+
+        return len( self.ranking )
+
     def get_ranking( self ):
 
         return self.ranking
@@ -81,7 +94,7 @@ class Rank:
     # Gets all pairs of options, except for those with equal options
     def __get_pairs( self, profile: Preference_Matrix.Profile.Profile ):
 
-        mylist: [ ( Preference_Matrix.Profile.Options.Options, Preference_Matrix.Profile.Options.Options ) ] = [ ]
+        mylist: list( Preference_Matrix.Profile.Options.Options, Preference_Matrix.Profile.Options.Options ) = list( ) # Modified this. TESTING
 
         for pair in itertools.combinations( profile, 2 ):
 
@@ -108,6 +121,14 @@ mylist: [ ( Preference_Matrix.Profile.Options.Options, Preference_Matrix.Profile
 matrix: Preference_Matrix.Preference_Matrix = Preference_Matrix.Preference_Matrix()
 matrix.set_matrix( 3, 3 )
 
+matrix.print( )
+
+print( "\n" )
+
 rank: Rank = Rank( )
 
 rank.generate_ranking( matrix )
+
+for i in range( len( rank ) ):
+
+    print( rank[ i ] )

@@ -14,7 +14,7 @@ class Profile:
         self.opt_sorted: bool = opt_s if opt_s is not None else False
         self.indifference: bool = indiff if indiff is not None else False
 
-        self.alternatives: [ Options.Options ] = alts if alts is not None else [ ]
+        self.alternatives: list( Options.Options ) = alts if alts is not None else [ ] # Modified this. TESTING
 
     # Setters
     def __setitem__( self, index: int, opt: Options.Options ):
