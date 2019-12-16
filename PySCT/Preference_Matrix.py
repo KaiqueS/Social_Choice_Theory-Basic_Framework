@@ -20,6 +20,9 @@ class Preference_Matrix:
         self.matrix = []
 
     # Setters
+
+    # Creates a matrix with row profiles and column options in each profile.
+    # Assigns random values to the options in each profile.
     def set_matrix( self, row: int, column: int ): # Remember to deal with cases where column >= 26
 
         self.rowsize = row

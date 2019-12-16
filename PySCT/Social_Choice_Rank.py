@@ -106,6 +106,7 @@ class Rank:
 
 """ Testing Zone """
 
+"""
 profile: Preference_Matrix.Profile.Profile = [ ( "a", False, 1 ), ( "b", False, 2 ), ( "c", False, 3 ) ]
 
 mylist: [ ( Preference_Matrix.Profile.Options.Options, Preference_Matrix.Profile.Options.Options ) ] = [ ]
@@ -132,3 +133,4 @@ rank.generate_ranking( matrix )
 for i in range( len( rank ) ):
 
     print( rank[ i ] )
+"""
