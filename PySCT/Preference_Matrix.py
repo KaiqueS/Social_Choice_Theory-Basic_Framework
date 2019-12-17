@@ -44,10 +44,13 @@ class Preference_Matrix:
                 self.matrix[ i ][ j ] = ( alphabet[ j ], False, randlist[ j ] )
 
     # Getters
+
+    # Overloaded subscript operator
     def __getitem__( self, index: int ) -> Profile.Profile:
 
         return self.matrix[ index ]
 
+    # Returns the len of the matrix, wheren len = number of profiles in matrix.
     def __len__( self ) -> int:
 
         return len( self.matrix )
