@@ -21,7 +21,7 @@ Preferencematrix::Preferencematrix( std::vector<int>::size_type row, std::vector
 
 	for (std::vector<int>::size_type i = 0; i < matrix.size(); ++i) {
 
-		matrix[i] = Profile(col);
+		matrix[ i ] = Profile( col );
 	}
 
     //set_matrix( row, col );
@@ -34,6 +34,17 @@ Preferencematrix::Preferencematrix( const Preferencematrix& copymatrix ){
     columnsize = copymatrix.columnsize;
 
     matrix = copymatrix.matrix;
+}
+
+// Move constructor
+Preferencematrix::Preferencematrix( Preferencematrix&& copy ){
+
+	rowsize = std::move( copy.rowsize );
+	columnsize = std::move( copy.columnsize );
+
+	matrix = std::move( copy.matrix );
+
+	copy.clear( );
 }
 
 // Destructor. Clears the vector MATRIX from memory
@@ -119,9 +130,25 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 /// Operators
 
 // Overloaded assignment operator
-Preferencematrix& Preferencematrix::operator=( Preferencematrix copy ){
+Preferencematrix& Preferencematrix::operator=( const Preferencematrix& copy ){
 
-	std::swap( *this, copy );
+	rowsize = copy.rowsize;
+	columnsize = copy.columnsize;
+
+	matrix = copy.matrix;
+
+	return *this;
+}
+
+// Overloaded move assignment
+Preferencematrix& Preferencematrix::operator=( Preferencematrix&& copy ){
+
+	rowsize = std::move( copy.rowsize );
+	columnsize = std::move( copy.columnsize );
+
+	matrix = std::move( copy.matrix );
+
+	copy.clear( );
 
 	return *this;
 }

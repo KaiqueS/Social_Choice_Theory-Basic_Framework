@@ -16,14 +16,48 @@ PairsOfOpts::PairsOfOpts( const PairsOfOpts& copy ){
     ypref = copy.ypref;
 }
 
+PairsOfOpts::PairsOfOpts( PairsOfOpts&& copy ){
+
+	xpref = copy.xpref;
+	ypref = copy.ypref;
+
+	copy.clear( );
+}
+
+PairsOfOpts::~PairsOfOpts( ){ clear( ); }
+
+/// Setters
+
+/// Getters
+
 /// Operators
 
 // Overloaded assignment operator
-PairsOfOpts& PairsOfOpts::operator=( PairsOfOpts copy ){
+PairsOfOpts& PairsOfOpts::operator=( const PairsOfOpts& copy ){
 
-	std::swap( *this, copy );
+	xpref = copy.xpref;
+	ypref = copy.ypref;
 
     return *this;
+}
+
+PairsOfOpts& PairsOfOpts::operator=( PairsOfOpts&& copy ){
+
+	xpref = copy.xpref;
+
+	ypref = copy.ypref;
+
+	copy.clear( );
+
+	return *this;
+}
+
+/// Helpers
+
+void PairsOfOpts::clear( ){
+
+	xpref.clear( );
+	ypref.clear( );
 }
 
 /// Non-member helpers

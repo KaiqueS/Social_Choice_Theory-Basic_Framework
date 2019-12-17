@@ -326,10 +326,13 @@ Profile& SCT::Two_rounds::operator( )( Rank& rank ){
 
 Profile& SCT::Two_rounds::operator+=( Profile &rhs ){
 
+    return winnerset;
 }
 Profile& SCT::Two_rounds::operator+=( Preferencematrix &rhs ){
 
+    return winnerset;
 }
 Profile& SCT::Two_rounds::operator+=( Rank& rhs ){
 
+    return winnerset;
 }

@@ -15,6 +15,7 @@ public:
     ListOfPairs( PairsOfOpts pair ){ pairs.push_back( pair ); }
     ListOfPairs( std::initializer_list<PairsOfOpts> init ) : pairs( std::move( init ) ){ }
     ListOfPairs( const ListOfPairs& copy ){ pairs = copy.pairs; }
+	ListOfPairs( ListOfPairs&& copy ){ pairs = std::move( copy.pairs ); }
     ~ListOfPairs( );
 
     // Setters
@@ -24,7 +25,8 @@ public:
     std::vector<PairsOfOpts> get_pairs( ) const{ return pairs; }
 
     // Operators
-    ListOfPairs operator=( ListOfPairs copy );
+    ListOfPairs operator=( const ListOfPairs& copy );
+	ListOfPairs operator=( ListOfPairs&& copy );
 
     PairsOfOpts& operator[ ]( const std::vector<int>::size_type index ){ return pairs[ index ]; }
 

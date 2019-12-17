@@ -12,6 +12,17 @@ Graph::Graph( SocialPrefNode node ){ nodes.push_back( node ); }
 // Copy constructor
 Graph::Graph( const Graph& vertices ){ nodes = vertices.nodes; }
 
+// Move constructor
+Graph::Graph( Graph&& copy ){
+
+	nodes = std::move( copy.nodes );
+
+	copy.clear( );
+}
+
+// Initializer constructor
+Graph::Graph( Preferencematrix& matrix, Rank& rank ){ make_graph( matrix, rank ); }
+
 // Destructor. Clears NODES from memory
 Graph::~Graph( ){
 
@@ -64,11 +75,21 @@ void Graph::set_graph( SocialPrefNode node ){ nodes.push_back( node ); }
 /// Operators
 
 // Overloaded copy constructor
-Graph& Graph::operator=( Graph copy ){
+Graph& Graph::operator=( const Graph& copy ){
 
-	std::swap( *this, copy );
+	nodes = copy.nodes;
 
     return *this;
+}
+
+// Overloaded move assignment
+Graph& Graph::operator=( Graph&& copy ){
+
+	nodes = std::move( copy.nodes );
+
+	copy.clear( );
+
+	return *this;
 }
 
 // Overloaded subscript operator. Returns a SocialPrefNode at index position

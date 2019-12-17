@@ -7,6 +7,17 @@
 // Default constructor. Initializes ALTERNATIVES to its default value
 Profile::Profile( ){ alternatives = { }; }
 
+// List-initializer constructor
+Profile::Profile( std::initializer_list<std::string> init ){
+
+	alternatives.resize( init.size( ) );
+
+	for( std::vector<int>::size_type i = 0; i < alternatives.size( ); ++i ){
+
+		alternatives[ i ] = Options( *( init.begin( ) + i ), false, -1 );
+	}
+}
+
 // Alternative parameterized constructor. Resizes ALTERNATIVES to size
 Profile::Profile( std::vector<int>::size_type size ){
 
@@ -23,7 +34,26 @@ Profile::Profile( std::vector<int>::size_type size ){
 Profile::Profile( Options opt ){ alternatives.push_back( opt ); }
 
 // Copy construcotr
-Profile::Profile( const Profile& copy ){ alternatives = copy.alternatives; }
+Profile::Profile( const Profile& copy ){ 
+
+	_value_sorted = copy._value_sorted;
+	_opt_sorted = copy._opt_sorted;
+	indifference = copy.indifference;
+
+	alternatives = copy.alternatives;
+}
+
+// Move constructor
+Profile::Profile( Profile&& copy ){
+
+	_value_sorted = std::move( copy._value_sorted );
+	_opt_sorted = std::move( copy._opt_sorted );
+	indifference = std::move( copy.indifference );
+
+	alternatives = std::move( copy.alternatives );
+
+	copy.clear( );
+}
 
 // Destructor. Clears ALTERNATIVES from memory
 Profile::~Profile( ){ clear( ); }
@@ -62,11 +92,29 @@ bool Profile::is_opt_sorted( ) const{
 /// Operators
 
 // Overloaded assignment operator
-Profile& Profile::operator=( Profile copy ){
+Profile& Profile::operator=( const Profile& copy ){
 
-	swap( *this, copy );
+	_value_sorted = copy._value_sorted;
+	_opt_sorted = copy._opt_sorted;
+	indifference = copy.indifference;
+
+	alternatives = copy.alternatives;
 
     return *this;
+}
+
+// Overloaded move assignment
+Profile& Profile::operator=( Profile&& copy ){
+
+	_value_sorted = std::move( copy._value_sorted );
+	_opt_sorted = std::move( copy._opt_sorted );
+	indifference = std::move( copy.indifference );
+
+	alternatives = std::move( copy.alternatives );
+
+	copy.clear( );
+
+	return *this;
 }
 
 /// Helpers
@@ -249,6 +297,7 @@ void Profile::no_indifference( ){
 	//std::mt19937_64 mt( rd( ) );
 	std::mt19937 mt( rd( ) );
 
+	// This finds a value that was used and deletes this value from the vector of values, preventing it from being reused
 	for( std::vector<int>::size_type i = 0; i < alternatives.size( ); ++i ){
 
 		std::uniform_int_distribution<std::vector<int>::size_type> range( 0, ( values.size( ) - 1 ) );

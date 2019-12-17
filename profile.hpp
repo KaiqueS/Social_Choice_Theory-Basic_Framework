@@ -15,9 +15,11 @@ public:
     Profile( );
     Profile( bool value, bool opt, bool indiff, std::vector<Options> alts ) : _value_sorted( value ), _opt_sorted( opt ), indifference( indiff ), alternatives( alts ){ }
 	Profile( std::initializer_list<Options> init ) : alternatives( std::move( init ) ){ }
+    Profile( std::initializer_list<std::string> init );
     Profile( std::vector<int>::size_type size );
     Profile( Options opt );
     Profile( const Profile& copy );
+	Profile( Profile&& copy );
     ~Profile( );
 
     // Setters
@@ -34,15 +36,19 @@ public:
     std::vector<Options> get_alternatives( ) const{ return alternatives; } // removed return by reference
 
     // Operators
-    Profile& operator=( Profile copy );
+    Profile& operator=( const Profile& copy );
+	Profile& operator=( Profile&& copy );
 
     Options& operator[ ]( const std::vector<int>::size_type index ){ return alternatives[ index  ]; }
 
     // Helpers
     std::vector<int>::size_type size( ) const{ return alternatives.size( ); }
 
-    std::vector<Options, std::allocator<Options>>::iterator begin( ){ return alternatives.begin( ); }
-    std::vector<Options, std::allocator<Options>>::iterator end( ){ return alternatives.end( ); }
+    //std::vector<Options, std::allocator<Options>>::iterator begin( ){ return alternatives.begin( ); }
+    //std::vector<Options, std::allocator<Options>>::iterator end( ){ return alternatives.end( ); } // TODO: return one-beyond-last-element
+
+    auto begin( ){ return alternatives.begin( ); }
+    auto end( ){ return alternatives.end( ); } // TODO: return one-beyond-last-element
 
     bool empty( );
 
@@ -68,7 +74,7 @@ private:
 
     bool _value_sorted{ false };
     bool _opt_sorted{ false };
-	bool indifference{ true };
+	bool indifference{ true }; // Default to TRUE?
 
     std::vector<Options> alternatives{ };
 };

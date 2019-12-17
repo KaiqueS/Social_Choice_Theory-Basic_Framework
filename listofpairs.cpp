@@ -16,11 +16,20 @@ ListOfPairs::~ListOfPairs( ){ clear( ); }
 
 /// Operators
 
-ListOfPairs ListOfPairs::operator=( ListOfPairs copy ){
+ListOfPairs ListOfPairs::operator=( const ListOfPairs& copy ){
 
-    std::swap( *this, copy );
+	pairs = copy.pairs;
 
     return *this;
+}
+
+ListOfPairs ListOfPairs::operator=( ListOfPairs&& copy ){
+
+	pairs = std::move( copy.pairs );
+
+	copy.clear( );
+
+	return *this;
 }
 
 /// Helpers

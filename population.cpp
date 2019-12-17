@@ -15,6 +15,16 @@ Population::Population( Agent person ){ population.push_back( person ); }
 // Copy constructor
 Population::Population( const Population& copy ){ population = copy.population; }
 
+// Move constructor
+Population::Population( Population&& copy ){
+
+	population = std::move( copy.population );
+
+	copy.clear( );
+}
+
+Population::~Population( ){ clear( ); }
+
 /// Setters
 
 // Assigns POPULATION to PEOPLE
@@ -28,11 +38,20 @@ void Population::set_population( Agent& people ){ population.push_back( people )
 /// Operators
 
 // Overloaded assignment operator
-Population& Population::operator=( Population copy ){
+Population& Population::operator=( const Population& copy ){
 
-	std::swap( *this, copy );
+	population = copy.population;
 
     return *this;
+}
+
+Population& Population::operator=( Population&& copy ){
+
+	population = std::move( population );
+
+	copy.clear( );
+
+	return *this;
 }
 
 /// Helpers
@@ -63,9 +82,8 @@ void Population::initialize_population( Preferencematrix mtx ){
             // Assign an id to every agent in POPULATION
 			population[ i ].set_id( std::to_string( i ) );
 
-            // Assign a profile, taken here as a row in the PreferenceMatrix
-            // MTX, to every agent
-			population[ i ].set_preferences( mtx );
+            // Assign a profile, taken here as a row in the PreferenceMatrix MTX, to every agent
+            population[ i ].set_preferences( mtx[ i ] ); // Changed here: changed from mtx to mtx[ i ]
 		}
 	}
 }
@@ -92,7 +110,7 @@ std::ostream& operator<<( std::ostream& os, Population& people ){
 
     for( std::vector<int>::size_type i = 0; i < people.get_population( ).size( ); ++i ){
 
-        os << people[ i ] << " ";
+        os << "Agent " << people[ i ] << "\n";
     }
 
     return os;

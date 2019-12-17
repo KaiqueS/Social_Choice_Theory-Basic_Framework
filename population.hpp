@@ -11,9 +11,11 @@ public:
     Population( );
 	Population( std::vector<int>::size_type size );
     Population( std::vector<Agent> people ) : population( people ){ }
+	Population( std::initializer_list<Agent> list ) : population( std::move( list ) ){ }
     Population( Agent person );
     Population( const Population& copy );
-    ~Population( ){ clear( ); }
+	Population( Population&& copy );
+	~Population( );
 
     // Setters
     void set_population( std::vector<Agent>& people );
@@ -23,13 +25,14 @@ public:
     std::vector<Agent> get_population( ) const{ return population; } // removed return by reference
 
     // Operators
-    Population& operator=( Population copy );
+    Population& operator=( const Population& copy );
+	Population& operator=( Population&& copy );
 
     Agent& operator[ ]( const std::vector<int>::size_type index ){ return population[ index ]; }
 
     // Helpers
     std::vector<Agent, std::allocator<Agent>>::iterator begin( ){ return population.begin( ); }
-    std::vector<Agent, std::allocator<Agent>>::iterator end( ){ return population.end( ); }
+    std::vector<Agent, std::allocator<Agent>>::iterator end( ){ return population.end( ); } // TODO: change this to one-beyond-last-element
 
 	std::vector<int>::size_type size( ) const{ return population.size( ); }
 

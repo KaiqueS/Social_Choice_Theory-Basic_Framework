@@ -5,7 +5,7 @@
 // Default Constructor
 Agent::Agent( ){
 
-    preferences = { };
+	preferences = { };
 
     id = { };
 }
@@ -18,15 +18,30 @@ Agent::Agent( const Agent& copy ){
     id = copy.id;
 }
 
+// Move constructor
+Agent::Agent( Agent&& copy ){
+
+	preferences = std::move( copy.preferences );
+
+	id = std::move( copy.id );
+
+	copy.clear( );
+}
+
+
+// Destructor
 Agent::~Agent( ){ clear( ); }
 
 /// Setters
+
+void Agent::set_preferences( Profile& profile ){ preferences = profile; }
 
 // I do not like this. It would be better if I implemented a set of options, and let agents and matrixes
 // take the alternatives, which would be the same, from there.
 // Sets agent's preferences. Takes a random row from PrefMatrix and set it to be the agent's preferences.
 // Deletes the used row at the end: Avoids repeated preferences for different agents
-void Agent::set_preferences( Preferencematrix& prefmatrix ){
+// Boi, dis is troble. How can one guarantee that EVERY ENTRY of PrefMatrix will be used? One cannot.
+/*void Agent::set_preferences( Preferencematrix& prefmatrix ){
 
     std::random_device rd;
 
@@ -40,8 +55,8 @@ void Agent::set_preferences( Preferencematrix& prefmatrix ){
 
     preferences = prefmatrix[ index( mt ) ];
 
-    prefmatrix.erase_row( index( mt ) );
-}
+    prefmatrix.erase_row( index( mt ) ); // Boi dis is dengeroussss AFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+}*/
 
 void Agent::set_id( std::string tag ){ id = tag; }
 
@@ -50,11 +65,23 @@ void Agent::set_id( std::string tag ){ id = tag; }
 /// Operators
 
 // Overloaded assignment operator.
-Agent& Agent::operator=( Agent one ){
+Agent& Agent::operator=( const Agent& one ){
 
-	std::swap( *this, one );
+	id = one.id;
+
+	preferences = one.preferences;
 
     return *this;
+}
+Agent& Agent::operator=( Agent&& one ){
+
+	preferences = one.preferences;
+
+	id = one.id;
+
+	one.clear( );
+
+	return *this;
 }
 
 /// Helpers

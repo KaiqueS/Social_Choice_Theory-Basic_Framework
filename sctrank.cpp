@@ -22,6 +22,14 @@ Rank::Rank( Preferencematrix& matrix ){
 // Copy constructor
 Rank::Rank( const Rank& copy ){ ranking = copy.ranking; }
 
+// Move constructor
+Rank::Rank( Rank&& rank ){
+
+	ranking = std::move( rank.ranking );
+
+	rank.clear( );
+}
+
 // Destructor. Clears RANKING from memory
 Rank::~Rank( ){ clear( ); }
 
@@ -286,11 +294,20 @@ void Rank::generate_ranking( Preferencematrix& mtx ){
 /// Operators
 
 // Overloaded assignment operator
-Rank& Rank::operator=( Rank copy ){
+Rank& Rank::operator=( const Rank& copy ){
 
-	std::swap( *this, copy );
+	ranking = copy.ranking;
 
     return *this;
+}
+
+Rank& Rank::operator=( Rank&& copy ){
+
+	ranking = std::move( copy.ranking );
+
+	copy.clear( );
+
+	return *this;
 }
 
 // Overloaded subscript operator. Returns a quintuple PairWiseRank of the form
@@ -465,7 +482,11 @@ void Rank::order_ranking( ){
 	}
 }
 
-// Initializes a Profile with options in RANK, withouth repetition.
+/// Non-member helpers
+
+// How to reconstruct a list of n elements from a list of pairs of elements? Do I really need to do this?
+// If I have a SCTRank, I must also have a PreferenceMatrix or a Population, or even a Profile
+// Initializes a Profile with options in RANK, withouth repetition. // THIS ALGORITHM IS DUMB DUMB DUMB DUMB DUMB
 void initialize_opts( Rank& rank, Profile& profile ){
 
     // Get all possible options
@@ -475,20 +496,33 @@ void initialize_opts( Rank& rank, Profile& profile ){
         profile.push_back( Options( rank[ i ].get_opty( ).get_opt( ), false, 0 ) );
     }
 
-    // Remove repeated options
-    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){
+    // Remove repeated options // The problem is obviously here: iterating over an index with size as range
+	                           // while size is being modified because elements are being erased	
+    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){ // The problem is i as an index. Maybe I should make i = 0 whenever j completes a full loop
 
         for( std::vector<int>::size_type j = 0; j < profile.size( ); ++j ){
 
-            if( i != j ){
+			if( i < profile.size( ) ){
 
-                if( profile[ i ].get_opt( ) == profile[ j ].get_opt( ) ){
+				if( i != j ){
 
-                    profile.erase( j );
-                }
-            }
+					if( profile[ i ].get_opt( ) == profile[ j ].get_opt( ) ){
+
+						std::cout << profile[ j ] << " index number " << j << " size " << profile.size( ) << "\n";
+
+						profile.erase( j );
+					}
+				}
+			}
+
+			else{
+
+				i = 0;
+			}
         }
     }
+
+	std::cout << profile << "\n profile size is " << profile.size( ) << "\n";
 }
 
 // Makes a generic social order, sorted in descending order - I really think that a social order
@@ -498,8 +532,8 @@ Profile make_social_order( Rank& rank ){
     // Holder for resulting social order
     Profile orderedrank{ };
 
-    // Gets every existing option
-    initialize_opts( rank, orderedrank );
+    // Gets every existing option, without repetition
+    initialize_opts( rank, orderedrank ); // PROBLEM HERE
 
     // Check for emptyness - I really should make a exception class to handle this
     if( !orderedrank.empty( ) )

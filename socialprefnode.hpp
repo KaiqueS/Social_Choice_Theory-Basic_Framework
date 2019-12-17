@@ -37,6 +37,7 @@ public:
 	SocialPrefNode( std::initializer_list<SocialPrefNode*> prefs, std::initializer_list<SocialPrefNode*> worse, std::initializer_list<SocialPrefNode*> ind ) :
 					preferences( std::move( prefs ) ), worsethan( std::move( worse ) ), indifference( std::move( ind ) ){ }
     SocialPrefNode( const SocialPrefNode& copy );
+	SocialPrefNode( SocialPrefNode&& copy );
     ~SocialPrefNode( );
 
     // Setters
@@ -69,9 +70,10 @@ public:
     std::vector<SocialPrefNode*> get_indiff( ) const{ return indifference; }
 
     // Operators
-    SocialPrefNode& operator=( SocialPrefNode copy );
+    SocialPrefNode& operator=( const SocialPrefNode& copy );
+	SocialPrefNode& operator=( SocialPrefNode&& copy );
 
-	SocialPrefNode& operator+=( const SocialPrefNode& right );
+	SocialPrefNode& operator+=( const SocialPrefNode& right ); // What is the meaning of these operators?
     SocialPrefNode& operator+=( const int val );
 
     using preferences_index = NamedType<std::ptrdiff_t, struct preferences_Parameter>;
@@ -87,14 +89,16 @@ public:
 
 	friend void swap( SocialPrefNode& left, SocialPrefNode& right );
 
+	void clear( );
+
 private:
 
-    std::string id{ };
+    std::string id{ "NULL" };
 
-	int index{ };
-	int lowlink{ };
+	int index{ -1 };
+	int lowlink{ -1 };
 
-	bool onstack{ };
+	bool onstack{ false };
 
     std::vector<SocialPrefNode*> preferences{ };
     std::vector<SocialPrefNode*> worsethan{ };

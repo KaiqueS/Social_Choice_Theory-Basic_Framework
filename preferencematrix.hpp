@@ -26,6 +26,7 @@ public:
 																						   columnsize = matrix.begin( ) -> size( ); }
     Preferencematrix( std::vector<int>::size_type row, std::vector<int>::size_type col );
     Preferencematrix( const Preferencematrix& copymatrix );
+	Preferencematrix( Preferencematrix&& copymatrix );
 	~Preferencematrix( );
 
 	// Setters
@@ -39,17 +40,17 @@ public:
     std::vector<int>::size_type get_rowsz( ) const{ return rowsize; }
     std::vector<int>::size_type get_columnsz( ) const{ return columnsize; }
 
-    // Return a reference instead?
-	std::vector<Profile> get_matrix( ) const{ return matrix; }
+	std::vector<Profile> get_matrix( ) const{ return matrix; } // Return a reference instead? - And risk allowing access to a member field? NO WAY
 
 	// Operators
-    Profile& operator[ ]( const std::vector<int>::size_type& position ){ return matrix[ position ]; }
+    Profile& operator[ ]( const std::vector<int>::size_type& position ){ return matrix[ position ]; } // TODO: add range checking
 
-	Preferencematrix& operator=( Preferencematrix copy );
+	Preferencematrix& operator=( const Preferencematrix& copy );
+	Preferencematrix& operator=( Preferencematrix&& copy );
 
 	// Helpers
 	std::vector<Profile, std::allocator<Profile>>::iterator begin( ){ return matrix.begin( ); }
-	std::vector<Profile, std::allocator<Profile>>::iterator end( ){ return matrix.end( ); }
+	std::vector<Profile, std::allocator<Profile>>::iterator end( ){ return matrix.end( ); } // TODO: return one-beyond-last-element - this is right
 
 	std::vector<int>::size_type size( ) const{ return matrix.size( ); }
 

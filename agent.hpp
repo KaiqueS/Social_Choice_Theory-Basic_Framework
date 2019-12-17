@@ -15,23 +15,25 @@ public:
 
     // Constructors & Destructor
     Agent( );
-    Agent( Profile list, std::string tag ) : preferences( list ), id( tag ){ }
-    Agent( const Agent& copy );
+    Agent( std::string tag, Profile list ) : id( tag ), preferences( list ){ }
+	Agent( const Agent& copy );
+	Agent( Agent&& copy );
     ~Agent( );
 
     // Setters
-    // Maybe pass a profile, instead, and take it from PrefMtx?
-    void set_preferences( Preferencematrix& prefmatrix );
-
-    void set_id( std::string tag );
+	void set_id( std::string tag );
+	
+	void set_preferences( Profile& profile );
+	//void set_preferences( Preferencematrix& prefmatrix );// Maybe pass a profile, instead, and take it from PrefMtx? - REMOVED: useless and WRONG
 
     // Getters
+	std::string get_id( ) const{ return id; }
+
     Profile get_preferences( ) const{ return preferences; }
 
-    std::string get_id( ) const{ return id; }
-
     // Operators
-    Agent& operator=( Agent one );
+    Agent& operator=( const Agent& one );
+	Agent& operator=( Agent&& one );
 
     Options& operator[ ]( const std::vector<int>::size_type& index ){ return preferences[ index ]; }
 
@@ -42,12 +44,12 @@ public:
 
 private:
 
-    // A row of the preferencematrix class. One row for each agent
-    Profile preferences{ };
+	std::string id{ }; // must be constant
 
-    std::string id{ }; // must be constant
+    Profile preferences{ }; // A row of the preferencematrix class. One row for each agent
 };
 
+/// Non-member Helpers
 std::ostream& operator<<( std::ostream& os, Agent& agt );
 
 inline bool operator==( const Agent& one, const Agent& two ){
@@ -61,10 +63,6 @@ inline bool operator==( const Agent& one, const Agent& two ){
 
 		return false;
 }
-
-inline bool operator!=( const Agent& one, const Agent& two ){
-
-	return !operator==( one, two );
-}
+inline bool operator!=( const Agent& one, const Agent& two ){ return !operator==( one, two ); }
 
 #endif // AGENT_H

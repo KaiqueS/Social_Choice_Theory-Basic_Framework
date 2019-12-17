@@ -27,6 +27,7 @@ public:
     Rank( std::vector<PairWiseRank> ordering ) : ranking( ordering ){ order_ranking( ); }
     Rank( std::initializer_list<PairWiseRank> init ) : ranking( std::move( init ) ){ order_ranking( ); }
     Rank( const Rank& copy );
+	Rank( Rank&& copy );
     ~Rank( );
 
     // Setters
@@ -42,7 +43,8 @@ public:
     std::vector<int>::size_type size( ) const{ return ranking.size( ); }
 
     // Operators
-    Rank& operator=( Rank copy );
+    Rank& operator=( const Rank& copy );
+	Rank& operator=( Rank&& copy );
 
     PairWiseRank& operator[ ]( const std::vector<int>::size_type index  );
 

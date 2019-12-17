@@ -24,6 +24,20 @@ PairWiseRank::PairWiseRank( const PairWiseRank& copy ){
     ival = copy.ival;
 }
 
+PairWiseRank::PairWiseRank( PairWiseRank&& copy ){
+
+	optx = std::move( copy.optx );
+	opty = std::move( copy.opty );
+
+	xval = std::move( copy.xval );
+	yval = std::move( copy.yval );
+	ival = std::move( copy.ival );
+
+	copy.clear( );
+}
+
+PairWiseRank::~PairWiseRank( ){ clear( ); }
+
 /// Setters
 
 // Sets option x to opt
@@ -46,11 +60,30 @@ void PairWiseRank::set_ival( int val ){ ival = val; }
 /// Operators
 
 // Overloaded assignment operator
-PairWiseRank& PairWiseRank::operator=( PairWiseRank copy ){
+PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
 
-	swap( *this, copy );
+	optx = copy.optx;
+	opty = copy.opty;
+
+	xval = copy.xval;
+	yval = copy.yval;
+	ival = copy.ival;
 
     return *this;
+}
+
+PairWiseRank& PairWiseRank::operator=( PairWiseRank&& copy ){
+
+	optx = std::move( copy.optx );
+	opty = std::move( copy.opty );
+
+	xval = std::move( copy.xval );
+	yval = std::move( copy.yval );
+	ival = std::move( copy.ival );
+
+	copy.clear( );
+
+	return *this;
 }
 
 /// Helpers
@@ -64,6 +97,16 @@ void swap( PairWiseRank& left, PairWiseRank& right ){
 	swap( left.xval, right.xval );
 	swap( left.yval, right.yval );
 	swap( left.ival, right.ival );
+}
+
+void PairWiseRank::clear( ){
+
+	optx.clear( );
+	opty.clear( );
+
+	xval = -1;
+	yval = -1;
+	ival = -1;
 }
 
 /// Non-member helpers

@@ -33,6 +33,23 @@ SocialPrefNode::SocialPrefNode( const SocialPrefNode& copy ){
 	indifference = copy.indifference;
 }
 
+// Move constructor
+SocialPrefNode::SocialPrefNode( SocialPrefNode&& copy ){
+
+	id = std::move( copy.id );
+
+	index = std::move( copy.index );
+	lowlink = std::move( copy.lowlink );
+
+	onstack = std::move( copy.onstack );
+
+	preferences = std::move( copy.preferences );
+	worsethan = std::move( copy.worsethan );
+	indifference = std::move( copy.indifference );
+
+	copy.clear( );
+}
+
 // Destructor. Clears every vector from memory
 SocialPrefNode::~SocialPrefNode( ){
 
@@ -97,11 +114,39 @@ void SocialPrefNode::set_indiff( SocialPrefNode& indiff ){ indifference.push_bac
 /// Operators
 
 // Overloaded assignment operator
-SocialPrefNode& SocialPrefNode::operator=( SocialPrefNode copy ){
+SocialPrefNode& SocialPrefNode::operator=( const SocialPrefNode& copy ){
 
-	swap( *this, copy );
+	id = copy.id;
+
+	index = copy.index;
+	lowlink = copy.lowlink;
+
+	onstack = copy.onstack;
+
+	preferences = copy.preferences;
+	worsethan = copy.worsethan;
+	indifference = copy.indifference;
 
     return *this;
+}
+
+// Overloaded move assignment
+SocialPrefNode& SocialPrefNode::operator=( SocialPrefNode&& copy ){
+
+	id = std::move( copy.id );
+
+	index = std::move( copy.index );
+	lowlink = std::move( copy.lowlink );
+
+	onstack = std::move( copy.onstack );
+
+	preferences = std::move( copy.preferences );
+	worsethan = std::move( copy.worsethan );
+	indifference = std::move( copy.indifference );
+
+	copy.clear( );
+
+	return *this;
 }
 
 // Overloaded binary arithmetic operator
@@ -160,4 +205,20 @@ void swap( SocialPrefNode& left, SocialPrefNode& right ){
 	swap( left.preferences, right.preferences );
 	swap( left.worsethan, right.worsethan );
 	swap( left.indifference, right.indifference );
+}
+
+void SocialPrefNode::clear( ){
+
+	id.clear( );
+
+	index = -1;
+	lowlink = -1;
+
+	std::vector<SocialPrefNode*>( ).swap( preferences );
+	std::vector<SocialPrefNode*>( ).swap( worsethan );
+	std::vector<SocialPrefNode*>( ).swap( indifference );
+
+	preferences.clear( );
+	worsethan.clear( );
+	indifference.clear( );
 }

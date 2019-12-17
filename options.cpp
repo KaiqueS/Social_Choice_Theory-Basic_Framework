@@ -20,6 +20,19 @@ Options::Options( const Options& copy ){
 	value = copy.value;
 }
 
+Options::Options( Options&& copy ){
+
+	opt = std::move( copy.opt );
+
+	status = std::move( copy.status );
+
+	value = std::move( copy.value );
+
+	copy.clear( );
+}
+
+Options::~Options( ){ clear( ); }
+
 /// Setters
 
 // Sets alternatives according to the argument passed through
@@ -33,9 +46,26 @@ void Options::set_value( int val ){ value = val; }
 /// Operators
 
 // Overloaded assignment operator
-Options& Options::operator=( Options copy ){
+Options& Options::operator=( const Options& copy ){
 
-	swap( *this, copy );
+	opt = copy.opt;
+
+	status = copy.status;
+
+	value = copy.value;
+
+	return *this;
+}
+
+Options& Options::operator=( Options&& copy ){
+
+	opt = std::move( copy.opt );
+
+	status = std::move( copy.status );
+
+	value = std::move( copy.value );
+
+	copy.clear( );
 
 	return *this;
 }
@@ -57,7 +87,7 @@ Options Options::operator++( int value ){
 	return tmp;
 }
 
-// Helpers
+/// Helpers
 
 void swap( Options& left, Options& right ){
 
@@ -66,6 +96,16 @@ void swap( Options& left, Options& right ){
 	swap( left.opt, right.opt );
 	swap( left.status, right.status );
 	swap( left.value, right.value );
+}
+
+// Resets an instance to its default state
+void Options::clear( ){
+
+	opt.clear( );
+
+	status = false;
+
+	value = -1;
 }
 
 // Overloaded assign-increment operator. TEST THIS

@@ -18,7 +18,8 @@ public:
     Graph( std::vector<SocialPrefNode> vertices ) : nodes( vertices ){ }
 	Graph( std::initializer_list<SocialPrefNode> init ) : nodes( std::move( init ) ){ }
     Graph( const Graph& copy );
-
+	Graph( Graph&& copy );
+    Graph( Preferencematrix& matrix, Rank& rank );
     ~Graph( );
 
     // Setters
@@ -30,7 +31,8 @@ public:
     std::vector<SocialPrefNode> get_graph( ) const{ return nodes; }
 
     // Operators
-    Graph& operator=( Graph copy );
+    Graph& operator=( const Graph& copy );
+	Graph& operator=( Graph&& copy );
 
     SocialPrefNode& operator[ ]( const std::vector<int>::size_type index );
 
@@ -44,7 +46,7 @@ public:
     std::vector<int>::size_type size( ) const{ return nodes.size( ); }
 
     std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator begin( ){ return nodes.begin( ); }
-    std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); }
+    std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); } // TODO: return one-beyond-last-element
 
 	bool empty( );
 

@@ -14,8 +14,9 @@ public:
     PairWiseRank( );
     PairWiseRank( Options xopt, Options yopt, int valx, int valy, int vali ) : optx( xopt ), opty( yopt ),
                                                                                xval( valx ), yval( valy ), ival( vali ){ }
-    PairWiseRank( const PairWiseRank& copy );
-    ~PairWiseRank( ){ }
+	PairWiseRank( const PairWiseRank& copy );
+	PairWiseRank( PairWiseRank&& copy );
+	~PairWiseRank( );
 
     // Setters
     void set_optx( Options opt );
@@ -38,10 +39,13 @@ public:
 	int get_ival( ) const{ return ival; }
 
     // Operators
-    PairWiseRank& operator=( PairWiseRank copy );
+    PairWiseRank& operator=( const PairWiseRank& copy );
+	PairWiseRank& operator=( PairWiseRank&& copy );
 
 	// Helpers
 	friend void swap( PairWiseRank& left, PairWiseRank& right );
+
+	void clear( );
 
 private:
 
@@ -54,9 +58,6 @@ private:
 };
 
 // Non-member helpers
-
-
-
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank );
 
 bool relation_comparison( const PairWiseRank& left, const PairWiseRank& right );

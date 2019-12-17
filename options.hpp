@@ -16,7 +16,8 @@ public:
 	Options( );
     Options( std::string alts, bool stats, int val ) : opt( alts ), status( stats ), value( val ){ }
 	Options( const Options& copy );
-	~Options( ){ }
+	Options( Options&& copy );
+	~Options( );
 
 	// Setters
     void set_opt( std::string newalt );
@@ -31,7 +32,8 @@ public:
 	int get_value( ) const{ return value; }
 
 	// Operators
-	Options& operator=( Options copy );
+	Options& operator=( const Options& copy );
+	Options& operator=( Options&& copy );
 
     Options& operator++( );
     Options operator++( int value );
@@ -41,6 +43,8 @@ public:
 
 	// Helpers
 	friend void swap( Options& left, Options& right );
+
+	void clear( );
 
 private:
 
