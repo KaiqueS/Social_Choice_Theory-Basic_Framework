@@ -84,7 +84,7 @@ class Social_Preference_Node:
 
         for node in self.worse_than:
 
-            result+= "[ " + node.get_id( ) + " ] "
+            result+= "[ " + str( node.get_id( ) ) + " ] " # Changed from node.get_id() to str( node.get_id() )
 
         result += "\nis indifferent to: "
 
