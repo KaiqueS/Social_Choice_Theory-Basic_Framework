@@ -90,6 +90,20 @@ class Rank:
     # Operators
 
     # Helpers
+    def __str__( self ):
+
+        string: str = str( )
+
+        for i in range( len( self.ranking ) ):
+
+            string += "Option X: " + str( self.ranking[ i ][ 0 ] )
+            string += " Option Y: " + str( self.ranking[ i ][ 1 ] )
+            string += " Xval: " + str( self.ranking[ i ][ 2 ] )
+            string += " Yval: " + str( self.ranking[ i ][ 3 ] )
+            string += " Ival: " + str( self.ranking[ i ][ 4 ] )
+            string += "\n"
+
+        return string
 
     # Gets all pairs of options, except for those with equal options
     def __get_pairs( self, profile: Preference_Matrix.Profile.Profile ):
@@ -102,7 +116,7 @@ class Rank:
 
         for x, y in mylist:
 
-            self.ranking.append( ( x, y, 0, 0, 0 ) )
+            self.ranking.append( ( x[ 0 ], y[ 0 ], 0, 0, 0 ) ) # modified here
 
 """ Testing Zone """
 
@@ -133,4 +147,8 @@ rank.generate_ranking( matrix )
 for i in range( len( rank ) ):
 
     print( rank[ i ] )
+
+print( "\n" )
+
+print( rank )
 """

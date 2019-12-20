@@ -21,72 +21,86 @@ class Graph:
 
             for j in range( len( self.nodes ) ):
 
-                # If node read equal opt x in rank
-                if rank[ i ][ 0 ][ 0 ] == self.nodes[ j ].get_id() :                                                                                                             
+                # If x.value > y.value
+                if rank[ i ][ 2 ] > rank[ i ][ 3 ]:
 
-                    # If x.value > y.value
-                    if rank[ i ][ 2 ] > rank[ i ][ 3 ]:
+                    # If nodes[ i ] == opt_x in rank
+                    if self.nodes[ j ].get_id( ) == rank[ i ][ 0 ]:
 
-                        # Make a node = y
-                        node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
-                        node.set_id( rank[ i ][ 1 ][ 0 ] )
+                        # Then, find opt_y
+                        for k in range( len( self.nodes ) ):
 
-                        # Add y to x.preferred to
-                        self.nodes[ j ].add_preferred( node )
-                    
-                    # Else, if y.value > x.value
-                    elif rank[ i ][ 2 ] < rank[ i ][ 3 ]:
+                            if self.nodes[ k ].get_id( ) == rank[ i ][ 1 ]: # Can I do that without creating a node, i.e., by using only the nodes in self.node?
 
-                        # Make a node = y
-                        node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
-                        node.set_id( rank[ i ][ 0 ][ 0 ] )
+                                # Add opt_y to opt_x.preferred_to
+                                node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
+                                node.set_id( rank[ i ][ 1 ] )
 
-                        # Add y to x.worse_than
-                        self.nodes[ j ].add_worse( node )
+                                self.nodes[ j ].add_preferred( self.nodes[ k ] )
 
-                    # Else, if x.value == y.value
-                    else:
+                            else:
 
-                        # Make a node = y
-                        node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
-                        node.set_id( rank[ i ][ 1 ][ 0 ] )
+                                continue
 
-                        # Add y to x.indifferent_to
-                        self.nodes[ j ].add_indiff( node )
+                    # Else, if nodes[ i ] == opt_y in rank
+                    elif self.nodes[ j ].get_id( ) == rank[ i ][ 1 ]:
 
-                # Else, if node read equals opt y in rak
-                elif rank[ i ][ 1 ][ 0 ] == self.nodes[ j ].get_id() :                                                                                                             
+                        # Then, find opt_x
+                        for k in range( len( self.nodes ) ):
 
-                    # If x.value > y.value
-                    if rank[ i ][ 2 ] > rank[ i ][ 3 ]:
+                            if self.nodes[ k ].get_id( ) == rank[ i ][ 0 ]:
 
-                        # Make a node = x
-                        node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
-                        node.set_id( rank[ i ][ 0 ][ 0 ] )
+                                # Add opt_x to opt_y.preferred_to
+                                node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
+                                node.set_id( rank[ i ][ 0 ] )
 
-                        # Add x to y.worse_than
-                        self.nodes[ j ].add_preferred( node )
-                    
-                    # Else, if y.value > x.value
-                    elif rank[ i ][ 2 ] < rank[ i ][ 3 ]:
+                                self.nodes[ j ].add_worse( self.nodes[ k ] ) # Modified here. Removed node, switched with self.nodes[ k ]
 
-                        # Make a node = x
-                        node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
-                        node.set_id( rank[ i ][ 1 ][ 0 ] )
+                            else:
 
-                        # Add x to y.preferred_to
-                        self.nodes[ j ].add_preferred( node )
+                                continue
 
-                    # Else, if y.value == x.value
-                    else:
+                # If x.value < y.value
+                if rank[ i ][ 2 ] < rank[ i ][ 3 ]:
 
-                        # Make a node = x
-                        node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
-                        node.set_id( rank[ i ][ 1 ][ 0 ] )
+                    # If nodes[ i ] == opt_x in rank
+                    if self.nodes[ j ].get_id( ) == rank[ i ][ 0 ]:
 
-                        # Add x to y.indifferent_to
-                        self.nodes[ j ].add_indiff( node )
+                        # Then, find opt_y
+                        for k in range( len( self.nodes ) ):
 
+                            if self.nodes[ k ].get_id( ) == rank[ i ][ 1 ]:
+
+                                # Add opt_y to opt_x.worse_than
+                                node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
+                                node.set_id( rank[ i ][ 1 ] )
+
+                                self.nodes[ j ].add_worse( self.nodes[ k ] ) # Modified here
+
+                            else:
+
+                                continue
+
+                    # Else, if nodes[ i ] == opt_y in rank
+                    elif self.nodes[ j ].get_id( ) == rank[ i ][ 1 ]:
+
+                        # Then, find opt_x
+                        for k in range( len( self.nodes ) ):
+
+                            if self.nodes[ k ].get_id( ) == rank[ i ][ 0 ]:
+
+                                # Add opt_x to opt_y.preferred_to
+                                node: SPNode.Social_Preference_Node = SPNode.Social_Preference_Node()
+                                node.set_id( rank[ i ][ 0 ] )
+
+                                self.nodes[ j ].add_preferred( self.nodes[ k ] ) # Modified here
+
+                            else:
+
+                                continue
+
+                
+                # if rank[ i ][ 2 ] == rank[ i ][ 3 ] -> add to indifferent
     # Getters
 
     # Operators
@@ -102,6 +116,7 @@ class Graph:
 
         return string
 
+    # Gets alternatives and create nodes to represent them
     def initialize( self, profile: Profile.Profile ):
 
         self.reserve( len( profile ) )
@@ -118,7 +133,7 @@ class Graph:
         self.nodes += [ self.nodes ] * ( size - len( self.nodes ) )
 
 """ Testing Zone """
-
+"""
 profile: Profile.Profile = [ ( "a", False, 1 ), ( "b", False, 2 ), ( "c", False, 3 ) ]
 
 matrix: Preference_Matrix.Preference_Matrix = Preference_Matrix.Preference_Matrix( )
@@ -135,3 +150,33 @@ graph.initialize( profile )
 graph.create_graph( rank )
 
 print( graph )
+
+print( "\n" )
+"""
+
+newmtx: Preference_Matrix.Preference_Matrix = Preference_Matrix.Preference_Matrix( )
+newmtx.set_matrix( 4, 4 )
+
+newrank: Social_Choice_Rank.Rank = Social_Choice_Rank.Rank()
+newrank.generate_ranking( newmtx ) # not generating rank
+
+newgraph: Graph = Graph()
+
+newprof: Profile.Profile = newmtx[ 0 ]
+
+newgraph.initialize( newprof ) # not initializing
+newgraph.create_graph( newrank )
+
+newmtx.print()
+
+print( "\n" )
+
+print( newprof )
+
+print( "\n" )
+
+print( newrank )
+
+print( "\n" )
+
+print( newgraph )
