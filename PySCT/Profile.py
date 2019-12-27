@@ -45,6 +45,14 @@ class Profile:
 
         return str( self.alternatives )
 
+    def initialize( self, profile: list( ) ): # problem here
+
+        self.alternatives = profile
+
+        for i in range( len( self.alternatives ) ):
+    
+            self.alternatives[ i ].set_value( 0 )
+
     def append( self, opt: Options.Options = None ):
 
         self.alternatives.append( opt ) if opt is not None else print( "Cannot append nothing" )

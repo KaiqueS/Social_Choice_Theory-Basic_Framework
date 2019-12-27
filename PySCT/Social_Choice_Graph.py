@@ -20,7 +20,7 @@ class Graph:
     # if a's value in SCRank is greater than b's, then, create an edge
     # from a to b where b is inserted in a's .preferred_to list. A simi
     # rule applies for the cases where a is smaller than or equal to b
-    def create_graph( self, rank ):
+    def create_graph( self, rank: Social_Choice_Rank.Rank ):
 
         for i in range( len( rank) ):
 
@@ -173,7 +173,8 @@ class Graph:
 
 """ Testing Zone """
 
-""" TEST 1
+""" 
+#TEST 1
 profile: Profile.Profile = [ ( "a", False, 1 ), ( "b", False, 2 ), ( "c", False, 3 ) ]
 
 matrix: Preference_Matrix.Preference_Matrix = Preference_Matrix.Preference_Matrix( )
@@ -194,7 +195,8 @@ print( graph )
 print( "\n" )
 """
 
-""" TEST 2
+"""
+#TEST 2
 newmtx: Preference_Matrix.Preference_Matrix = Preference_Matrix.Preference_Matrix( )
 newmtx.set_matrix( 4, 4 )
 
