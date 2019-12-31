@@ -109,36 +109,6 @@ Profile& SCT::Borda_count::operator( )( Population& population ){
     return winnerset;
 }
 
-Profile& SCT::Borda_count::operator( )( Rank& rank ){
-
-    // winnerset.clear( );
-
-    winnerset = make_social_order( rank );
-
-    for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
-
-        winnerset[ i ].set_value( 0 );
-    }
-
-    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
-
-        for( std::vector<int>::size_type j = 0; j < winnerset.size( ); ++j ){
-
-            if( winnerset[ j ].get_opt( ) == rank[ i ].get_optx( ).get_opt( ) ){
-
-                winnerset[ j ] += rank[ i ].get_xval( );
-            }
-
-            else if( winnerset[ j ].get_opt( ) == rank[ i ].get_opty( ).get_opt( ) ){
-
-                winnerset[ j ] += rank[ i ].get_yval( );
-            }
-        }
-    }
-
-    return winnerset;
-}
-
 Profile& SCT::Borda_count::operator+=( Profile& profile ){
 
 	Preferencematrix matrix = { winnerset, profile };
@@ -151,13 +121,6 @@ Profile& SCT::Borda_count::operator+=( Profile& profile ){
 Profile& SCT::Borda_count::operator+=( Preferencematrix& matrix ){
 
 	winnerset = SCT::Borda_count::operator( )( matrix );
-
-	return winnerset;
-}
-
-Profile& SCT::Borda_count::operator+=( Rank& rank ){
-
-	winnerset = SCT::Borda_count::operator( )( rank );
 
 	return winnerset;
 }

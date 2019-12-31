@@ -32,8 +32,8 @@ public:
 
     // Constructors & Destructor
     SocialPrefNode( );
-    SocialPrefNode( std::string self, int ind, int link, bool stack, std::vector<SocialPrefNode*> pref, std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff ) :
-                    id( self ), index( ind ), lowlink( link ), onstack( stack ), preferences( pref ), worsethan( worse ), indifference( indiff ){ }
+    SocialPrefNode( std::string self, int ind, int distance, bool stack, std::vector<SocialPrefNode*> pref, std::vector<SocialPrefNode*> worse, std::vector<SocialPrefNode*> indiff ) :
+                    id( self ), index( ind ), distance( distance ), onstack( stack ), preferences( pref ), worsethan( worse ), indifference( indiff ){ }
 	SocialPrefNode( std::initializer_list<SocialPrefNode*> prefs, std::initializer_list<SocialPrefNode*> worse, std::initializer_list<SocialPrefNode*> ind ) :
 					preferences( std::move( prefs ) ), worsethan( std::move( worse ) ), indifference( std::move( ind ) ){ }
     SocialPrefNode( const SocialPrefNode& copy );
@@ -44,7 +44,8 @@ public:
     void set_id( std::string self );
 
 	void set_index( int ind );
-	void set_lowlink( int link );
+	void set_distance( int dist );
+    void set_pi( SocialPrefNode* pie );
 
 	void set_onstack( bool stack );
 
@@ -61,7 +62,9 @@ public:
     std::string get_id( ) const{ return id; }
 
 	int get_index( ) const{ return index; }
-	int get_lowlink( ) const{ return lowlink; }
+	int get_distance( ) const{ return distance; }
+    
+    SocialPrefNode* get_pi( ) const{ return pi; }
 
 	bool get_onstack( ) const{ return onstack; }
 
@@ -80,7 +83,7 @@ public:
     using worsethan_index = NamedType<std::ptrdiff_t, struct worsethan_Parameter>;
     using indifference_index = NamedType<std::ptrdiff_t, struct indifference_Parameter>;
 
-    // One operator[ ] for each array index type
+    // One operator[ ] for each array index type - Document the use of this
     SocialPrefNode* operator[ ]( preferences_index i ){ return preferences[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
     SocialPrefNode* operator[ ]( worsethan_index i ){ return worsethan[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
     SocialPrefNode* operator[ ]( indifference_index i ){ return indifference[ static_cast<std::vector<int>::size_type>( i.get( ) ) ]; }
@@ -95,8 +98,12 @@ private:
 
     std::string id{ "NULL" };
 
+    //int weight - the same as an opt value??????
+    //  What about a set of ( SPN, value ) to represent weights of edges?
 	int index{ -1 };
-	int lowlink{ -1 };
+    int distance{ -1 };
+	
+    SocialPrefNode* pi{ };
 
 	bool onstack{ false };
 

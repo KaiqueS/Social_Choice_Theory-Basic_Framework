@@ -17,11 +17,9 @@ class Borda_count : public Procedure{
         virtual Profile operator( )( Profile& profile ) override;
         virtual Profile operator( )( Preferencematrix& matrix ) override;
         virtual Profile& operator( )( Population& population ) override;
-        virtual Profile& operator( )( Rank& rank ) override;
 
         virtual Profile& operator+=( Profile& profile ) override;
         virtual Profile& operator+=( Preferencematrix& matrix ) override;
-        virtual Profile& operator+=( Rank& rank ) override;
 
     private:
 
@@ -35,12 +33,10 @@ class First_past_the_post : public Procedure{
         //Graph operator( )( Population& population );
         virtual Profile operator( )( Profile& profile ) override;
         virtual Profile operator( )( Preferencematrix& matrix ) override;
-        virtual Profile& operator( )( Population& population ) override;
-        virtual Profile& operator( )( Rank& rank ) override;
+        virtual Profile& operator( )( Population& population ) override;       
 
         virtual Profile& operator+=( Profile& profile ) override;
         virtual Profile& operator+=( Preferencematrix& matrix ) override;
-        virtual Profile& operator+=( Rank& rank ) override;
 
     private:
 

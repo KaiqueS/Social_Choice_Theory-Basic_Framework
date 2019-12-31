@@ -8,6 +8,9 @@
 #include "sctrank.hpp"
 #include "preferencematrix.hpp"
 
+// A graph should always be initialized BEFORE the edges are created
+// How should graphs be made? From profiles resulting of aggregating procedures and from ranks!
+
 class Graph{
 
 public:
@@ -19,7 +22,7 @@ public:
 	Graph( std::initializer_list<SocialPrefNode> init ) : nodes( std::move( init ) ){ }
     Graph( const Graph& copy );
 	Graph( Graph&& copy );
-    Graph( Preferencematrix& matrix, Rank& rank );
+    Graph( Rank& rank );
     ~Graph( );
 
     // Setters
@@ -39,14 +42,15 @@ public:
     // Helpers
     void initialize_graph( Population& population );
     void initialize_graph( Preferencematrix& mtx );
-    void make_graph( Preferencematrix& mtx, Rank& rank );
+    void make_graph( Profile& profile );
+    void make_graph( Rank& rank ); // TODO: Modify this. Remove Preference Matrix. Initialize graph separetely. Maybe another overload to create graphs from procedures
     void push_back( SocialPrefNode& node ){ nodes.push_back( node ); }
     void clear( ){ nodes.clear( ); }
 
     std::vector<int>::size_type size( ) const{ return nodes.size( ); }
 
     std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator begin( ){ return nodes.begin( ); }
-    std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); } // TODO: return one-beyond-last-element
+    std::vector<SocialPrefNode, std::allocator<SocialPrefNode>>::iterator end( ){ return nodes.end( ); } // TODO: return one-beyond-last-element - This already does that
 
 	bool empty( );
 
@@ -70,6 +74,14 @@ inline bool operator==( const Graph& left, const Graph& right ){
 }
 inline bool operator!=( const Graph& left, const Graph& right ){ return !operator==( left, right ); }
 
-void print_graph( Graph& graph );
+void initialize_single_source( Graph& graph, SocialPrefNode& source );
+
+void relax( SocialPrefNode& leftnode, SocialPrefNode& rightnode, double weight );
+
+bool bellman_ford( Graph& graph, double weight, SocialPrefNode& initial );
+
+void dijkstra( Graph& graph, int weight, SocialPrefNode& initial );
+
+// Implement Min-Heapify( p.112 ) and Extract-Min( p. 119 ). After, do Dijkstra( p.479 )
 
 #endif // SCTGRAPH_H

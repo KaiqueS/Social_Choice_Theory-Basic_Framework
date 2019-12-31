@@ -527,13 +527,20 @@ void initialize_opts( Rank& rank, Profile& profile ){
 
 // Makes a generic social order, sorted in descending order - I really think that a social order
 // should be generated from a procedure
-Profile make_social_order( Rank& rank ){
+Profile make_social_order( Profile& profile, Rank& rank ){
 
     // Holder for resulting social order
-    Profile orderedrank{ };
+    Profile orderedrank{ profile };
+
+    for( std::vector<int>::size_type i = 0; i < orderedrank.size( ); ++i ){
+
+        orderedrank[ i ].set_value( 0 );
+    }
 
     // Gets every existing option, without repetition
-    initialize_opts( rank, orderedrank ); // PROBLEM HERE
+    // Instead of reconstructing a profile from a rank, just use the profile or matrix
+    // used to build the rank itself
+    //initialize_opts( rank, orderedrank ); // PROBLEM HERE
 
     // Check for emptyness - I really should make a exception class to handle this
     if( !orderedrank.empty( ) )

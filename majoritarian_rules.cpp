@@ -34,7 +34,9 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
     Rank rank( matrix );
 
-    winnerset = make_social_order( rank );
+    //check wether or not matrix is empty
+
+    winnerset = make_social_order( *matrix.begin( ), rank ); // Check make_social_order()
 
     for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
@@ -61,7 +63,9 @@ Profile& SCT::Qualified_majority_rule::operator( )( Population& population ){
 
     Rank rank( population );
 
-    winnerset = make_social_order( rank );
+    Profile prof = population.begin( ) -> get_preferences( ); // Updated this for new definition of make_social_order
+
+    winnerset = make_social_order( prof, rank );
 
     for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
@@ -84,24 +88,6 @@ Profile& SCT::Qualified_majority_rule::operator( )( Population& population ){
     return winnerset;
 }
 
-Profile& SCT::Qualified_majority_rule::operator( )( Rank& rank ){
-
-    winnerset = make_social_order( rank );
-
-    for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
-
-        if( winnerset[ i ].get_value( ) > static_cast<int>( winnerset.size( ) / 2 ) )
-
-            winnerset[ i ].set_status( true );
-
-        else
-
-            winnerset[ i ].set_status( false );
-    }
-
-    return winnerset;
-}
-
 // Hum... remember to modify the operator( ) behavior for matrixes and populations.
 // This is not right
 Profile& SCT::Qualified_majority_rule::operator+=( Profile& rhs ){
@@ -114,13 +100,6 @@ Profile& SCT::Qualified_majority_rule::operator+=( Profile& rhs ){
 }
 
 Profile& SCT::Qualified_majority_rule::operator+=( Preferencematrix& rhs ){
-
-	winnerset = SCT::Qualified_majority_rule::operator( )( rhs );
-
-	return winnerset;
-}
-
-Profile& SCT::Qualified_majority_rule::operator+=( Rank& rhs ){
 
 	winnerset = SCT::Qualified_majority_rule::operator( )( rhs );
 
@@ -166,7 +145,7 @@ Profile SCT::Simple_majority_rule::operator( )( Preferencematrix& matrix ){
 
 	Rank rank( matrix );
 
-	winnerset = make_social_order( rank );
+	winnerset = make_social_order( *matrix.begin( ), rank );
 
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
 
@@ -191,32 +170,11 @@ Profile& SCT::Simple_majority_rule::operator( )( Population& population ){
 
     Rank rank( population );
 
-    winnerset = make_social_order( rank );
+    Profile profile{ population.begin( ) -> get_preferences( ) }; // Updated version of make_social_order
+
+    winnerset = make_social_order( profile, rank );
 
     // Problem here
-    std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
-
-	for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
-
-		if( ( winnerset[ i ] != *winnerset.begin( ) ) && ( winnerset[ i ].get_value( ) == winnerset.begin( )->get_value( ) ) ){
-
-			winnerset[ i ].set_status( true );
-		}
-
-		else
-
-			continue;
-	}
-
-    return winnerset;
-}
-
-Profile& SCT::Simple_majority_rule::operator( )( Rank& rank ){
-
-    winnerset.clear( );
-
-    winnerset = make_social_order( rank );
-
     std::max_element( winnerset.begin( ), winnerset.end( ) ) -> set_status( true );
 
 	for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
@@ -244,13 +202,6 @@ Profile& SCT::Simple_majority_rule::operator+=( Profile& rhs ){
 }
 
 Profile& SCT::Simple_majority_rule::operator+=( Preferencematrix& rhs ){
-
-	winnerset = SCT::Simple_majority_rule::operator( )( rhs );
-
-	return winnerset;
-}
-
-Profile& SCT::Simple_majority_rule::operator+=( Rank& rhs ){
 
 	winnerset = SCT::Simple_majority_rule::operator( )( rhs );
 
@@ -303,7 +254,7 @@ Profile SCT::Two_rounds::operator( )( Preferencematrix& matrix ){
     // Checks the winner with qualified majority
     Rank ranking( matrix );
 
-    winnerset = make_social_order( ranking );
+    winnerset = make_social_order( *matrix.begin( ), ranking ); // Updated version of make_social_order
 
     return SCT::Two_rounds( ).operator( )( winnerset );
 }
@@ -311,14 +262,9 @@ Profile& SCT::Two_rounds::operator( )( Population& population ){
 
     Rank ranking( population );
 
-    winnerset = make_social_order( ranking );
-    winnerset = SCT::Two_rounds( ).operator( )( winnerset );
+    Profile profile{ population.begin( ) -> get_preferences( ) };
 
-    return winnerset;
-}
-Profile& SCT::Two_rounds::operator( )( Rank& rank ){
-
-    winnerset = make_social_order( rank );
+    winnerset = make_social_order( profile, ranking ); // Updated version of make_social_order
     winnerset = SCT::Two_rounds( ).operator( )( winnerset );
 
     return winnerset;
@@ -329,10 +275,6 @@ Profile& SCT::Two_rounds::operator+=( Profile &rhs ){
     return winnerset;
 }
 Profile& SCT::Two_rounds::operator+=( Preferencematrix &rhs ){
-
-    return winnerset;
-}
-Profile& SCT::Two_rounds::operator+=( Rank& rhs ){
 
     return winnerset;
 }

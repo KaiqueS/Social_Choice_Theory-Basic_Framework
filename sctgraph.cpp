@@ -21,7 +21,7 @@ Graph::Graph( Graph&& copy ){
 }
 
 // Initializer constructor
-Graph::Graph( Preferencematrix& matrix, Rank& rank ){ make_graph( matrix, rank ); }
+Graph::Graph( Rank& rank ){ make_graph( rank ); }
 
 // Destructor. Clears NODES from memory
 Graph::~Graph( ){
@@ -100,7 +100,7 @@ SocialPrefNode& Graph::operator[ ]( const std::vector<int>::size_type index ){ r
 // Initializes a graph according to the options in an random agent's profile
 void Graph::initialize_graph( Population& population ){
 
-    std::random_device rd;
+    /*std::random_device rd;
 
     //std::mt19937_64 mt( rd( ) );
     std::mt19937 mt( rd( ) );
@@ -112,13 +112,26 @@ void Graph::initialize_graph( Population& population ){
     for( std::vector<int>::size_type i = 0; i < population[ randagt( mt ) ].get_preferences( ).size( ); ++i ){
 
         nodes.push_back( SocialPrefNode( population[ randagt( mt ) ][ i ].get_opt( ), { }, { }, { }, { }, { }, { } ) );
+    }*/
+
+    if( !population.empty( ) ){
+
+        if( !nodes.begin( ) -> get_preferences( ).empty( ) ){
+
+            nodes.resize( population.begin( ) -> get_preferences( ).size( ) );
+        }
+    }
+
+    for( std::vector<int>::size_type i = 0; i < nodes.size( ); ++i ){
+
+        nodes[ i ].set_id( population.begin( ) -> get_preferences( )[ i ].get_opt( ) );
     }
 }
 
 // Initializes a graph according to a random profile in a PreferenceMatrix
 void Graph::initialize_graph( Preferencematrix& mtx ){
 
-    if( !mtx.get_matrix( ).empty( ) )
+    if( !mtx.empty( ) )
 
         nodes.resize( mtx.get_matrix( ).begin( ) -> size( ) );
 
@@ -128,18 +141,68 @@ void Graph::initialize_graph( Preferencematrix& mtx ){
         nodes[ i ].set_id( mtx.get_matrix( ).begin( ) -> begin( )[ static_cast<int>( i ) ].get_opt( ) );
 }
 
+void Graph::make_graph( Profile& profile ){
+
+    // Create an exception for this condition
+    if( nodes.empty( ) ){
+
+        std::cerr << "\n\nGraph has no nodes!\n\n";
+    }
+
+    else{
+
+        for( std::vector<int>::size_type i = 0; i < nodes.size( ); ++i ){
+
+            for( std::vector<int>::size_type j = 0; j < nodes.size( ); ++j ){
+
+                if( i != j ){
+
+                    Options one{ };
+                    one.set_opt( nodes[ i ].get_id( ) );
+
+                    Options two{ };
+                    two.set_opt( nodes[ j ].get_id( ) );
+
+                    auto left = std::find( profile.begin( ), profile.end( ), one );
+                    auto right = std::find( profile.begin( ), profile.end( ), two );
+
+                    if( left > right ){
+
+                        nodes[ i ].set_pref( nodes[ j ] );
+                    }
+
+                    else if( left < right ){
+
+                        nodes[ i ].set_worse( nodes[ j ] );
+                    }
+
+                    else{
+
+                        nodes[ i ].set_indiff( nodes[ j ] );
+                    }
+                }
+
+                else{
+
+                    continue;
+                }
+            }
+        }
+    }
+}
+
 /* Creates a graph GRAPH composed by nodes of alternatives. Relates those nodes according to how the alt-
  * ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
  * that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
  * x.indifference */
-void Graph::make_graph( Preferencematrix& mtx, Rank& rank ){
+// Update this. Use the other overload as example
+void Graph::make_graph( Rank& rank ){
 
     // Checks if the vector NODES is not empty
+    // Create an exception for this condition
     if( nodes.empty( ) ){
 
-        std::cout << "Graph has no nodes! Initializing it.\n\n";
-
-        initialize_graph( mtx );
+        std::cerr << "\n\nGraph has no nodes!\n\n";
     }
 
     else{
@@ -250,17 +313,90 @@ bool Graph::empty( ){
 // Overloaded printing operator
 std::ostream& operator<<( std::ostream& os, Graph& graph ){
 
+    os << "Graph contains the following nodes:\n\n";
+
     for( std::vector<int>::size_type i = 0; i < graph.get_graph( ).size( ); ++i )
 
         os << "[ " << graph[ i ].get_id( ) << " ]" << " ";
 
+    os << "\n\n";
+
+    for( std::vector<int>::size_type i = 0; i < graph.get_graph( ).size( ); ++i ){
+
+        os << graph[ i ] << "\n";
+    }
+
     return os;
 }
 
-// Prints graph
-void print_graph( Graph& graph ){
+// Initializes a Graph. Used in Johnson's algorithm
+void initialize_single_source( Graph& graph, SocialPrefNode& node ){
 
-    for( std::vector<int>::size_type i = 0; i < graph.get_graph( ).size( ); ++i )
+    for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
 
-        std::cout << graph[ i ];
+        if( graph[ i ] != node ){
+         
+            graph[ i ].set_distance( std::numeric_limits<int>::infinity( ) );
+            graph[ i ].set_pi( NULL ); // hmmmmmmm
+        }
+
+        else{
+
+            continue;
+        }
+    }
+
+    node.set_distance( 0 );
+}
+
+// Attention here: it may be better if relax were a template function
+// where the template argument Arg is a function w that gives the weight
+// from leftnode to rightnode
+void relax( SocialPrefNode& leftnode, SocialPrefNode& rightnode, double weight ){
+
+    if( leftnode.get_distance( ) > ( rightnode.get_distance( ) + weight ) ){
+
+        leftnode.set_distance( rightnode.get_distance( ) + weight );
+
+        leftnode.set_pi( &rightnode );
+    }
+}
+
+bool bellman_ford( Graph& graph, double weight, SocialPrefNode& initial ){
+
+    initialize_single_source( graph, initial );
+
+    for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+
+        // This is a adaptation. See Cormen p.474, ( u, v ) in E[ G ]
+        for( int j = 0; j < graph[ i ].get_preferences( ).size( ); ++j ){
+
+            // Pay attention to second argument here. The dereferenced argument
+            relax( graph[ i ], *graph[ i ][ SocialPrefNode::preferences_index{ j } ], weight ); // FIX PROBLEM HERE
+        }
+    }
+
+    for( std::vector<int>::size_type i = 0; i < graph.size( ); ++i ){
+
+        // This is a adaptation. See Cormen p.474, ( u, v ) in E[ G ]
+        for( int j = 0; j < graph[ i ].get_preferences( ).size( ); ++j ){
+
+            if( graph[ i ].get_distance( ) > ( graph[ i ][ SocialPrefNode::preferences_index{ j } ] -> get_distance( ) + weight ) ){
+
+                return false;
+            }
+
+            else{
+
+                continue;
+            }
+        }
+    }
+
+    return true;
+}
+
+void dijkstra( Graph& graph, int weight, SocialPrefNode& initial ){
+
+
 }

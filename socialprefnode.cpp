@@ -9,7 +9,7 @@ SocialPrefNode::SocialPrefNode( ){
     id = "0";
 
 	index = -1;
-	lowlink = 0;
+	distance = 0;
 
 	onstack = false;
 
@@ -24,7 +24,7 @@ SocialPrefNode::SocialPrefNode( const SocialPrefNode& copy ){
     id = copy.id;
 
 	index = copy.index;
-	lowlink = copy.lowlink;
+	distance = copy.distance;
 
 	onstack = copy.onstack;
 
@@ -39,7 +39,7 @@ SocialPrefNode::SocialPrefNode( SocialPrefNode&& copy ){
 	id = std::move( copy.id );
 
 	index = std::move( copy.index );
-	lowlink = std::move( copy.lowlink );
+	distance = std::move( copy.distance );
 
 	onstack = std::move( copy.onstack );
 
@@ -86,7 +86,9 @@ void SocialPrefNode::set_id( std::string self ){
 void SocialPrefNode::set_index( int ind ){ index = ind; }
 
 // Sets SocialPrefNode lowlink. Used in Johnson's algorithm
-void SocialPrefNode::set_lowlink( int link ){ lowlink = link; }
+void SocialPrefNode::set_distance( int dist ){ distance = dist; }
+
+void SocialPrefNode::set_pi( SocialPrefNode* pie ){ pi = pie; }
 
 // Sets wether or not a node is on the stack. Used in Johnson's algorithm
 void SocialPrefNode::set_onstack( bool stack ){ onstack = stack; }
@@ -119,7 +121,7 @@ SocialPrefNode& SocialPrefNode::operator=( const SocialPrefNode& copy ){
 	id = copy.id;
 
 	index = copy.index;
-	lowlink = copy.lowlink;
+	distance = copy.distance;
 
 	onstack = copy.onstack;
 
@@ -136,7 +138,7 @@ SocialPrefNode& SocialPrefNode::operator=( SocialPrefNode&& copy ){
 	id = std::move( copy.id );
 
 	index = std::move( copy.index );
-	lowlink = std::move( copy.lowlink );
+	distance = std::move( copy.distance );
 
 	onstack = std::move( copy.onstack );
 
@@ -163,35 +165,6 @@ SocialPrefNode& SocialPrefNode::operator+=( const int val ){
 	return *this;
 }
 
-// Overloaded ostream operator
-std::ostream& operator<<( std::ostream& os, SocialPrefNode& node ){
-
-    os << "Node " << node.get_id( ) << "\nIs preferred to nodes: ";
-
-    for( std::vector<int>::size_type i = 0; i < node.get_preferences( ).size( ); ++i ){
-
-        os << "[ " << node.get_preferences( )[ i ] -> get_id( ) << " ] ";
-    }
-
-    os << "\nIs worse than nodes: ";
-
-    for( std::vector<int>::size_type i = 0; i < node.get_worse( ).size( ); ++i ){
-
-        os << "[ " << node.get_worse( )[ i ] -> get_id( ) << " ] ";
-    }
-
-    os << "\nIs equal to nodes: ";
-
-    for( std::vector<int>::size_type i = 0; i < node.get_indiff( ).size( ); ++i ){
-
-        os << "[ " << node.get_indiff( )[ i ] -> get_id( ) << " ] ";
-    }
-
-    os << "\n\n";
-
-    return os;
-}
-
 /// Helpers
 
 void swap( SocialPrefNode& left, SocialPrefNode& right ){
@@ -200,7 +173,8 @@ void swap( SocialPrefNode& left, SocialPrefNode& right ){
 
 	swap( left.id, right.id );
 	swap( left.index, right.index );
-	swap( left.lowlink, right.lowlink );
+	swap( left.distance, right.distance );
+	swap( left.pi, right.pi );
 	swap( left.onstack, right.onstack );
 	swap( left.preferences, right.preferences );
 	swap( left.worsethan, right.worsethan );
@@ -212,7 +186,8 @@ void SocialPrefNode::clear( ){
 	id.clear( );
 
 	index = -1;
-	lowlink = -1;
+	distance = -1;
+	pi = { };
 
 	std::vector<SocialPrefNode*>( ).swap( preferences );
 	std::vector<SocialPrefNode*>( ).swap( worsethan );
@@ -221,4 +196,35 @@ void SocialPrefNode::clear( ){
 	preferences.clear( );
 	worsethan.clear( );
 	indifference.clear( );
+}
+
+/// Non-member helpers
+
+// Overloaded ostream operator
+std::ostream& operator<<( std::ostream& os, SocialPrefNode& node ){
+
+	os << "Node " << node.get_id( ) << "\nIs preferred to nodes: ";
+
+	for( std::vector<int>::size_type i = 0; i < node.get_preferences( ).size( ); ++i ){
+
+		os << "[ " << node.get_preferences( )[ i ]->get_id( ) << " ] ";
+	}
+
+	os << "\nIs worse than nodes: ";
+
+	for( std::vector<int>::size_type i = 0; i < node.get_worse( ).size( ); ++i ){
+
+		os << "[ " << node.get_worse( )[ i ]->get_id( ) << " ] ";
+	}
+
+	os << "\nIs equal to nodes: ";
+
+	for( std::vector<int>::size_type i = 0; i < node.get_indiff( ).size( ); ++i ){
+
+		os << "[ " << node.get_indiff( )[ i ]->get_id( ) << " ] ";
+	}
+
+	os << "\n\n";
+
+	return os;
 }

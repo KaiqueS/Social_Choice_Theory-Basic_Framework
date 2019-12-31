@@ -68,10 +68,10 @@ bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 
 		if( rank_relations( original, primerank ) == true ){
 
-			Profile winnerset = procedure( original );
+			Profile winnerset = procedure( matrix ); // MODIFIED THIS
 			winnerset.sort_by_value( );
 
-			Profile primeset = procedure( primerank );
+			Profile primeset = procedure( primematrix ); // MODIFIED THIS
 			primeset.sort_by_value( );
 
 			// Especial attention here. What one wants from this? Not the same values, but same ORDER, i.e.,

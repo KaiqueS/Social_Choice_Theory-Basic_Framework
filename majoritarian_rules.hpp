@@ -16,11 +16,10 @@ class Qualified_majority_rule : public Procedure{
 	   virtual Profile operator( )( Profile& profile );
 	   virtual Profile operator( )( Preferencematrix& matrix );
        virtual Profile& operator( )( Population& population );
-       virtual Profile& operator( )( Rank& rank );
 
+       // Rethink this
        virtual Profile& operator+=( Profile& rhs );
        virtual Profile& operator+=( Preferencematrix& rhs );
-       virtual Profile& operator+=( Rank& rhs );
 
     private:
 
@@ -39,11 +38,9 @@ class Simple_majority_rule : public Procedure{
 		virtual Profile operator( )( Profile& profile ) override;
 		virtual Profile operator( )( Preferencematrix& matrix ) override;
         virtual Profile& operator( )( Population& population ) override;
-        virtual Profile& operator( )( Rank& rank ) override;
 
         virtual Profile& operator+=( Profile& rhs ) override;
         virtual Profile& operator+=( Preferencematrix& rhs ) override;
-        virtual Profile& operator+=( Rank& rhs ) override;
 
     private:
 
@@ -61,11 +58,9 @@ class Two_rounds : public Procedure{
         virtual Profile operator( )( Profile& profile ) override;
         virtual Profile operator( )( Preferencematrix& matrix ) override;
         virtual Profile& operator( )( Population& population ) override;
-        virtual Profile& operator( )( Rank& rank ) override;
 
         virtual Profile& operator+=( Profile& rhs ) override;
         virtual Profile& operator+=( Preferencematrix& rhs ) override;
-        virtual Profile& operator+=( Rank& rhs ) override;
 
     private:
 

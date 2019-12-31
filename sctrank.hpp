@@ -33,9 +33,9 @@ public:
     // Setters
     void set_rank( PairWiseRank pair );
     void set_rank( std::vector<PairWiseRank> order );
-    void generate_ranking( Profile& profile ); // TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
-    void generate_ranking( Population& listofagents ); // TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
-    void generate_ranking( Preferencematrix& mtx ); // TODO: Miscounting when constructing a rank - Only happening with ICPC - Apparently it is not happening anymore
+    void generate_ranking( Profile& profile );
+    void generate_ranking( Population& listofagents );
+    void generate_ranking( Preferencematrix& mtx );
 
     // Getters
     std::vector<PairWiseRank> get_rank( ) const{ return ranking; }
@@ -67,9 +67,9 @@ private:
 // Non-member helpers
 std::ostream& operator<< ( std::ostream& os, Rank& rank );
 
-void initialize_opts( Rank& rank, Profile& profile );
+void initialize_opts( Rank& rank, Profile& profile ); // Useless after modifying below
 
-Profile make_social_order( Rank& rank );
+Profile make_social_order( Profile& profile, Rank& rank ); // TODO: modify this. This will not be used to create a profile anymore. Just to make a social order
 
 inline bool operator==( const Rank& left, const Rank& right ){
 	

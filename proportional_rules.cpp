@@ -32,8 +32,8 @@ Profile SCT::Proportional::operator( )( Preferencematrix& matrix ){
 
 	Rank rank( matrix );
 
-	winnerset = make_social_order( rank );
-
+	winnerset = make_social_order( *matrix.begin( ), rank ); // Updated version of make_social_order
+ 
 	for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
 		if( winnerset[ i ].get_value( ) >= quotient )
@@ -58,7 +58,9 @@ Profile& SCT::Proportional::operator( )( Population& population ){
 
     Rank rank( population );
 
-    winnerset = make_social_order( rank );
+    Profile profile{ population.begin( ) -> get_preferences( ) };
+
+    winnerset = make_social_order( profile, rank ); // Updated version of make_social_order
 
     for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
 
@@ -74,39 +76,13 @@ Profile& SCT::Proportional::operator( )( Population& population ){
     return winnerset;
 }
 
-Profile& SCT::Proportional::operator( )( Rank& rank ){
-
-    int quotient{ 0 };
-
-    winnerset = make_social_order( rank );
-
-    std::cout << "Enter a quotient between 1 and " << winnerset.size( ) << ": ";
-
-    std::cin >> quotient;
-
-    for( std::vector<int>::size_type i = 0; i < winnerset.size( ); ++i ){
-
-        if( winnerset[ i ].get_value( ) >= quotient ){
-
-            winnerset[ i ].set_status( true );
-        }
-
-        else
-
-            winnerset[ i ].set_status( false );
-    }
-
-    return winnerset;
-}
-
-// Debug this later
 Profile& SCT::Proportional::operator+=( Profile& profile ){
 
 	Preferencematrix matrix = { winnerset, profile };
 
 	Rank ranking( matrix );
 	
-	winnerset = SCT::Proportional::operator( )( ranking );
+	winnerset = SCT::Proportional::operator( )( matrix ); // MODIFIED
 
 	return winnerset;
 }
@@ -114,13 +90,6 @@ Profile& SCT::Proportional::operator+=( Profile& profile ){
 Profile& SCT::Proportional::operator+=( Preferencematrix& matrix ){
 
 	winnerset = SCT::Proportional::operator( )( matrix );
-
-	return winnerset;
-}
-
-Profile& SCT::Proportional::operator+=( Rank& rank ){
-
-	winnerset = SCT::Proportional::operator( )( rank );
 
 	return winnerset;
 }
