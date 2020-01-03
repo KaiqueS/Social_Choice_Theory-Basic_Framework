@@ -12,6 +12,15 @@ Options::Options( ){
     value = -1;
 }
 
+Options::Options( std::string name ){
+
+	opt = name;
+
+	status = false;
+
+	value = -1;
+}
+
 // Copy constructor. Initializes private properties based on the arguments passed by
 Options::Options( const Options& copy ){
 

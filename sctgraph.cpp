@@ -141,6 +141,8 @@ void Graph::initialize_graph( Preferencematrix& mtx ){
         nodes[ i ].set_id( mtx.get_matrix( ).begin( ) -> begin( )[ static_cast<int>( i ) ].get_opt( ) );
 }
 
+// Creates a graph according to the result of an aggregation procedure. Profile passed
+// as argument must be the result of an aggregation
 void Graph::make_graph( Profile& profile ){
 
     // Create an exception for this condition
@@ -157,26 +159,20 @@ void Graph::make_graph( Profile& profile ){
 
                 if( i != j ){
 
-                    Options one{ };
-                    one.set_opt( nodes[ i ].get_id( ) );
+                    std::vector<Options>::iterator left = std::find( profile.begin( ), profile.end( ), Options( nodes[ i ].get_id( ) ) );
+                    std::vector<Options>::iterator right = std::find( profile.begin( ), profile.end( ), Options( nodes[ j ].get_id( ) ) );
 
-                    Options two{ };
-                    two.set_opt( nodes[ j ].get_id( ) );
-
-                    auto left = std::find( profile.begin( ), profile.end( ), one );
-                    auto right = std::find( profile.begin( ), profile.end( ), two );
-
-                    if( left > right ){
+                    if( left -> get_value( ) > right -> get_value( ) ){
 
                         nodes[ i ].set_pref( nodes[ j ] );
                     }
 
-                    else if( left < right ){
+                    else if( left -> get_value( ) < right -> get_value( ) ){
 
                         nodes[ i ].set_worse( nodes[ j ] );
                     }
 
-                    else{
+                    else if( left -> get_value( ) == right -> get_value( ) ){
 
                         nodes[ i ].set_indiff( nodes[ j ] );
                     }
