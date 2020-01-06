@@ -48,15 +48,18 @@ class Rank:
                         if opt_x != opt_y:
 
                             # If the options are the same, i.e., have the same id
-                            if self.ranking[ pair ][ 0 ][ 0 ] == opt_x[ 0 ] and self.ranking[ pair ][ 1 ][ 0 ] == opt_y[ 0 ]:
+                            # Debug note: after modifying line 45 in Preference_Matrix,
+                            # elements of Profile in Matrix are now Options. Remove subscripts here
+                            # used in opt_x and opt_y
+                            if self.ranking[ pair ][ 0 ][ 0 ] == opt_x.get_opt( ) and self.ranking[ pair ][ 1 ][ 0 ] == opt_y.get_opt( ):
 
                                 
-                                if opt_x[ 2 ] > opt_y[ 2 ]:
+                                if opt_x.get_value( ) > opt_y.get_value( ):
                                     
                                     self.ranking[ pair ] = list( self.ranking[ pair ] )
                                     self.ranking[ pair ][ 2 ] += 1
 
-                                elif opt_x[ 2 ] < opt_y[ 2 ]:
+                                elif opt_x.get_value( ) < opt_y.get_value( ):
 
                                     self.ranking[ pair ] = list( self.ranking[ pair ] )
                                     self.ranking[ pair ][ 3 ] += 1
@@ -116,7 +119,7 @@ class Rank:
 
         for x, y in mylist:
 
-            self.ranking.append( ( x[ 0 ], y[ 0 ], 0, 0, 0 ) ) # modified here
+            self.ranking.append( ( x.get_opt( ), y.get_opt( ), 0, 0, 0 ) ) # modified here
 
 """ Testing Zone """
 

@@ -75,11 +75,6 @@ print( rank )
 print( "\n" )
 
 profile: Profile.Profile = Profile.Profile( )
-#profile = qualified_majority( matrix )
+profile = qualified_majority( matrix )
 
-x: float = 134.43
-print( x )
-
-x = "abacate"
-
-print( x )
+print( profile )

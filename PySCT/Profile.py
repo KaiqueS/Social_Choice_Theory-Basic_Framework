@@ -14,7 +14,7 @@ class Profile:
         self.opt_sorted: bool = opt_s if opt_s is not None else False
         self.indifference: bool = indiff if indiff is not None else False
 
-        self.alternatives: list( Options.Options ) = alts if alts is not None else [ ] # Modified this. TESTING
+        self.alternatives: list( Options.Options ) = alts if alts is not None else list( ) # Modified this. TESTING
 
     # Setters
     def __setitem__( self, index: int, opt: Options.Options ):
@@ -43,7 +43,17 @@ class Profile:
     # Helpers
     def __str__( self ) -> str:
 
-        return str( self.alternatives )
+        string: str = str( )
+
+        string += "[ "
+
+        for opt in self.alternatives:
+
+            string += str( opt )
+
+        string += " ]"
+
+        return string
 
     def initialize( self, profile: list( ) ): # problem here
 
@@ -151,4 +161,19 @@ def test5():
         prof[ i ] = ( str( i ), False, i )
 
     print( prof )
+"""
+
+"""
+prof1: Profile = Profile( )
+
+for i in range( 3 ):
+
+    prof1.append( Options.Options( str( i ), False, i ) )
+
+prof2: Profile = Profile( )
+prof2.initialize( prof1 )
+
+for opt in prof2:
+
+    print( opt )
 """

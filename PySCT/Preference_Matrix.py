@@ -1,5 +1,6 @@
 import random
 from string import ascii_lowercase
+import Options
 import Profile
 
 class Preference_Matrix:
@@ -10,14 +11,14 @@ class Preference_Matrix:
         self.rowsize: int = row if row is not None else 0
         self.columnsize: int = column if column is not None else 0
 
-        self.matrix: list( Profile.Profile ) = mtx if mtx is not None else [ ] # Modified this. TESTING
+        self.matrix: list( Profile.Profile( ) ) = mtx if mtx is not None else list( ) # Modified this. TESTING
 
     def __del__( self ):
 
         self.rowsize = 0
         self.columnsize = 0
 
-        self.matrix = []
+        self.matrix = list()
 
     # Setters
 
@@ -28,7 +29,7 @@ class Preference_Matrix:
         self.rowsize = row
         self.columnsize = column
 
-        alphabet: [ str ] = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+        alphabet: [ str ] = [ chr( i ) for i in range( ord( 'a' ), ord( 'z' ) + 1 ) ]
 
         for i in range( row ):
 
@@ -41,7 +42,7 @@ class Preference_Matrix:
 
             for j in range( column ):
 
-                self.matrix[ i ][ j ] = ( alphabet[ j ], False, randlist[ j ] )
+                self.matrix[ i ][ j ] = Options.Options( alphabet[ j ], False, randlist[ j ] ) # Modified: added Options.Options() -> This solved the issues
 
     # Getters
 
@@ -58,6 +59,16 @@ class Preference_Matrix:
     # Operators
 
     # Helpers
+    def __str__( self ) -> str:
+
+        string: str = str( )
+
+        for profile in self.matrix:
+
+            string += str( profile ) + "\n"
+
+        return string
+
     def print( self ) -> str:
 
         for i in range( len( self.matrix ) ):
@@ -89,13 +100,29 @@ class Preference_Matrix:
 # Testing Zone
 
 """
-matrix: Preference_Matrix  = Preference_Matrix()
+def test1( ):
 
-matrix.set_matrix( 4, 4 )
+    matrix: Preference_Matrix  = Preference_Matrix()
 
-matrix.print()
+    matrix.set_matrix( 4, 4 )
 
-print( "\n" )
+    matrix.print()
 
-print( matrix[ 1 ][ 2 ] )
+    print( "\n" )
+
+    print( matrix[ 1 ][ 2 ] )
+"""
+
+"""
+def test2( ):
+    
+    matrix: Preference_Matrix = Preference_Matrix( )
+    matrix.set_matrix( 3, 3 )
+
+    print( matrix )
+
+    profile: Profile.Profile = Profile.Profile( )
+    profile.initialize( matrix[ 0 ] ) # reads a matrix[ 0 ] profile as a TUPLE, not as a profile of options
+
+    print( profile )
 """

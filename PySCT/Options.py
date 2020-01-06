@@ -14,7 +14,7 @@ class Options:
 
         self._opt = ""
 
-        self._status = False
+        self._stats = False
 
         self._value = -1
 
@@ -25,7 +25,7 @@ class Options:
 
     def set_status( self, truth ):
 
-        self._status = truth
+        self._stats = truth
 
     def set_value( self, val ):
 
@@ -38,7 +38,7 @@ class Options:
     
     def get_status( self ) -> bool:
 
-        return self._status
+        return self._stats
 
     def get_value( self ) -> int:
 
