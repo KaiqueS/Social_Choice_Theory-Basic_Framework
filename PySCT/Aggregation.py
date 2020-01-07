@@ -10,49 +10,40 @@ def qualified_majority( matrix: Preference_Matrix.Preference_Matrix ) -> Profile
     result.initialize( matrix[ 0 ] )
 
     rank: Social_Choice_Rank.Rank = Social_Choice_Rank.Rank( )
-    rank.generate_ranking( matrix )
+    rank.generate_ranking( matrix ) # The error is here. Ranking miscreated
 
-    for left in result:
+    # The miscounting problem occurs because of ival in rank
+    for opt in result:
 
-        for right in result:
+        for pair in rank:
 
-            if left != right:
+            # If x.value > y.value
+            if pair[ 2 ] > pair[ 3 ]:
 
-                for pair in rank:
+                # If opt == x
+                if opt.get_opt( ) == pair[ 0 ]:
 
-                    # If x.value > y.value
-                    if pair[ 2 ] > pair[ 3 ]:
+                    opt._value += 1
 
-                        if pair[ 0 ] == left.get_opt( ):
+                else:
 
-                            left._value += 1
+                    continue
+            
+            # Else, if x.value < y.value
+            elif pair[ 2 ] < pair[ 3 ]:
 
-                        elif pair[ 0 ] == right.get_opt( ):
+                # If opt == y
+                if opt.get_opt( ) == pair[ 1 ]:
 
-                            right._value += 1
+                    opt._value += 1
 
-                        else:
+                else:
 
-                            continue
+                    continue
 
-                    # If x.value < y.value
-                    elif pair[ 2 ] < pair[ 3 ]:
+            elif pair[ 2 ] == pair[ 3 ]:
 
-                        if pair[ 1 ] == left.get_opt( ):
-
-                            left._value += 1
-
-                        elif pair[ 1 ] == right.get_opt( ):
-
-                            right._value ++ 1
-
-                        else:
-
-                            continue
-                    
-                    else:
-
-                        continue
+                continue
 
     return result
 
