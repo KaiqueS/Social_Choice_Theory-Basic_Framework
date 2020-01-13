@@ -1,4 +1,4 @@
-**Notice: all non-GUI related code is being uploaded to SCT_Test branch, while the GUI related code is being uploaded to TestBranch( yeah, I know the naming is awful, will fix it later, though ).**
+**NOTICE: all non-GUI related code is being uploaded to SCT_Test branch, while the GUI related code is being uploaded to TestBranch( yeah, I know the naming is awful, will fix it later, though ).**
 
 **Also, code in master branch has a previous( and working ) version of the GUI. Feel free to test it**
 
