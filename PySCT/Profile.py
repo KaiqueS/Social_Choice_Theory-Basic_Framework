@@ -7,14 +7,13 @@ import Options
 class Profile:
 
     # Constructors & Destructor
-    def __init__( self, value_s: bool = None, opt_s: bool = None, 
-                  indiff: bool = None, alts: [ Options.Options ] = None ):
+    def __init__( self, alts: [ Options.Options ] = None ):
 
-        self.value_sorted: bool = value_s if value_s is not None else False
-        self.opt_sorted: bool = opt_s if opt_s is not None else False
-        self.indifference: bool = indiff if indiff is not None else False
+        self.value_sorted: bool = False
+        self.opt_sorted: bool = False
+        self.indifference: bool = False
 
-        self.alternatives: list( Options.Options ) = alts if alts is not None else list( ) # Modified this. TESTING
+        self.alternatives: list( Options.Options ) = alts if alts is not None else list( )
 
     # Setters
     def __setitem__( self, index: int, opt: Options.Options ):
@@ -55,7 +54,7 @@ class Profile:
 
         return string
 
-    def initialize( self, profile: list( ) ): # problem here
+    def initialize( self, profile: [ Options.Options ] ): # problem here
 
         self.alternatives = profile
 
@@ -66,6 +65,30 @@ class Profile:
     def append( self, opt: Options.Options = None ):
 
         self.alternatives.append( opt ) if opt is not None else print( "Cannot append nothing" )
+
+    def order_by_value( self ):
+
+        self.alternatives.sort( reverse = True )
+
+        self.value_sorted = True
+
+        return self.alternatives
+
+    def winner( self ):
+
+        if self.value_sorted == True:
+
+            if len( self.alternatives ) != 0:
+
+                return self.alternatives[ 0 ]
+
+            else:
+
+                return "Error! Returning from empty list!\n"
+        
+        else:
+
+            return "List not sorted! Cannot determine winner.\n"
 
 # Testing methods below
 """
@@ -164,16 +187,37 @@ def test5():
 """
 
 """
-prof1: Profile = Profile( )
+def test6():
+    prof1: Profile = Profile( )
 
-for i in range( 3 ):
+    for i in range( 3 ):
 
-    prof1.append( Options.Options( str( i ), False, i ) )
+        prof1.append( Options.Options( str( i ), False, i ) )
 
-prof2: Profile = Profile( )
-prof2.initialize( prof1 )
+    prof2: Profile = Profile( )
+    prof2.initialize( prof1 )
 
-for opt in prof2:
+    for opt in prof2:
 
-    print( opt )
+        print( opt )
+"""
+
+"""
+def test7( ):
+
+    profile: Profile = Profile( [ Options.Options( "a", False, 1 ), Options.Options( "b", False, 2 ), Options.Options( "c", False, 3 ) ] )
+
+    for opt in profile:
+
+        print( opt )
+
+    profile.order_by_value( )
+
+    print( "\n" )
+
+    for opt in profile:
+
+        print( opt )
+
+test7( )
 """

@@ -51,6 +51,16 @@ class Options:
 
         return "( " + str( self._opt ) + ", " + str( self._value ) + " )"
 
+    def __lt__( self, right ):
+
+        if self._value < right._value:
+
+            return True
+        
+        else:
+
+            return False
+
 
 # Testing methods below
 
