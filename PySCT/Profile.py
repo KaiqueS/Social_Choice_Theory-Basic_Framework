@@ -56,6 +56,7 @@ class Profile:
 
     def initialize( self, profile: [ Options.Options ] ): # problem here
 
+        # I need for this to behave like a copy. Find a way to do that
         self.alternatives = profile
 
         for i in range( len( self.alternatives ) ):
@@ -221,3 +222,20 @@ def test7( ):
 
 test7( )
 """
+
+profile: Profile = Profile( [ Options.Options( "a", False, 34 ), Options.Options( "b", False, 23 ), Options.Options( "c", False, 5 ) ] )
+
+print( "\n" )
+
+print( profile )
+
+test: Profile = Profile( )
+test.initialize( profile.alternatives )
+
+print( "\n" )
+
+print( profile )
+
+print( "\n" )
+
+print( test )

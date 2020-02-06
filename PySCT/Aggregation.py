@@ -3,11 +3,11 @@ import Profile
 import Preference_Matrix
 import Social_Choice_Rank
 
-
+# Selects an alternative with >= n / 2 votes, where n is the number of voters
 def qualified_majority( matrix: Preference_Matrix.Preference_Matrix ) -> Profile.Profile:
 
-    result: Profile.Profile = matrix[ 0 ]
-    #result.initialize( matrix[ 0 ] )
+    result: Profile.Profile = Profile.Profile( )
+    result.initialize( matrix[ 0 ].alternatives )
 
     rank: Social_Choice_Rank.Rank = Social_Choice_Rank.Rank( )
     rank.generate_ranking( matrix ) # The error is here. Ranking miscreated
@@ -49,6 +49,26 @@ def qualified_majority( matrix: Preference_Matrix.Preference_Matrix ) -> Profile
 
     return result
 
+# Selects an alternative with the greatest amount of votes 
+def simple_majority( matrix: Preference_Matrix.Preference_Matrix ) -> Profile.Profile:
+
+    result: Profile.Profile = Profile.Profile( )
+    result.initialize( matrix[ 0 ] )
+
+    rank: Social_Choice_Rank.Rank = Social_Choice_Rank.Rank( )
+    rank.generate_ranking( matrix )
+
+
+
+    return result
+
+def borda_count( matrix: Preference_Matrix.Preference_Matrix ) -> Profile.Profile:
+
+    result: Profile.Profile = Profile.Profile( )
+    result.initialize( matrix[ 0 ] )
+
+    return result
+
 """ Testing Zone """
 
 def test1( ):
@@ -71,6 +91,10 @@ def test1( ):
 
     profile: Profile.Profile = Profile.Profile( )
     profile = qualified_majority( matrix )
+
+    matrix.print( )
+
+    print( "\n" )
 
     print( profile )
 
