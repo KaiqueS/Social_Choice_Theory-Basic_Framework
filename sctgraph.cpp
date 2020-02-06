@@ -1,13 +1,9 @@
-#include "sctgraph.hpp"
+#include "/Projetos/SocialChoice_VS/Include/sctgraph.hpp"
 
 /// Constructors & Destructor
 
 // Default constructor
 Graph::Graph( ){ nodes = { }; }
-
-// Alternative parameterized constructor. Inserts a node at the
-// end of NODES
-Graph::Graph( SocialPrefNode node ){ nodes.push_back( node ); }
 
 // Copy constructor
 Graph::Graph( const Graph& vertices ){ nodes = vertices.nodes; }
@@ -34,7 +30,7 @@ Graph::~Graph( ){
 /// Setters
 
 // Sets Graph's nodes to parameter vertices
-void Graph::set_graph( std::vector<SocialPrefNode> vertices ){ nodes = vertices; }
+void Graph::set_graph( std::vector<SocialPrefNode>& vertices ){ nodes = vertices; }
 
 // Sets a Graph's node to parameter node into position graph[ index ]
 void Graph::set_graph( SocialPrefNode node, std::vector<int>::size_type index ){
@@ -67,9 +63,6 @@ void Graph::set_graph( SocialPrefNode node, std::vector<int>::size_type index ){
         nodes[ index  ] = node;
 }
 
-// Pushes back node into nodes
-void Graph::set_graph( SocialPrefNode node ){ nodes.push_back( node ); }
-
 /// Getters
 
 /// Operators
@@ -97,10 +90,31 @@ SocialPrefNode& Graph::operator[ ]( const std::vector<int>::size_type index ){ r
 
 /// Helpers
 
+// Uses a profile to create the set of nodes in SCGraph, i.e., creates a set
+// of nodes and initializes its id's to the profiles options id's
+void Graph::initialize( Profile profile ){
+
+    if( !profile.empty( ) ){
+
+        nodes.resize( profile.size( ) );
+
+        for( std::vector<int>::size_type i = 0; i < nodes.size( ); ++i ){
+
+            nodes[ i ].set_id( profile[ i ].get_opt( ) );
+        }
+    }
+
+    else{
+
+        std::cerr << "Empty profile. Initialization not possible!\n";
+    }
+}
+
+/* REMOVED - cleaning interfaces
 // Initializes a graph according to the options in an random agent's profile
 void Graph::initialize_graph( Population& population ){
 
-    /*std::random_device rd;
+    std::random_device rd;
 
     //std::mt19937_64 mt( rd( ) );
     std::mt19937 mt( rd( ) );
@@ -112,7 +126,7 @@ void Graph::initialize_graph( Population& population ){
     for( std::vector<int>::size_type i = 0; i < population[ randagt( mt ) ].get_preferences( ).size( ); ++i ){
 
         nodes.push_back( SocialPrefNode( population[ randagt( mt ) ][ i ].get_opt( ), { }, { }, { }, { }, { }, { } ) );
-    }*/
+    }
 
     if( !population.empty( ) ){
 
@@ -140,6 +154,7 @@ void Graph::initialize_graph( Preferencematrix& mtx ){
 
         nodes[ i ].set_id( mtx.get_matrix( ).begin( ) -> begin( )[ static_cast<int>( i ) ].get_opt( ) );
 }
+*/
 
 // Creates a graph according to the result of an aggregation procedure. Profile passed
 // as argument must be the result of an aggregation
@@ -187,7 +202,7 @@ void Graph::make_graph( Profile& profile ){
     }
 }
 
-/* Creates a graph GRAPH composed by nodes of alternatives. Relates those nodes according to how the alt-
+/* Creates a graph GRAPH comprised of nodes of alternatives. Relates those nodes according to how the alt-
  * ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
  * that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
  * x.indifference */

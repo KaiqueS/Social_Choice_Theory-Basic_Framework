@@ -1,4 +1,4 @@
-#include "procedure.hpp"
+#include "/Projetos/SocialChoice_VS/Include/procedure.hpp"
 
 /* Desired behavior: if Procedure = Majority_rule, then, when receveing
  * an appropriate argument, Procedure will behave just as if it was a M

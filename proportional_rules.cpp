@@ -1,4 +1,4 @@
-#include "proportional_rules.hpp"
+#include "/Projetos/SocialChoice_VS/Include/proportional_rules.hpp"
 
 Profile SCT::Proportional::operator( )( Profile& profile ){
 

@@ -40,8 +40,7 @@ class Irrelevant_Alternatives{
 };
 
 /// Non-member helpers
-Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix ); // Experimental
+Preferencematrix generate_prime_profile( Preferencematrix& originalmatrix );
 
-void generate_all_profiles( Profile preferences );
-void generate_profiles_2( Profile preferences );
+void generate( int value, Profile& profile, Preferencematrix& matrix );
 }

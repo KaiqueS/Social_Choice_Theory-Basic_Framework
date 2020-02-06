@@ -1,4 +1,4 @@
-#include "iia.hpp"
+#include "/Projetos/SocialChoice_VS/Include/iia.hpp"
 
 /// Constructors & Destructor
 
@@ -118,6 +118,7 @@ void SCT::Irrelevant_Alternatives::clear( ){
 
 /// Non-member helpers
 
+// This generates PreferenceMatrixes that yields the same result as argument matrix
 // Rankings must contain the same alternatives in the same order!
 // Still needs more fine tuning - 14x14 new upper bound. ALMOST THERE, THOUGH
 Preferencematrix SCT::generate_prime_profile( Preferencematrix& originalmatrix ){
@@ -389,63 +390,34 @@ Preferencematrix SCT::generate_prime_profile( Preferencematrix& originalmatrix )
 	return primematrix;
 }
 
-// Begin with a number of options. Lets say, n.
-// Generate n alternatives in a set, the order here will not be important now. This will be the generator set G
-// Then, do the following:
-	// how many different lists can one get where the first alternative is, lets say, the first element of G
-	// repeat the above until every element of G is used
-void SCT::generate_all_profiles( Profile preferences ) {
+// THIS IS IT AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA - pass this to IIA.h
+// Always pre-sort the original profile according to lexical order
+void SCT::generate( int value, Profile& profile, Preferencematrix& matrix ){
 
-	Profile holder{ preferences };
+	if( value == 1 ){
 
-	Preferencematrix matrix{};
+		std::cout << profile << "\n";
 
-	matrix.push_back( holder );
+		matrix.push_back( profile );
+	}
 
-	// Magic number. For now, use it, but find a way to either justify or make it not magic
-	int repetitions{ 1 };
+	else{
 
-	for( std::vector<int>::size_type i = 2; i < preferences.size( ); ++i ){
+		generate( value - 1, profile, matrix );
 
-		std::vector<int>::size_type transpose_index{ 0 };
+		for( std::vector<int>::size_type i = 0; i < ( value - 1 ); ++i ){
 
-		for( std::vector<int>::size_type j = 0; j < std::tgamma( i + 1 ) - repetitions; ++j ) {
+			if( value % 2 == 0 ){
 
-			// switch elements between positions holder[ size - 1 ] and holder[ size - i ]
-			std::swap( holder[ holder.size( ) - 1 ], holder[ holder.size( ) - i - transpose_index ] ); // removed - j, it would overflow the vector, accessing elements out of scope
-
-			matrix.push_back( holder );
-
-			if( transpose_index < i - 1 ){
-
-				++transpose_index;
+				swap( profile[ i ], profile[ value - 1 ] );
 			}
 
 			else{
 
-				continue;
+				swap( profile[ 0 ], profile[ value - 1 ] );
 			}
-		}
 
-		holder = preferences;
-
-		repetitions *= i;
-	}
-}
-
-void SCT::generate_profiles_2( Profile preferences ){
-
-	Preferencematrix matrix{};
-
-	for( std::vector<int>::size_type i = 0; i < preferences.size( ); ++i ) {
-
-		for( std::vector<int>::size_type j = 0; j < ( ( std::tgamma( preferences.size( ) + 1 ) / preferences.size( ) ) - i ); ++j ) {
-
-			Profile holder( preferences.size( ) );
-
-			holder[ 0 ] = preferences[ i ];
-
-			matrix.push_back( holder );
+			generate( value - 1, profile, matrix );
 		}
 	}
 }

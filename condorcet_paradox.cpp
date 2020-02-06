@@ -1,4 +1,4 @@
-#include "condorcet_paradox.hpp"
+#include "/Projetos/SocialChoice_VS/Include/condorcet_paradox.hpp"
 
 // TODO: use this only for the case where there are only three alternatives,
 // so -> check rank and graph sizes, then check for condorcerity

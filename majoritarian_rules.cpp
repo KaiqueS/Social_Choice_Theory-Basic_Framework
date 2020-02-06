@@ -1,4 +1,4 @@
-#include "majoritarian_rules.hpp"
+#include "/Projetos/SocialChoice_VS/Include/majoritarian_rules.hpp"
 
 /// Qualified Majority Methods
 

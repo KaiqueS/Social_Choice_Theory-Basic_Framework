@@ -1,4 +1,4 @@
-#include "plurality_rules.hpp"
+#include "/Projetos/SocialChoice_VS/Include/plurality_rules.hpp"
 
 Profile SCT::Borda_count::operator( )( Profile& profile ){
 

@@ -1,4 +1,4 @@
-#include "pareto_principle.hpp"
+#include "/Projetos/SocialChoice_VS/Include/pareto_principle.hpp"
 
 /// Constructors & Destructor
 
