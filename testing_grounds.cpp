@@ -48,36 +48,96 @@ std::vector<int> num_of_elem( int size ){
 // position must begin at 0
 std::vector<std::string> zip_alphabet( std::vector<std::string> alpha, int remainder, int position, std::vector<int>::size_type recursion_depth ){
 
-	// This is definitely the BEST AND MOST ELEGANT WORKAROUNG THAT I HAVE EVER SEEN
+	// This is definitely the BEST AND MOST ELEGANT WORKAROUND THAT I HAVE EVER SEEN
 	std::vector<std::string> result{ alpha.begin( ), alpha.end( ) };
 
 	// This is a soft workaround
-	if( remainder == 0 || ( alpha.size( ) < 26 ) ){
+	if( remainder <= 0 || ( alpha.size( ) < 26 ) ){
 
 		return result;
 	}
 
 	else{
 
-		result.resize( result.size( ) + ( remainder - position ) );
+		// Wrong, but why? - remainder - position is a NEGATIVE value here
+		result.resize( result.size( ) + remainder );
 
-		// Need to fix this - may be right
-		for( std::vector<int>::size_type i = 0; i < ( remainder - position ); ++i ){
+		// Need to fix this - may be right - maybe <=?
+		for( std::vector<int>::size_type i = recursion_depth; i < ( result.size( ) - position ); ++i ){
 
 			// Just need to adjust the close-condition - still needs adjusting
 			// What I need to do: guarantee that j = remaining elements AND
 			// that the remaining elements do not overflow alphabet, i.e., somehow
 			// remainder < alphabet.size() 
-			for( std::vector<int>::size_type j = 0; j < remainder - alphabet( ).size( ); ++j ){
+			for( std::vector<int>::size_type j = 0; j < remainder; ++j ){
 
 				result[ position ] += result[ i ] + alphabet( )[ j ];
 
 				++position;
+
+				if( j == 25 ){
+
+					remainder -= j;
+
+					break;
+				}
+
+				else{
+
+					continue;
+				}
 			}
 		}
 
-		return zip_alphabet( result, ( remainder - position ), position, ++recursion_depth );
+		return zip_alphabet( result, ( remainder ), position, ++recursion_depth );
 	}
+}
+
+std::vector<std::string> newtry( std::vector<std::string> alpha, int remainder ){
+
+	std::vector<std::string> result{ alpha.begin( ), alpha.end( ) };
+
+	if( remainder <= 0 || result.size( ) < 26 ){
+
+		return result;
+	}
+
+	else{
+
+		std::vector<int>::size_type position{ result.size( ) };
+
+		result.resize( result.size( ) + ( remainder - result.size( ) ) + 1 );
+
+		remainder -= alpha.size( );
+
+		// Problem here: 
+		for( std::vector<int>::size_type i = 0; i < result.size( ); ++i ){
+
+			if( remainder <= 0 ){
+
+				return result;
+			}
+
+			else{
+
+				std::vector<int>::size_type used_elem{ 0 };
+
+				// Just need to fine tune this
+				for( std::vector<int>::size_type j = 0; ( j < remainder ) && ( j < alpha.size( ) ); ++j ){
+
+					result[ position ] += result[ i ] + alpha[ j ];
+
+					++position;
+
+					++used_elem;
+				}
+
+				remainder -= used_elem; // This is messing with control flux of for-loop
+			}
+		}
+	}
+
+	return result;
 }
 
 #endif // TESTING_GROUNDS_CPP
