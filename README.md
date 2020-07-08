@@ -80,6 +80,24 @@ Implement Indifference relation: done.
 Implement Condorcert Paradox - done, but needs improvement. 
 
 Implement Arrow's Impossibility Theorem - under revision.
+|
+|-> Pareto: done. Generate a SCRank, check if any alternative that is unanimously chosen beats every other alternative
+            in the Social Ordering generated through the procedure
+    
+ -> IIA: almost done. Generate, for a given set X of alternatives, all permutations for it. Then generate all possible
+         PreferenceMatrixes from all combinations of those permutations. Aggregate every profile in each PMatrix and
+         check whether or not the relation between any x, y in any profile is preserved under the aggregation procedure.
+         
+ -->     ALTERNATIVE IMPLEMENTATION: instead of generating all permutations, create a PMatrix and handle only those
+                                     profiles in it. Check whether the latter conditions hold or not.
+ 
+ -> Non-Dictatorship: 
+        
+ -->     first proposal of implementation: Sen's proof. Find, recursively, decisive sets, until one of cardinality = 1
+                                           is found. This will be the dictator.
+ 
+ -->     second proposal of implementation: find ALL decisive sets. Check whether the smallest of those has cardinality
+                                            equal to 1. If not, then there is no dictator.
 
 Implement Social Choice Graph Algorithms( only majorities are implemented until now )
 
