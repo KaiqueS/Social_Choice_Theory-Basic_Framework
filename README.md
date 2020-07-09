@@ -85,8 +85,10 @@ Implement Arrow's Impossibility Theorem - under revision.
             in the Social Ordering generated through the procedure
     
  -> IIA: almost done. Generate, for a given set X of alternatives, all permutations for it. Then generate all possible
-         PreferenceMatrixes from all combinations of those permutations. Aggregate every profile in each PMatrix and
-         check whether or not the relation between any x, y in any profile is preserved under the aggregation procedure.
+         PreferenceMatrixes from all combinations of those permutations. We will pick any two profiles from this PMatrix,
+         check wheter they are equal or not, where equal means that they preserve the same relations between any pair of
+         alternatives in them. If they are equal, we proceed to check whether the social ordering resulting from the
+         aggregation of both PMatrixes preserves the same relations between any pair of alternatives in them.
          
  -->     ALTERNATIVE IMPLEMENTATION: instead of generating all permutations, create a PMatrix and handle only those
                                      profiles in it. Check whether the latter conditions hold or not.
