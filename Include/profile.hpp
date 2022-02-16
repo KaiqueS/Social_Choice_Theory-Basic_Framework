@@ -13,7 +13,7 @@ public:
 
     // Constructors & Destructor
     Profile( );
-    Profile( bool value, bool opt, bool indiff, std::vector<Options> alts ) : _value_sorted( value ), _opt_sorted( opt ), indifference( indiff ), alternatives( alts ){ }
+    Profile( bool value, bool opt, bool indiff, std::string id, std::vector<Options> alts ) : _value_sorted( value ), _opt_sorted( opt ), identifier( id ), indifference( indiff ), alternatives( alts ){ }
 	Profile( std::initializer_list<Options> init ) : alternatives( std::move( init ) ){ }
     Profile( std::initializer_list<std::string> init );
     Profile( std::vector<int>::size_type size );
@@ -26,12 +26,16 @@ public:
     void sorted_by_value( bool value ){ _value_sorted = value; }
     void sorted_by_opt( bool opt ){ _opt_sorted = opt; }
 
+    void set_identifier( std::string& id ){ identifier = std::move( id ); }
+
     void set_alternatives( std::vector<Options>& alts );
     void set_alternatives( Options& opt );
 
     // Getters
     bool is_value_sorted( ) const;
 	bool is_opt_sorted( ) const;
+
+    std::string get_identifier( ){ return identifier; }
 
     std::vector<Options> get_alternatives( ) const{ return alternatives; } // removed return by reference
 
@@ -75,6 +79,8 @@ private:
     bool _value_sorted{ false };
     bool _opt_sorted{ false };
 	bool indifference{ true }; // Default to TRUE?
+
+    std::string identifier{ };
 
     std::vector<Options> alternatives{ };
 };

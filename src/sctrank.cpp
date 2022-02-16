@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/sctrank.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\sctrank.hpp"
 //include "listofpairs.hpp"
 //#include "pairsofopts.hpp" -> Used to cause multiple definition problem if not included here
 
@@ -55,6 +55,7 @@ void Rank::set_rank( std::vector<PairWiseRank> order ){
 
 // Test this later - DEBUG THIS
 // The purpose here is to be able to check a profile's transitivity
+// THIS IS USELESS NOW. make_social_order does the same thing, but more efficiently.
 void Rank::generate_ranking( Profile& profile ){
 
 	// Holder for a pair of options
@@ -489,102 +490,45 @@ void Rank::order_ranking( ){
 // Initializes a Profile with options in RANK, withouth repetition. // THIS ALGORITHM IS DUMB DUMB DUMB DUMB DUMB
 void initialize_opts( Rank& rank, Profile& profile ){
 
-    // Get all possible options
-    for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
+    for( auto i = 0; i < profile.size( ); ++i ){
 
-        profile.push_back( Options( rank[ i ].get_optx( ).get_opt( ), false, 0 ) );
-        profile.push_back( Options( rank[ i ].get_opty( ).get_opt( ), false, 0 ) );
-    }
+        for( auto j = i + 1; j < profile.size( ); ++j ){
 
-    // Remove repeated options // The problem is obviously here: iterating over an index with size as range
-	                           // while size is being modified because elements are being erased	
-    for( std::vector<int>::size_type i = 0; i < profile.size( ); ++i ){ // The problem is i as an index. Maybe I should make i = 0 whenever j completes a full loop
+            PairWiseRank pair( profile[ i ], profile[ j ] );
 
-        for( std::vector<int>::size_type j = 0; j < profile.size( ); ++j ){
-
-			if( i < profile.size( ) ){
-
-				if( i != j ){
-
-					if( profile[ i ].get_opt( ) == profile[ j ].get_opt( ) ){
-
-						std::cout << profile[ j ] << " index number " << j << " size " << profile.size( ) << "\n";
-
-						profile.erase( j );
-					}
-				}
-			}
-
-			else{
-
-				i = 0;
-			}
+            rank.push_back( pair );
         }
     }
-
-	std::cout << profile << "\n profile size is " << profile.size( ) << "\n";
 }
 
 // Makes a generic social order, sorted in descending order - I really think that a social order
 // should be generated from a procedure
-Profile make_social_order( Profile& profile, Rank& rank ){
+Rank make_social_order( Preferencematrix& matrix ){
 
-    // Holder for resulting social order
-    Profile orderedrank{ profile };
+	Rank ranking{ };
 
-    for( std::vector<int>::size_type i = 0; i < orderedrank.size( ); ++i ){
+    initialize_opts( ranking, *matrix.begin( ) );
 
-        orderedrank[ i ].set_value( 0 );
-    }
+    for( auto i = 0; i < ranking.size( ); ++i ){
 
-    // Gets every existing option, without repetition
-    // Instead of reconstructing a profile from a rank, just use the profile or matrix
-    // used to build the rank itself
-    //initialize_opts( rank, orderedrank ); // PROBLEM HERE
+        for( auto line = 0; line < matrix.size( ); ++line){
+        
+            Options left( *std::find( matrix[ line ].begin( ), matrix[ line ].end( ), ranking[ i ].get_optx( ) ) );
+            Options right( *std::find( matrix[ line ].begin( ), matrix[ line ].end( ), ranking[ i ].get_opty( ) ) );
 
-    // Check for emptyness - I really should make a exception class to handle this
-    if( !orderedrank.empty( ) )
+            if( left > right ){
 
-        // get every available option in RANK
-        for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
+                ranking[ i ].incrementx( );
+            }
 
-            // get every possible option in ORDEREDRANK
-            for( std::vector<int>::size_type j = 0; j < orderedrank.size( ); ++j ){
+            else{
 
-                // checks if the ORDEREDRANK[ j ] equals RANK[ i ]'s optx
-                if( rank[ i ].get_optx( ).get_opt( ) == orderedrank[ j ].get_opt( ) ){
-
-                    // Checks which option beats the other
-                    if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) )
-
-                        // If the option being considered beats its adversary, increment the former
-                        ++orderedrank[ j ];
-                }
-
-                // checks if the ORDEREDRANK[ j ] equals RANK[ i ]'s opty
-                else if( rank[ i ].get_opty( ).get_opt( ) == orderedrank[ j ].get_opt( ) ){
-
-                    // If it is, check if opty beats optx
-                    if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) )
-
-                        // Increment it
-                        ++orderedrank[ j ];
-                }
+                ranking[ i ].incrementy( );
             }
         }
+    }
 
-    /*auto order = [ ]( Options& left, Options& right ){
-
-        return left.get_value( ) > right.get_value( );
-    };
-
-    std::sort( orderedrank.begin( ), orderedrank.end( ), order );*/
-
-    // order vector from greatest to smallest, according to the value
-    orderedrank.value_merge_sort( 0, orderedrank.size( ) - 1 );
-
-    // Return sorted profile
-    return orderedrank;
+    return ranking;
 }
 
 /// Non-member Helpers

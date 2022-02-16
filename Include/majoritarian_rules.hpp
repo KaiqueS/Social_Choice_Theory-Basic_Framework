@@ -10,12 +10,10 @@ class Qualified_majority_rule : public Procedure{
     public:
 
        Qualified_majority_rule( ){ }
-       Qualified_majority_rule( Profile& winners ) : winnerset( winners ){ }
-       ~Qualified_majority_rule( ){ winnerset.clear( ); }
+       //Qualified_majority_rule( Profile& winners ) : winnerset( winners ){ }
+       ~Qualified_majority_rule( ){ /*winnerset.clear( ); */ }
 
-	   virtual Profile operator( )( Profile& profile );
 	   virtual Profile operator( )( Preferencematrix& matrix );
-       virtual Profile& operator( )( Population& population );
 
        // Rethink this
        virtual Profile& operator+=( Profile& rhs );
@@ -32,12 +30,10 @@ class Simple_majority_rule : public Procedure{
     public:
 
         Simple_majority_rule( ){ }
-        Simple_majority_rule( Profile& winners ) : winnerset( winners ){ }
-        ~Simple_majority_rule( ) override { winnerset.clear( ); }
+        // Simple_majority_rule( Profile& winners ) : winnerset( winners ){ }
+        ~Simple_majority_rule( ) override { /*winnerset.clear( );*/ }
 
-		virtual Profile operator( )( Profile& profile ) override;
 		virtual Profile operator( )( Preferencematrix& matrix ) override;
-        virtual Profile& operator( )( Population& population ) override;
 
         virtual Profile& operator+=( Profile& rhs ) override;
         virtual Profile& operator+=( Preferencematrix& rhs ) override;
@@ -52,12 +48,12 @@ class Two_rounds : public Procedure{
     public:
 
         Two_rounds( ){ }
-        Two_rounds( Profile& winner ) : winnerset( winner ){ }
-        ~Two_rounds( ) override { winnerset.clear( ); }
+        //Two_rounds( Profile& winner ) : winnerset( winner ){ }
+        ~Two_rounds( ) override { /*winnerset.clear( );*/ }
 
-        virtual Profile operator( )( Profile& profile ) override;
+        
         virtual Profile operator( )( Preferencematrix& matrix ) override;
-        virtual Profile& operator( )( Population& population ) override;
+        
 
         virtual Profile& operator+=( Profile& rhs ) override;
         virtual Profile& operator+=( Preferencematrix& rhs ) override;

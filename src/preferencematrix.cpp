@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/preferencematrix.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\preferencematrix.hpp"
 
 /// Constructors
 
@@ -89,7 +89,12 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 	// Sets alternatives' values
 	for( std::vector<int>::size_type i = 0; i < rowsz; ++i ){
 
+        std::string id = ( std::string )( id );
+
+        setofalts.set_identifier( id );
+
 		matrix.push_back( setofalts );
+        
 
 		for( std::vector<int>::size_type j = 0; j < colsz; ++j ){
 
@@ -177,7 +182,7 @@ std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix ){
 
     for( std::vector<int>::size_type i = 0; i < rowsz; ++i ){
 
-        os << "Row vector id number: " << i << "| ";
+        os << "Profile id: " << matrix[ i ].get_identifier( ) << "| ";
 
         for( std::vector<int>::size_type j = 0; j < colsz; ++j ){
 

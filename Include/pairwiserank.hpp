@@ -14,7 +14,9 @@ public:
     PairWiseRank( );
     PairWiseRank( Options xopt, Options yopt, int valx, int valy, int vali ) : optx( xopt ), opty( yopt ),
                                                                                xval( valx ), yval( valy ), ival( vali ){ }
-	PairWiseRank( const PairWiseRank& copy );
+    PairWiseRank( Options left, Options right ){ optx = left; 
+                                                 opty = right; }
+    PairWiseRank( const PairWiseRank& copy );
 	PairWiseRank( PairWiseRank&& copy );
 	~PairWiseRank( );
 

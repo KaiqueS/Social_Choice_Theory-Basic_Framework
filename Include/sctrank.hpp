@@ -16,6 +16,8 @@
 
 /* Class Description */
 
+// Decision Set
+
 class Rank{
 
 public:
@@ -69,7 +71,7 @@ std::ostream& operator<< ( std::ostream& os, Rank& rank );
 
 void initialize_opts( Rank& rank, Profile& profile ); // Useless after modifying below
 
-Profile make_social_order( Profile& profile, Rank& rank ); // TODO: modify this. This will not be used to create a profile anymore. Just to make a social order
+Rank make_social_order( Preferencematrix& matrix );
 
 inline bool operator==( const Rank& left, const Rank& right ){
 	
