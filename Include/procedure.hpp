@@ -70,4 +70,6 @@ class Decision_set{
     };
 }
 
+std::ostream& operator<<( std::ostream& os, SCT::Decision_set& set );
+
 #endif // PROCEDURE_HPP
