@@ -1,11 +1,10 @@
-#include "/Projetos/SocialChoice_VS/Include/non_dictatorship.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\non_dictatorship.hpp"
 
 /// Constructors & Destructor
 
 SCT::Non_Dictatorship::Non_Dictatorship( SCT::Non_Dictatorship&& copy ){
 
 	matrix = copy.matrix;
-	population = copy.population;
 	rank = copy.rank;
 	graph = copy.graph;
 
@@ -14,7 +13,6 @@ SCT::Non_Dictatorship::Non_Dictatorship( SCT::Non_Dictatorship&& copy ){
 SCT::Non_Dictatorship::Non_Dictatorship( const SCT::Non_Dictatorship& copy ){
 
 	matrix = copy.matrix;
-	population = copy.population;
 	rank = copy.rank;
 	graph = copy.graph;
 }
@@ -35,7 +33,6 @@ SCT::Non_Dictatorship& SCT::Non_Dictatorship::operator=( SCT::Non_Dictatorship c
 SCT::Non_Dictatorship& SCT::Non_Dictatorship::operator=( SCT::Non_Dictatorship&& copy ){
 
 	matrix = copy.matrix;
-	population = copy.population;
 	rank = copy.rank;
 	graph = copy.graph;
 
@@ -58,7 +55,6 @@ bool SCT::Non_Dictatorship::operator( )( SCT::Procedure& procedure ){
 void SCT::Non_Dictatorship::clear( ){
 
 	matrix.clear( );
-	population.clear( );
 	rank.clear( );
 	graph.clear( );
 }

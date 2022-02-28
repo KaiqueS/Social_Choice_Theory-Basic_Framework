@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/sctgraph.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\sctgraph.hpp"
 
 /// Constructors & Destructor
 
@@ -9,7 +9,7 @@ Graph::Graph( ){ nodes = { }; }
 Graph::Graph( const Graph& vertices ){ nodes = vertices.nodes; }
 
 // Move constructor
-Graph::Graph( Graph&& copy ){
+Graph::Graph( Graph&& copy ) noexcept{
 
 	nodes = std::move( copy.nodes );
 
@@ -76,7 +76,7 @@ Graph& Graph::operator=( const Graph& copy ){
 }
 
 // Overloaded move assignment
-Graph& Graph::operator=( Graph&& copy ){
+Graph& Graph::operator=( Graph&& copy ) noexcept{
 
 	nodes = std::move( copy.nodes );
 

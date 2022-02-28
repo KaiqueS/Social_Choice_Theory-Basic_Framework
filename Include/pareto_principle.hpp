@@ -12,7 +12,7 @@ namespace SCT{
 
 		// Constructors & Destructor
 		Pareto_Principle( ){ }
-		Pareto_Principle( Preferencematrix& mtx, Population& pop, Rank& newrank ) : matrix( mtx ), population( pop ), rank( newrank ){ } // Switch population with PreferenceMatrix
+		Pareto_Principle( Preferencematrix& mtx, Rank& newrank ) : matrix( mtx ), rank( newrank ){ }
 		Pareto_Principle( const Pareto_Principle& copy );
 		Pareto_Principle( Pareto_Principle&& copy );
 		~Pareto_Principle( );
@@ -32,8 +32,7 @@ namespace SCT{
 
 			using std::swap;
 
-			swap(left.rank, right.rank);
-			swap(left.population, right.population);
+			swap( left.rank, right.rank );
 		}
 
 		void clear( );
@@ -41,7 +40,6 @@ namespace SCT{
 	private:
 
 		Preferencematrix matrix{ };
-		Population population{ };
 		Rank rank{ };
 	};
 }

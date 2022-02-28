@@ -7,27 +7,24 @@
 // Default constructor
 Rank::Rank( ){ ranking = { }; }
 
-Rank::Rank( Population& population ){
-
-    generate_ranking( population );
-    order_ranking( );
-}
 
 Rank::Rank( Preferencematrix& matrix ){
 
+	initialize( *matrix.begin( ) );
+
     generate_ranking( matrix );
-    order_ranking( );
+    //order_ranking( );
 }
 
 // Copy constructor
 Rank::Rank( const Rank& copy ){ ranking = copy.ranking; }
 
 // Move constructor
-Rank::Rank( Rank&& rank ){
+Rank::Rank( Rank&& copy ) noexcept{
 
-	ranking = std::move( rank.ranking );
+	ranking = std::move( copy.ranking );
 
-	rank.clear( );
+	copy.clear( );
 }
 
 // Destructor. Clears RANKING from memory
@@ -35,14 +32,6 @@ Rank::~Rank( ){ clear( ); }
 
 /// Setters
 
-// Inserts a PairWiseRank at the end of RANKING
-void Rank::set_rank( PairWiseRank pair ){
-
-    ranking.push_back( pair );
-
-    // Added this later
-    order_ranking( );
-}
 
 // Sets RANKING to order
 void Rank::set_rank( std::vector<PairWiseRank> order ){
@@ -53,241 +42,39 @@ void Rank::set_rank( std::vector<PairWiseRank> order ){
     order_ranking( );
 }
 
-// Test this later - DEBUG THIS
-// The purpose here is to be able to check a profile's transitivity
-// THIS IS USELESS NOW. make_social_order does the same thing, but more efficiently.
-void Rank::generate_ranking( Profile& profile ){
+void Rank::generate_ranking( Preferencematrix& matrix ){
 
-	// Holder for a pair of options
-	PairsOfOpts compairs{ };
+	for( auto i = 0; i < ranking.size( ); ++i ){
 
-	// Generates all possible combinations of pairs, without repetitions
-	//std::vector<PairsOfOpts> ordering = pair_generation( mtx );
-	//ListOfPairs ordering = ListOfPairs( ).pair_generation( mtx );
-	//ListOfPairs ordering( mtx );
-	ListOfPairs ordering{ };
+		for( auto line = 0; line < matrix.size( ); ++line){
 
-	ordering.pair_generation( profile );
+			Options left( *std::find( matrix[ line ].begin( ), matrix[ line ].end( ), ranking[ i ].get_optx( ) ) );
+			Options right( *std::find( matrix[ line ].begin( ), matrix[ line ].end( ), ranking[ i ].get_opty( ) ) );
 
-	// quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
-	PairWiseRank paircomp{ };
+			if( left > right ){
 
-	//std::vector<PairWiseRank> ranking{ };
-
-	// Number of all possible combinations of pairs, without repetitions
-	std::vector<int>::size_type ordersize = ordering.size( );
-
-	// Number of profiles
-	std::vector<int>::size_type listsize = profile.size( );
-
-	// Number of options in each profile
-	std::vector<int>::size_type prefsize = profile.size( );
-
-	// Checks how a pair ( x, y ) is ranked for each agent
-	for( std::vector<int>::size_type i = 0; i < ordersize; ++i ){
-
-		// Holds both alternatives that will be checked
-		compairs.xpref = ordering[ i ].xpref;
-		compairs.ypref = ordering[ i ].ypref;
-
-		for( std::vector<int>::size_type j = 0; j < listsize; ++j ){
-
-			for( std::vector<int>::size_type k = 0; k < prefsize; ++k ){
-
-				// Search for x in agent's preferences
-				if( profile[ j ].get_opt( ) == compairs.xpref.get_opt( ) )
-
-					paircomp.set_optx( profile[ k ] );
-
-				// Search for y in agent's preferences -> ADDED: else
-				else if( profile[ j ].get_opt( ) == compairs.ypref.get_opt( ) )
-
-					paircomp.set_opty( profile[ k ] );
+				ranking[ i ].incrementx( );
 			}
 
-			// Compares x and y values. If x > y, increment xval
-			if( paircomp.get_optx( ).get_value( ) > paircomp.get_opty( ).get_value( ) )
+			else{
 
-				paircomp.incrementx( );
-
-			// Else, if x < y, increment yval
-			else if( paircomp.get_optx( ).get_value( ) < paircomp.get_opty( ).get_value( ) )
-
-				paircomp.incrementy( );
-
-			// Else, if x == y, increment ival
-			else if( paircomp.get_optx( ).get_value( ) == paircomp.get_opty( ).get_value( ) )
-
-				paircomp.incrementi( );
+				ranking[ i ].incrementy( );
+			}
 		}
-
-		// Stores the ranked tuple
-		ranking.push_back( paircomp );
-
-		// Resets the tuple for a new ranking
-		// paircomp = { };
-		paircomp = PairWiseRank( );
 	}
-
-	// Added this later
-	order_ranking( );
 }
 
-/* Ranks alternatives. The ranking has a form of quintuples ( x, y, xval, yval, ival ), where
- * x and y are the alternatives, and the vals represent how many agents prefer one over the
- * other. E.g.: xval > yval means that x is preferred to y
- */
-void Rank::generate_ranking( Population& listofagents ){
+void Rank::initialize( Profile& profile ){
 
-    // Holder for a pair of options
-    PairsOfOpts compairs{ };
+	for( auto i = 0; i < profile.size( ); ++i ){
 
-    // Generates all possible combinations of pairs, without repetitions
-    //std::vector<PairsOfOpts> ordering = pair_generation( listofagents );
-    //ListOfPairs ordering = ListOfPairs( ).pair_generation( listofagents );
-    ListOfPairs ordering{ };
+		for( auto j = i + 1; j < profile.size( ); ++j ){
 
-    ordering.pair_generation( listofagents );
+			PairWiseRank pair( profile[ i ], profile[ j ] );
 
-    // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
-    PairWiseRank paircomp{ };
-
-    //std::vector<PairWiseRank> ranking{ };
-
-    // Number of all possible combinations of pairs, without repetitions
-    std::vector<int>::size_type ordersize = ordering.size( );
-
-    // Number of profiles
-    std::vector<int>::size_type listsize = listofagents.size( );
-
-    // Number of options in each profile
-    //std::vector<int>::size_type prefsize = listofagents[ static_cast<std::vector<int>::size_type>( rand( ) ) % listsize ].get_preferences( ).size( );
-    std::vector<int>::size_type prefsize = listofagents.begin( ) -> get_preferences( ).size( );
-
-    // Checks how a pair ( x, y ) is ranked for each agent
-    for( std::vector<int>::size_type i = 0; i < ordersize; ++i ){
-
-        // Holds both alternatives that will be checked
-        compairs.xpref = ordering[ i ].xpref;
-        compairs.ypref = ordering[ i ].ypref;
-
-        for( std::vector<int>::size_type j = 0; j < listsize; ++j ){
-
-            for( std::vector<int>::size_type k = 0; k < prefsize; ++k ){
-
-                // Search for x in agent's preferences
-                if( listofagents[ j ][ k ].get_opt( ) == compairs.xpref.get_opt( ) )
-
-                    paircomp.set_optx( listofagents[ j ][ k ] );
-
-                // Search for y in agent's preferences -> ADDED: else
-                else if( listofagents[ j ][ k ].get_opt( ) == compairs.ypref.get_opt( ) )
-
-                    paircomp.set_opty( listofagents[ j ][ k ] );
-            }
-
-            // Compares x and y values. If x > y, increment xval
-            if( paircomp.get_optx( ).get_value( ) > paircomp.get_opty( ).get_value( ) )
-
-                paircomp.incrementx( );
-
-            // Else, if x < y, increment yval
-            else if( paircomp.get_optx( ).get_value( ) < paircomp.get_opty( ).get_value( ) )
-
-                paircomp.incrementy( );
-
-            // Else, if x == y, increment ival
-            else if( paircomp.get_optx( ).get_value( ) == paircomp.get_opty( ).get_value( ) )
-
-                paircomp.incrementi( );
-        }
-
-        // Stores the ranked tuple
-        ranking.push_back( paircomp );
-
-        // Resets the tuple for a new ranking
-        paircomp = { };
-    }
-
-    // Added this later
-    order_ranking( );
-}
-
-void Rank::generate_ranking( Preferencematrix& mtx ){
-
-    // Holder for a pair of options
-    PairsOfOpts compairs{ };
-
-    // Generates all possible combinations of pairs, without repetitions
-    //std::vector<PairsOfOpts> ordering = pair_generation( mtx );
-    //ListOfPairs ordering = ListOfPairs( ).pair_generation( mtx );
-    //ListOfPairs ordering( mtx );
-    ListOfPairs ordering{ };
-
-    ordering.pair_generation( mtx );
-
-    // quintuples ( x, y, xval, yval, ival ) and then map occurrences into val
-    PairWiseRank paircomp{ };
-
-    //std::vector<PairWiseRank> ranking{ };
-
-    // Number of all possible combinations of pairs, without repetitions
-    std::vector<int>::size_type ordersize = ordering.size( );
-
-    // Number of profiles
-    std::vector<int>::size_type listsize = mtx.size( );
-
-    // Number of options in each profile. Remember: profiles have the same size
-    std::vector<int>::size_type prefsize = mtx.begin( ) -> get_alternatives( ).size( );
-
-    // Checks how a pair ( x, y ) is ranked for each agent
-    for( std::vector<int>::size_type i = 0; i < ordersize; ++i ){
-
-        // Holds both alternatives that will be checked
-        compairs.xpref = ordering[ i ].xpref;
-        compairs.ypref = ordering[ i ].ypref;
-
-        for( std::vector<int>::size_type j = 0; j < listsize; ++j ){
-
-            for( std::vector<int>::size_type k = 0; k < prefsize; ++k ){
-
-                // Search for x in agent's preferences
-                if( mtx[ j ][ k ].get_opt( ) == compairs.xpref.get_opt( ) )
-
-                    paircomp.set_optx( mtx[ j ][ k ] );
-
-                // Search for y in agent's preferences -> ADDED: else
-                else if( mtx[ j ][ k ].get_opt( ) == compairs.ypref.get_opt( ) )
-
-                    paircomp.set_opty( mtx[ j ][ k ] );
-            }
-
-            // Compares x and y values. If x > y, increment xval
-            if( paircomp.get_optx( ).get_value( ) > paircomp.get_opty( ).get_value( ) )
-
-                paircomp.incrementx( );
-
-            // Else, if x < y, increment yval
-            else if( paircomp.get_optx( ).get_value( ) < paircomp.get_opty( ).get_value( ) )
-
-                paircomp.incrementy( );
-
-            // Else, if x == y, increment ival
-            else if( paircomp.get_optx( ).get_value( ) == paircomp.get_opty( ).get_value( ) )
-
-                paircomp.incrementi( );
-        }
-
-        // Stores the ranked tuple
-        ranking.push_back( paircomp );
-
-        // Resets the tuple for a new ranking
-        // paircomp = { };
-        paircomp = PairWiseRank( );
-    }
-
-    // Added this later
-    order_ranking( );
+			ranking.push_back( pair );
+		}
+	}
 }
 
 /// Getters
@@ -302,7 +89,7 @@ Rank& Rank::operator=( const Rank& copy ){
     return *this;
 }
 
-Rank& Rank::operator=( Rank&& copy ){
+Rank& Rank::operator=( Rank&& copy ) noexcept{
 
 	ranking = std::move( copy.ranking );
 
@@ -311,7 +98,7 @@ Rank& Rank::operator=( Rank&& copy ){
 	return *this;
 }
 
-// Overloaded subscript operator. Returns a quintuple PairWiseRank of the form
+// Overloaded subscript operator. Returns a 5-tuple PairWiseRank of the form
 // ( optx, opty, xval, yval, ival )
 PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
 
@@ -355,6 +142,8 @@ PairWiseRank& Rank::operator[ ]( const std::vector<int>::size_type index ){
 // Checks for transitivity. Returns true if, for any x, y, z, whenever ( x, y )
 // and ( y, z ), then ( x, z ). With Rank, this means that, whenever xval > yval,
 // and yval > zval, then xval > zval
+
+// I do not think that transitivity checking should be here
 bool Rank::is_transitive( ){
 
 	/*class Transitivity{
@@ -483,54 +272,6 @@ void Rank::order_ranking( ){
 	}
 }
 
-/// Non-member helpers
-
-// How to reconstruct a list of n elements from a list of pairs of elements? Do I really need to do this?
-// If I have a SCTRank, I must also have a PreferenceMatrix or a Population, or even a Profile
-// Initializes a Profile with options in RANK, withouth repetition. // THIS ALGORITHM IS DUMB DUMB DUMB DUMB DUMB
-void initialize_opts( Rank& rank, Profile& profile ){
-
-    for( auto i = 0; i < profile.size( ); ++i ){
-
-        for( auto j = i + 1; j < profile.size( ); ++j ){
-
-            PairWiseRank pair( profile[ i ], profile[ j ] );
-
-            rank.push_back( pair );
-        }
-    }
-}
-
-// Makes a generic social order, sorted in descending order - I really think that a social order
-// should be generated from a procedure
-Rank make_social_order( Preferencematrix& matrix ){
-
-	Rank ranking{ };
-
-    initialize_opts( ranking, *matrix.begin( ) );
-
-    for( auto i = 0; i < ranking.size( ); ++i ){
-
-        for( auto line = 0; line < matrix.size( ); ++line){
-        
-            Options left( *std::find( matrix[ line ].begin( ), matrix[ line ].end( ), ranking[ i ].get_optx( ) ) );
-            Options right( *std::find( matrix[ line ].begin( ), matrix[ line ].end( ), ranking[ i ].get_opty( ) ) );
-
-            if( left > right ){
-
-                ranking[ i ].incrementx( );
-            }
-
-            else{
-
-                ranking[ i ].incrementy( );
-            }
-        }
-    }
-
-    return ranking;
-}
-
 /// Non-member Helpers
 
 std::ostream& operator<<( std::ostream& os, Rank& rank ){
@@ -544,6 +285,7 @@ std::ostream& operator<<( std::ostream& os, Rank& rank ){
     return os;
 }
 
+// ????????????
 bool rank_relations( Rank& left, Rank& right ){
 
 	for( std::vector<int>::size_type i = 0; i < left.size( ); ++i ){

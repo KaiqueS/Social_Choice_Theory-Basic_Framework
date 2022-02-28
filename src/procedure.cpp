@@ -19,7 +19,7 @@ SCT::Procedure::~Procedure( ){ }
 
 void SCT::Decision_set::operator( )( Preferencematrix& matrix ){
 
-	Rank social_order = make_social_order( matrix );
+	Rank social_order{ matrix };
 
 	Decisors decide{ };
 
@@ -88,7 +88,22 @@ void SCT::Decision_set::intersect( ){
 				intersection.push_back( letter.get_opt( ) );
 			}
 		}
+	}		
+}
+
+std::ostream& operator<<( std::ostream& os, SCT::Decision_set& set ){
+
+	for( auto agent : set.get_decisors( ) ){
+
+		os << agent.pair.xpref.get_opt( ) << ", " << agent.pair.ypref.get_opt( ) << ": " << agent.winner.get_opt( ) << " -> [ ";
+
+		for( auto perfil = 0; perfil < agent.elements.size( ); ++perfil ){
+
+			os << agent.elements[ perfil ]->get_identifier( ) << " ";
+		}
+
+		os << "]\n";
 	}
 
-		
+	return os;
 }

@@ -42,7 +42,7 @@ public:
 
     // Operators
     PairWiseRank& operator=( const PairWiseRank& copy );
-	PairWiseRank& operator=( PairWiseRank&& copy );
+	PairWiseRank& operator=( PairWiseRank&& copy ) noexcept;
 
 	// Helpers
 	friend void swap( PairWiseRank& left, PairWiseRank& right );

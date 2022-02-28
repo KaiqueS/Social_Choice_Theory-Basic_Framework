@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/arrow_impossibility.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\arrow_impossibility.hpp"
 
 bool SCT::Arrow_Impossibility::operator( )( SCT::Procedure& procedure ){
 

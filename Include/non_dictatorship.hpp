@@ -11,7 +11,7 @@ class Non_Dictatorship{
 
 		// Constructors & Destructor
 		Non_Dictatorship( ){ }
-		Non_Dictatorship( Preferencematrix& mtx, Population& pop, Rank& newrank, Graph& newgraph ) : matrix( mtx ), population( pop ), rank( newrank ), graph( newgraph ){ }
+		Non_Dictatorship( Preferencematrix& mtx, Rank& newrank, Graph& newgraph ) : matrix( mtx ), rank( newrank ), graph( newgraph ){ }
 		Non_Dictatorship( const Non_Dictatorship& copy );
 		Non_Dictatorship( Non_Dictatorship&& copy );
 		~Non_Dictatorship( );
@@ -28,7 +28,6 @@ class Non_Dictatorship{
 			using std::swap;
 
 			swap( left.matrix, right.matrix );
-			swap( left.population, right.population );
 			swap( left.rank, right.rank );
 			swap( left.graph, right.graph );
 		}
@@ -38,7 +37,6 @@ class Non_Dictatorship{
 	private:
 
 		Preferencematrix matrix{ };
-		Population population{ };
 		Rank rank{ };
 		Graph graph{ };
 };

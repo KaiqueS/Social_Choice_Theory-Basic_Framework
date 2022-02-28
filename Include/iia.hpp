@@ -11,7 +11,7 @@ class Irrelevant_Alternatives{
 
 		// Constructors & Destructor
 		Irrelevant_Alternatives( ){ }
-		Irrelevant_Alternatives( Preferencematrix& mtx, Population& pop ) : matrix( mtx ), population( pop ){ }
+		Irrelevant_Alternatives( Preferencematrix& mtx ) : matrix( mtx ){ }
 		Irrelevant_Alternatives( const Irrelevant_Alternatives& copy );
 		Irrelevant_Alternatives( Irrelevant_Alternatives&& alts );
 		~Irrelevant_Alternatives( );
@@ -28,7 +28,6 @@ class Irrelevant_Alternatives{
 			using std::swap;
 
 			swap( left.matrix, right.matrix );
-			swap( left.population, right.population );
 		}
 
 		void clear( );
@@ -36,7 +35,6 @@ class Irrelevant_Alternatives{
 	private:
 
 		Preferencematrix matrix{ };
-		Population population{ }; // useless
 };
 
 /// Non-member helpers

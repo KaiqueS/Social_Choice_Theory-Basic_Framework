@@ -2,6 +2,7 @@
 #define LISTOFPAIRS_HPP
 
 #include "pairsofopts.hpp"
+#include "preferencematrix.hpp"
 
 class ListOfPairs{
 
@@ -9,13 +10,12 @@ public:
 
     // Constructos & Destructor
     ListOfPairs( );
-    ListOfPairs( Population& population );
-    ListOfPairs( Preferencematrix& matrix );
-    ListOfPairs( std::vector<PairsOfOpts> list ) : pairs( list ){ }
-    ListOfPairs( PairsOfOpts pair ){ pairs.push_back( pair ); }
     ListOfPairs( std::initializer_list<PairsOfOpts> init ) : pairs( std::move( init ) ){ }
+    ListOfPairs( std::vector<PairsOfOpts> list ) : pairs( list ){ }
+    //ListOfPairs( Preferencematrix& matrix );
+    
     ListOfPairs( const ListOfPairs& copy ){ pairs = copy.pairs; }
-	ListOfPairs( ListOfPairs&& copy ){ pairs = std::move( copy.pairs ); }
+	ListOfPairs( ListOfPairs&& copy ) noexcept{ pairs = std::move( copy.pairs ); }
     ~ListOfPairs( );
 
     // Setters
@@ -26,14 +26,13 @@ public:
 
     // Operators
     ListOfPairs operator=( const ListOfPairs& copy );
-	ListOfPairs operator=( ListOfPairs&& copy );
+	ListOfPairs operator=( ListOfPairs&& copy ) noexcept;
 
     PairsOfOpts& operator[ ]( const std::vector<int>::size_type index ){ return pairs[ index ]; }
 
     // Helpers
-	void pair_generation( Profile& profile );
-    void pair_generation( Population& listofagents );
-    void pair_generation( Preferencematrix& matrix );
+	
+    
 
     std::vector<PairsOfOpts, std::allocator<PairsOfOpts>>::iterator begin( ){ return pairs.begin( ); }
     std::vector<PairsOfOpts, std::allocator<PairsOfOpts>>::iterator end( ){ return pairs.end( ); }

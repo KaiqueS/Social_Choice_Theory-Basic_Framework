@@ -1,8 +1,8 @@
 #ifndef PAIRSOFOPTS_H
 #define PAIRSOFOPTS_H
 
-//#include "options.hpp"
-#include "population.hpp"
+#include "options.hpp"
+//#include "population.hpp"
 
 struct PairsOfOpts{
 

@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/pareto_principle.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\pareto_principle.hpp"
 
 /// Constructors & Destructor
 
@@ -6,15 +6,11 @@ SCT::Pareto_Principle::Pareto_Principle( const SCT::Pareto_Principle& copy ){
 
 	matrix = copy.matrix;
 
-	population = copy.population;
-
 	rank = copy.rank;
 }
 SCT::Pareto_Principle::Pareto_Principle( SCT::Pareto_Principle&& copy ){
 
 	matrix = copy.matrix;
-
-	population = copy.population;
 
 	rank = copy.rank;
 
@@ -38,8 +34,6 @@ SCT::Pareto_Principle& SCT::Pareto_Principle::operator=( SCT::Pareto_Principle&&
 
 	matrix = copy.matrix;
 
-	population = copy.population;
-
 	rank = copy.rank;
 
 	copy.clear( );
@@ -49,27 +43,24 @@ SCT::Pareto_Principle& SCT::Pareto_Principle::operator=( SCT::Pareto_Principle&&
 
 bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 
-	// Problem here: agents with no preferences
-	population.order_preferences( );
-
 	//std::cout << "Debug 1.\n";
 
 	Options optimum{ };
 
-	for( std::vector<int>::size_type i = 0; i < population.size( ); ++i ){
+	for( std::vector<int>::size_type i = 0; i < matrix.size( ); ++i ){
 
-		for( std::vector<int>::size_type j = 0; j < population[ i ].get_preferences( ).size( ); ++j ){
+		for( std::vector<int>::size_type j = 0; j < matrix[ i ].size( ); ++j ){
 
-			for( std::vector<int>::size_type k = j + 1; k < population[ i ].get_preferences( ).size( ); ++k ){
+			for( std::vector<int>::size_type k = j + 1; k < matrix[ i ].size( ); ++k ){
 
-				if( population[ i ][ j ].get_value( ) == population[ i ][ k ].get_value( ) ){
+				if( matrix[ i ][ j ].get_value( ) == matrix[ i ][ k ].get_value( ) ){
 
 					return true;
 				}
 
 				else{
 
-					optimum = population[ i ][ j ];
+					optimum = matrix[ i ][ j ];
 
 					optimum.set_status( true );
 
@@ -81,7 +72,7 @@ bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 
 	//std::cout << "Debug 2.\n";
 
-	if( optimum.get_opt( ) != procedure( population ).get_alternatives( ).begin( )->get_opt( ) )
+	if( optimum.get_opt( ) != procedure( matrix ).get_alternatives( ).begin( )->get_opt( ) )
 
 		return false;
 
@@ -95,8 +86,5 @@ bool SCT::Pareto_Principle::operator( )( SCT::Procedure& procedure ){
 void SCT::Pareto_Principle::clear( ){
 
 	matrix.clear( );
-
-	population.clear( );
-
 	rank.clear( );
 }

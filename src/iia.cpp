@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/iia.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\iia.hpp"
 
 /// Constructors & Destructor
 
@@ -6,16 +6,12 @@
 SCT::Irrelevant_Alternatives::Irrelevant_Alternatives( const SCT::Irrelevant_Alternatives& copy ){
 
 	matrix = copy.matrix;
-
-	population = copy.population;
 }
 
 // Move constructor
 SCT::Irrelevant_Alternatives::Irrelevant_Alternatives( SCT::Irrelevant_Alternatives&& alts ){
 
 	matrix = alts.matrix;
-
-	population = alts.population;
 	
 	alts.clear( );
 }
@@ -41,8 +37,6 @@ SCT::Irrelevant_Alternatives& SCT::Irrelevant_Alternatives::operator=( SCT::Irre
 SCT::Irrelevant_Alternatives& SCT::Irrelevant_Alternatives::operator=( SCT::Irrelevant_Alternatives&& alts ){
 
 	matrix = alts.matrix;
-
-	population = alts.population;
 
 	alts.clear( );
 
@@ -104,8 +98,6 @@ bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
 void SCT::Irrelevant_Alternatives::clear( ){
 
 	matrix.clear( );
-
-	population.clear( );
 }
 
 // This is all about relative positioning of alternatives. If, for any two profiles p and p', the rela

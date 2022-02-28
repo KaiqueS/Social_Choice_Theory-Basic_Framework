@@ -1,4 +1,4 @@
-#include "/Projetos/SocialChoice_VS/Include/single_peakdness.hpp"
+#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\single_peakdness.hpp"
 
 // If not true: analyze the profiles of preferences, both individual and social, then search for some kind of structure,
 // i.e., single peakedness degree, individual impact on social profile, etc.

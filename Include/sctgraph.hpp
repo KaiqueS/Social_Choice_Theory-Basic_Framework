@@ -4,7 +4,6 @@
 #define SCTGRAPH_H
 
 #include "socialprefnode.hpp"
-#include "population.hpp"
 #include "sctrank.hpp"
 #include "preferencematrix.hpp"
 
@@ -20,7 +19,7 @@ public:
     Graph( std::vector<SocialPrefNode> vertices ) : nodes( vertices ){ }
 	Graph( std::initializer_list<SocialPrefNode> init ) : nodes( std::move( init ) ){ }
     Graph( const Graph& copy );
-	Graph( Graph&& copy );
+	Graph( Graph&& copy ) noexcept;
     Graph( Rank& rank );
     ~Graph( );
 
@@ -34,13 +33,13 @@ public:
 
     // Operators
     Graph& operator=( const Graph& copy );
-	Graph& operator=( Graph&& copy );
+	Graph& operator=( Graph&& copy ) noexcept;
 
     SocialPrefNode& operator[ ]( const std::vector<int>::size_type index );
 
     // Helpers
-    //void initialize_graph( Population& population ); // Should not graphs be initialized only from Profiles?
-    //void initialize_graph( Preferencematrix& mtx ); // Should not graphs be initialized only from Profiles ?
+    //void initialize_graph( Population& population ); // Should graphs not be initialized only from Profiles?
+    //void initialize_graph( Preferencematrix& mtx ); // Should graphs not be initialized only from Profiles ?
     void initialize( Profile profile );
     void make_graph( Profile& profile );
     void make_graph( Rank& rank ); // TODO: Modify this. Remove Preference Matrix. Initialize graph separetely. Maybe another overload to create graphs from procedures

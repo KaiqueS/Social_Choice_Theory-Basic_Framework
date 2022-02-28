@@ -18,9 +18,9 @@ class Arrow_Impossibility{
 
 		// Constructors & Destructor
 		Arrow_Impossibility( ){ }
-		Arrow_Impossibility( Preferencematrix& mtx, Rank& rank, Population& pop, Graph& graph ) : pareto( Pareto_Principle( mtx, pop, rank  ) ),
-			                                                                                      irrelevant( Irrelevant_Alternatives( mtx, pop ) ),
-			                                                                                      dictator( Non_Dictatorship( mtx, pop, rank, graph ) ){ }
+		Arrow_Impossibility( Preferencematrix& mtx, Rank& rank, Graph& graph ) : pareto( Pareto_Principle( mtx, rank  ) ),
+			                                                                     irrelevant( Irrelevant_Alternatives( mtx ) ),
+			                                                                     dictator( Non_Dictatorship( mtx, rank, graph ) ){ }
 
 		Arrow_Impossibility( Pareto_Principle& par, Irrelevant_Alternatives& alts, Non_Dictatorship& dic/*, Single_Peakedness& peak*/ ) : pareto( par ),
 			                                                                                                                              irrelevant( alts ),

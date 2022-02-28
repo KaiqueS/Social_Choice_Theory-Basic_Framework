@@ -72,7 +72,7 @@ PairWiseRank& PairWiseRank::operator=( const PairWiseRank& copy ){
     return *this;
 }
 
-PairWiseRank& PairWiseRank::operator=( PairWiseRank&& copy ){
+PairWiseRank& PairWiseRank::operator=( PairWiseRank&& copy ) noexcept{
 
 	optx = std::move( copy.optx );
 	opty = std::move( copy.opty );
@@ -111,23 +111,19 @@ void PairWiseRank::clear( ){
 
 /// Non-member helpers
 
-// Comparison operator. Returns true when the average of optx + opty of LEFT is smaller than
-// opty + opty of Right. I.e., it means that a pair of options is greater than another when
-// its average is greater.
-
-
 // Overloaded printing operator.
 std::ostream& operator<<( std::ostream& os, PairWiseRank& rank ){
 
-    os << "X: " << rank.get_optx( ).get_opt( )
-       << "\tY: " << rank.get_opty( ).get_opt( )
-       << "\tXval: " << rank.get_xval( )
-       << "\tYval: " << rank.get_yval( )
-       << "\tIval: " << rank.get_ival( );
+	os << "X: " << rank.get_optx( ).get_opt( )
+	   << "\tY: " << rank.get_opty( ).get_opt( )
+	   << "\tXval: " << rank.get_xval( )
+	   << "\tYval: " << rank.get_yval( )
+	   << "\tIval: " << rank.get_ival( );
 
     return os;
 }
 
+// What the fuck???????????
 bool relation_comparison( const PairWiseRank& left, const PairWiseRank& right ){
 
 	if( ( left.get_xval( ) > left.get_yval( ) && right.get_xval( ) > right.get_yval( ) ) ||
