@@ -6,6 +6,7 @@
 #include "socialprefnode.hpp"
 #include "sctrank.hpp"
 #include "preferencematrix.hpp"
+#include "procedure.hpp"
 
 // A graph should always be initialized BEFORE the edges are created
 // How should graphs be made? From profiles resulting of aggregating procedures and from ranks!
@@ -20,7 +21,7 @@ public:
 	Graph( std::initializer_list<SocialPrefNode> init ) : nodes( std::move( init ) ){ }
     Graph( const Graph& copy );
 	Graph( Graph&& copy ) noexcept;
-    Graph( Rank& rank );
+    Graph( Profile& profile );
     ~Graph( );
 
     // Setters
@@ -38,11 +39,8 @@ public:
     SocialPrefNode& operator[ ]( const std::vector<int>::size_type index );
 
     // Helpers
-    //void initialize_graph( Population& population ); // Should graphs not be initialized only from Profiles?
-    //void initialize_graph( Preferencematrix& mtx ); // Should graphs not be initialized only from Profiles ?
     void initialize( Profile profile );
-    void make_graph( Profile& profile );
-    void make_graph( Rank& rank ); // TODO: Modify this. Remove Preference Matrix. Initialize graph separetely. Maybe another overload to create graphs from procedures
+    void make_graph( Profile& profile ); // ALAWAYS make a graph with a profile resulting from a procedure
     void push_back( SocialPrefNode& node ){ nodes.push_back( node ); }
     void clear( ){ nodes.clear( ); }
 

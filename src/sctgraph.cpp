@@ -16,8 +16,12 @@ Graph::Graph( Graph&& copy ) noexcept{
 	copy.clear( );
 }
 
-// Initializer constructor
-Graph::Graph( Rank& rank ){ make_graph( rank ); }
+Graph::Graph( Profile& profile ){
+
+    initialize( profile );
+
+    make_graph( profile );
+}
 
 // Destructor. Clears NODES from memory
 Graph::~Graph( ){
@@ -110,52 +114,6 @@ void Graph::initialize( Profile profile ){
     }
 }
 
-/* REMOVED - cleaning interfaces
-// Initializes a graph according to the options in an random agent's profile
-void Graph::initialize_graph( Population& population ){
-
-    std::random_device rd;
-
-    //std::mt19937_64 mt( rd( ) );
-    std::mt19937 mt( rd( ) );
-
-    std::uniform_int_distribution<std::vector<int>::size_type> randagt( 0, ( population.size( ) - 1 ) );
-
-    //std::vector<int>::size_type randagt = static_cast<std::vector<int>::size_type>( rand( ) ) % population.size( );
-
-    for( std::vector<int>::size_type i = 0; i < population[ randagt( mt ) ].get_preferences( ).size( ); ++i ){
-
-        nodes.push_back( SocialPrefNode( population[ randagt( mt ) ][ i ].get_opt( ), { }, { }, { }, { }, { }, { } ) );
-    }
-
-    if( !population.empty( ) ){
-
-        if( !nodes.begin( ) -> get_preferences( ).empty( ) ){
-
-            nodes.resize( population.begin( ) -> get_preferences( ).size( ) );
-        }
-    }
-
-    for( std::vector<int>::size_type i = 0; i < nodes.size( ); ++i ){
-
-        nodes[ i ].set_id( population.begin( ) -> get_preferences( )[ i ].get_opt( ) );
-    }
-}
-
-// Initializes a graph according to a random profile in a PreferenceMatrix
-void Graph::initialize_graph( Preferencematrix& mtx ){
-
-    if( !mtx.empty( ) )
-
-        nodes.resize( mtx.get_matrix( ).begin( ) -> size( ) );
-
-    // Initializes nodes' ids. Take as argument the ids from an agent's preferences
-    for( std::vector<int>::size_type i = 0; i < mtx.get_matrix( ).begin( ) -> size( ); ++i )
-
-        nodes[ i ].set_id( mtx.get_matrix( ).begin( ) -> begin( )[ static_cast<int>( i ) ].get_opt( ) );
-}
-*/
-
 // Creates a graph according to the result of an aggregation procedure. Profile passed
 // as argument must be the result of an aggregation
 void Graph::make_graph( Profile& profile ){
@@ -196,111 +154,6 @@ void Graph::make_graph( Profile& profile ){
                 else{
 
                     continue;
-                }
-            }
-        }
-    }
-}
-
-/* Creates a graph GRAPH comprised of nodes of alternatives. Relates those nodes according to how the alt-
- * ernatives are related to each other, i.e., for three alternatives x, y, and z, if x > y, then, one has
- * that y is in x.preferred, and x is in y.worsethan. If x == z, then x is in z.indifference and z is in
- * x.indifference */
-// Update this. Use the other overload as example
-void Graph::make_graph( Rank& rank ){
-
-    // Checks if the vector NODES is not empty
-    // Create an exception for this condition
-    if( nodes.empty( ) ){
-
-        std::cerr << "\n\nGraph has no nodes!\n\n";
-    }
-
-    else{
-
-        // Checks how alternatives are related. Links them accordingly to their relation
-        for( std::vector<int>::size_type i = 0; i < rank.size( ); ++i ){
-
-            for( std::vector<int>::size_type j = 0; j < nodes.size( ); ++j ){
-
-                // if x > y
-                if( rank[ i ].get_xval( ) > rank[ i ].get_yval( ) ){
-
-                    // If graph[ j ] == x, set preferredto = y, i.e., x is preferred to y
-                    if( nodes[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
-
-                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
-
-                            if( nodes[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) )
-
-                                nodes[ j ].set_pref( nodes[ k ] );
-                        }
-                    }
-
-                    // Else if nodes[ j ] == y, set worse = x, i.e., y is worse than x
-                    else if( nodes[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
-
-                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
-
-                            if( nodes[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
-
-                                nodes[ j ].set_worse( nodes[ k ] );
-                        }
-                    }
-                }
-
-                // if x < y
-                else if( rank[ i ].get_xval( ) < rank[ i ].get_yval( ) ){
-
-                    // If nodes[ j ] == x, set worsethan = y
-                    if( nodes[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
-
-                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
-
-                            if( nodes[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) )
-
-                                nodes[ j ].set_worse( nodes[ k ] );
-                        }
-                    }
-
-                    // Else if graph[ j ] == y, set preferences = y
-                    else if( nodes[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
-
-                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
-
-                            if( nodes[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) )
-
-                                nodes[ j ].set_pref( nodes[ k ] );
-                        }
-                    }
-                }
-
-                // if x == y
-                else if( rank[ i ].get_xval( ) == rank[ i ].get_yval( ) ){
-
-                    // If graph[ j ] == x, set indiff = y
-                    if( nodes[ j ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
-
-                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
-
-                            if( nodes[ k ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
-
-                                nodes[ k ].set_indiff( nodes[ j ] );
-                            }
-                        }
-                    }
-
-                    // Else if graph[ j ] == y, set indiff = x
-                    else if( nodes[ j ].get_id( ) == rank[ i ].get_opty( ).get_opt( ) ){
-
-                        for( std::vector<int>::size_type k = 0; k < nodes.size( ); ++k ){
-
-                            if( nodes[ k ].get_id( ) == rank[ i ].get_optx( ).get_opt( ) ){
-
-                                nodes[ k ].set_indiff( nodes[ j ] );
-                            }
-                        }
-                    }
                 }
             }
         }
