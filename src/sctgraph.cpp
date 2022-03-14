@@ -20,7 +20,7 @@ Graph::Graph( Profile& profile ){
 
     initialize( profile );
 
-    make_graph( profile );
+    //make_graph( profile );
 }
 
 // Destructor. Clears NODES from memory
@@ -114,47 +114,35 @@ void Graph::initialize( Profile profile ){
     }
 }
 
-// Creates a graph according to the result of an aggregation procedure. Profile passed
-// as argument must be the result of an aggregation
-void Graph::make_graph( Profile& profile ){
+// I need to change this. If a > b, create an directed edge from a to b, instead of creating
+// an edge just because a.value > b.value, which does not imply that a > b. Transitivity 
+// problems will be evident from this with cycles.
+void Graph::make_graph( Preferencematrix& matrix, SCT::Procedure& rule ){
 
-    // Create an exception for this condition
-    if( nodes.empty( ) ){
+    SCT::Decision_set set{ };
+    set( matrix );
 
-        std::cerr << "\n\nGraph has no nodes!\n\n";
-    }
+    Options first{ };
+    Options second{ };
 
-    else{
+    // To create an edge from a to b, I need to know wheter aPb under an aggregation procedure.
+    for( auto left = 0; left < nodes.size( ); ++left ){
 
-        for( std::vector<int>::size_type i = 0; i < nodes.size( ); ++i ){
+        for( auto right = left + 1; right < nodes.size( ); ++right ){
 
-            for( std::vector<int>::size_type j = 0; j < nodes.size( ); ++j ){
+            first.set_opt( nodes[ left ].get_id( ) );
+            second.set_opt( nodes[ right ].get_id( ) );
 
-                if( i != j ){
+            if( nodes[ left ].get_id( ) == rule( first, second, matrix ).get_opt( ) ){
 
-                    std::vector<Options>::iterator left = std::find( profile.begin( ), profile.end( ), Options( nodes[ i ].get_id( ) ) );
-                    std::vector<Options>::iterator right = std::find( profile.begin( ), profile.end( ), Options( nodes[ j ].get_id( ) ) );
+                nodes[ left ].set_pref( nodes[ right ] );
+                nodes[ right ].set_worse( nodes[ left ] );
+            }
 
-                    if( left -> get_value( ) > right -> get_value( ) ){
+            else{
 
-                        nodes[ i ].set_pref( nodes[ j ] );
-                    }
-
-                    else if( left -> get_value( ) < right -> get_value( ) ){
-
-                        nodes[ i ].set_worse( nodes[ j ] );
-                    }
-
-                    else if( left -> get_value( ) == right -> get_value( ) ){
-
-                        nodes[ i ].set_indiff( nodes[ j ] );
-                    }
-                }
-
-                else{
-
-                    continue;
-                }
+                nodes[ right ].set_pref( nodes[ left ] );
+                nodes[ left ].set_worse( nodes[ right ] );
             }
         }
     }

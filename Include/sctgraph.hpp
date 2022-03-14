@@ -40,7 +40,7 @@ public:
 
     // Helpers
     void initialize( Profile profile );
-    void make_graph( Profile& profile ); // ALAWAYS make a graph with a profile resulting from a procedure
+    void make_graph( Preferencematrix& matrix, SCT::Procedure& rule ); // ALWAYS make a graph with a profile resulting from a procedure
     void push_back( SocialPrefNode& node ){ nodes.push_back( node ); }
     void clear( ){ nodes.clear( ); }
 

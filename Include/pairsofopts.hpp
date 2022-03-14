@@ -2,7 +2,6 @@
 #define PAIRSOFOPTS_H
 
 #include "options.hpp"
-//#include "population.hpp"
 
 struct PairsOfOpts{
 

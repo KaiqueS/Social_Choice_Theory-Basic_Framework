@@ -8,7 +8,6 @@
 //#include <functional>
 #include "pairwiserank.hpp"
 #include "preferencematrix.hpp"
-#include "listofpairs.hpp"
 
 /* Class Description */
 

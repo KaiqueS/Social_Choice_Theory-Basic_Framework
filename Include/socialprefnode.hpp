@@ -103,7 +103,7 @@ private:
 	int index{ -1 };
     int distance{ -1 };
 	
-    SocialPrefNode* pi{ };
+    SocialPrefNode* pi{ }; // What the fuck is pi?
 
 	bool onstack{ false };
 

@@ -1,8 +1,7 @@
 #ifndef PROCEDURE_HPP
 #define PROCEDURE_HPP
 
-//#include "population.hpp"
-//#include "profile.hpp"
+#include "pairsofopts.hpp"
 #include "sctrank.hpp"
 
 // TODO: I have to find a way of building an ordering relation dependant on the chosen procedure
@@ -18,15 +17,10 @@ class Procedure{
 
         // Operators
         virtual Profile operator( )( Preferencematrix& matrix ) = 0;
+        virtual Options operator( )( Options& left, Options& right, Preferencematrix& matrix ) = 0;
 
-        // Both of these methods must be rethinked, so as not to throw away
-        // processed information. I.e.: adding a profile or a matrix should
-        // not make us recount all the votes from the start. We can use the
-        // existing output and just calculate the effects of the new profile
-        // on it.
-        virtual Profile& operator+=( Profile& rhs ) = 0;
-        virtual Profile& operator+=( Preferencematrix& rhs ) = 0;
-        // virtual Profile& operator+=( Rank& rhs ) = 0;
+        // Helpers
+        virtual void score( Preferencematrix& matrix ) = 0;
     };
 
 struct Decisors{

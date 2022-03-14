@@ -15,9 +15,9 @@ class Qualified_majority_rule : public Procedure{
 
 	   virtual Profile operator( )( Preferencematrix& matrix );
 
-       // Rethink this
-       virtual Profile& operator+=( Profile& rhs );
-       virtual Profile& operator+=( Preferencematrix& rhs );
+       virtual Options operator( )( Options& left, Options& right, Preferencematrix& matrix );
+
+       virtual void score( Preferencematrix& matrix ) override;
 
     private:
 
@@ -35,9 +35,6 @@ class Simple_majority_rule : public Procedure{
 
 		virtual Profile operator( )( Preferencematrix& matrix ) override;
 
-        virtual Profile& operator+=( Profile& rhs ) override;
-        virtual Profile& operator+=( Preferencematrix& rhs ) override;
-
     private:
 
         Profile winnerset{ };
@@ -50,14 +47,9 @@ class Two_rounds : public Procedure{
         Two_rounds( ){ }
         //Two_rounds( Profile& winner ) : winnerset( winner ){ }
         ~Two_rounds( ) override { /*winnerset.clear( );*/ }
-
-        
+       
         virtual Profile operator( )( Preferencematrix& matrix ) override;
         
-
-        virtual Profile& operator+=( Profile& rhs ) override;
-        virtual Profile& operator+=( Preferencematrix& rhs ) override;
-
     private:
 
         Profile winnerset{ };

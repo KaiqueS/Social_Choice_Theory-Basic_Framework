@@ -6,16 +6,16 @@
 
 // Operators
 
-// Assuming that profiles are ordered lexicographically
+// If the number of Profiles in which a beats b > ( number of alternatives / 2 ),
+// then a beats b, i.e., aPb. If there is a cycle, winnerset order will NECESSARILY
+// be WRONG! This is not an implementation problem, since majority rule is NOT
+// guaranteed to be acyclic! Thus, the implementation is CORRECT.
+
+// What happens when we have an even number of profiles s.t. a == b????????
 Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
 	SCT::Decision_set set{ };
 	set( matrix );
-
-	// Talvez jogar o if empty pra fora e usar o for só no else
-	// if empty, read a pair and insert it, recursion. Recursion
-	// is not a good idea, though, because it would require the
-	// reconstruction of set, which is costly.
 
 	auto is_in_profile = [ ]( Profile& perfil, Options& opt ){
 
@@ -32,8 +32,10 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
 	winnerset = *matrix.begin( );
 
+	// Assuming that profiles are ordered lexicographically
 	for( auto perfil : set.get_decisors( ) ){
 
+		// This is unnecessary. REMOVE
 		if( winnerset.empty( ) ){
 
 			if( perfil.winner.get_value( ) > ( matrix.size( ) / 2 ) ){
@@ -55,33 +57,19 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 		// This part relies largely on the structure of decision_sets.
 		else{
 
-		// Problem: the algorithm only starts ordering after the last ( a, x ), for x != a
-		// is read. I.e., it does not order any ( a, x ) in perfil. I.e., the ordering starts
-		// at ( b, c ) always, i.e., after all ( a, x ) were read
-
 		// Two possible cases:
 			
 			// both are in winnerset
 			if( is_in_profile( winnerset, perfil.pair.xpref ) &&
 				is_in_profile( winnerset, perfil.pair.ypref ) ){
 
-				// If x is the winner, but x is located AFTER y in winnerset, swap
-				// INSTEAD OF SWAPPING, INSERT IN BETWEEN! I.e., insert winner 
-				// before loser
+				// If x is the winner, but x is located AFTER y in winnerset,
+				// INSERT IN BETWEEN! I.e., insert winner before loser
 				if( perfil.pair.xpref == perfil.winner &&
 					std::find( winnerset.begin( ), winnerset.end( ), perfil.pair.xpref ) >
 					std::find( winnerset.begin( ), winnerset.end( ), perfil.pair.ypref ) ){
 
 					std::vector<Options>::size_type position_y{ };
-
-					/*for( auto i = 0; i < winnerset.size( ); ++i ){
-
-						if( winnerset[ i ] == perfil.pair.ypref ){
-
-							position_y = i;
-						}
-					}*/
-
 					std::vector<Options>::size_type position_x{ };
 
 					for( auto i = 0; i < winnerset.size( ); ++i ){
@@ -101,9 +89,6 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
 					winnerset.insert( iterate_y, perfil.pair.xpref );
 					winnerset.erase( position_x + 1 );
-
-					//std::find( winnerset.begin( ), winnerset.end( ), perfil.pair.xpref ) -> operator=( perfil.pair.ypref );
-					//winnerset[ position_y ] = perfil.pair.xpref;
 				}
 
 				else if( perfil.pair.ypref == perfil.winner &&
@@ -111,15 +96,6 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 						 std::find( winnerset.begin( ), winnerset.end( ), perfil.pair.xpref ) ){
 
 					std::vector<int>::size_type position_x{ };
-
-					/*for( auto i = 0; i < winnerset.size( ); ++i ){
-
-						if( winnerset[ i ] == perfil.pair.xpref ){
-
-							position_x = i;
-						}
-					}*/
-
 					std::vector<Options>::size_type position_y{ };
 
 					for( auto i = 0; i < winnerset.size( ); ++i ){
@@ -139,9 +115,6 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
 					winnerset.insert( iterate_x, perfil.pair.ypref );
 					winnerset.erase( position_y + 1 );
-
-					//std::find( winnerset.begin( ), winnerset.end( ), perfil.pair.ypref ) -> operator=( perfil.pair.xpref );
-					//winnerset[ position_x ] = perfil.pair.ypref;
 				}
 			}
 
@@ -154,25 +127,66 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 		}
 	}
 
-	// if the ordering is transitive
-	return winnerset;
-
-	// else
-	// return an exception or empty profile? Maybe exception. Since arrow consider only transitive profiles
-}
-
-
-
-// Hum... remember to modify the operator( ) behavior for matrixes and populations.
-// This is not right
-Profile& SCT::Qualified_majority_rule::operator+=( Profile& rhs ){
+	score( matrix );
 
 	return winnerset;
 }
 
-Profile& SCT::Qualified_majority_rule::operator+=( Preferencematrix& rhs ){
+// Returns the majority winner from a pair ( left, right )
+Options SCT::Qualified_majority_rule::operator( )( Options& left, Options& right, Preferencematrix& matrix ){
 
-	return winnerset;
+	SCT::Decision_set set{ };
+	set( matrix );
+
+	for( auto element : set.get_decisors( ) ){
+
+		if( ( element.pair.xpref == left && element.pair.ypref == right ) ||
+			( element.pair.ypref == left && element.pair.xpref == right ) ){
+
+			if( element.elements.size( ) > ( matrix.size( ) / 2 ) ){
+
+				return element.winner;
+			}
+
+			else{
+
+				continue;
+			}
+		}
+
+		else{
+
+			continue;
+		}
+	}
+}
+
+void SCT::Qualified_majority_rule::score( Preferencematrix& matrix ){
+
+	SCT:Decision_set set{ };
+	set( matrix );
+
+	for( std::vector<Options>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+		winnerset[ i ].set_value( 0 );
+	}
+
+	for( auto decisor : set.get_decisors( ) ){
+
+		// how many alternatives does x beat?
+		for( std::vector<Options>::size_type i = 0; i < winnerset.size( ); ++i ){
+
+			if( winnerset[ i ] == decisor.winner ){
+
+				winnerset[ i ]++;
+			}
+
+			else{
+				
+				continue;
+			}
+		}
+	}
 }
 
 /// Simple Majority Methods
@@ -185,18 +199,6 @@ Profile SCT::Simple_majority_rule::operator( )( Preferencematrix& matrix ){
 	return winnerset;
 }
 
-
-
-Profile& SCT::Simple_majority_rule::operator+=( Profile& rhs ){
-
-	return winnerset;
-}
-
-Profile& SCT::Simple_majority_rule::operator+=( Preferencematrix& rhs ){
-
-	return winnerset;
-}
-
 /// Two_round Simple majority Methods - NEEDS TESTING
 
 // Constructors
@@ -204,15 +206,6 @@ Profile& SCT::Simple_majority_rule::operator+=( Preferencematrix& rhs ){
 // Operators
 
 Profile SCT::Two_rounds::operator( )( Preferencematrix& matrix ){
-
-	return winnerset;
-}
-
-Profile& SCT::Two_rounds::operator+=( Profile &rhs ){
-
-	return winnerset;
-}
-Profile& SCT::Two_rounds::operator+=( Preferencematrix &rhs ){
 
 	return winnerset;
 }
