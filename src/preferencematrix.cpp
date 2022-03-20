@@ -166,6 +166,30 @@ void Preferencematrix::merge_sort_by_value( ){
     }
 }
 
+// FOCUS ON THIS!
+void Preferencematrix::read_dataset( std::string file_name ){
+
+    // Primeiro, faz funcionar com o dataset que tu tem
+
+    std::fstream dataset{ };
+    dataset.open( file_name );
+
+    std::string names{ };
+
+    Profile perfil{ };
+
+    // Read the file, get the names of the candidates, then load to a profile.
+    // But, how to set the matrix up?
+    while( std::getline( dataset, names, ',' ) ){
+
+        perfil.push_back( Options( names ) );
+    }
+
+    matrix.push_back( perfil );
+
+    dataset.close( );
+}
+
 /// Non-member helpers
 
 // Prints PreferenceMatrix

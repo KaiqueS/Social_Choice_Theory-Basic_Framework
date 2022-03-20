@@ -10,6 +10,8 @@
 //#include <ctime>
 //#include <map>
 #include <string>
+#include <fstream>
+#include <Python.h>
 #include "profile.hpp"
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
@@ -61,6 +63,8 @@ public:
 	void clear( );
 
 	void merge_sort_by_value( );
+
+	void read_dataset( std::string file_name );
 
 private:
 
