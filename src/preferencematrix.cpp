@@ -180,7 +180,22 @@ void Preferencematrix::read_dataset( std::string file_name ){
 
     // Read the file, get the names of the candidates, then load to a profile.
     // But, how to set the matrix up?
+
+        // Check the original dataset. Group candidates by name. The number of
+        // entries for each candidate must be the number of votes. Use this
+        // number to fill the value of each option.
+
+            // This STILL does not helps us filling a whole profile! We need the
+            // ranking over all candidates! But this will require AI
     while( std::getline( dataset, names, ',' ) ){
+
+        /*for( auto i = 0; i < names.size( ); ++i ){
+
+            if( !std::isalpha( names[ i ] ) ){
+
+                names.erase( names.begin( ) + i );
+            }
+        }*/
 
         perfil.push_back( Options( names ) );
     }

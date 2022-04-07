@@ -40,6 +40,14 @@ struct Decisors{
 // QUESTION: if the intersection of all decision sets is not empty, it must contain
 //           one and only one profile. But, what to do when it is empty? Must we rely
 //           on semi-decisiveness?
+
+// NOTE: by design, for any pair ( a, b ), anyone in the decision set of the pair is
+// NECESSARILY semi-decisive for that pair, EXCEPT when the size of the set equals
+// the number of profile. In this case, we have pure decisiveness, by pareto condition.
+// Why? Because anyone not in the set necessarily ranks ( a, b ) inversely! Since the
+// sets just stores the profiles that ranks the winner from ( a, b ) higher. But, is
+// it possible to have pure decisiveness when the set cardinality != number of profiles?
+// If this were the case, then we would necessarily have a dictatorial profile.
 class Decision_set{
 
     public:
@@ -62,6 +70,7 @@ class Decision_set{
         std::vector<Decisors> decisor{ };
         std::vector<std::string> intersection{ };
     };
+
 }
 
 std::ostream& operator<<( std::ostream& os, SCT::Decision_set& set );

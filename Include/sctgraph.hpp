@@ -79,6 +79,10 @@ bool bellman_ford( Graph& graph, double weight, SocialPrefNode& initial );
 
 void dijkstra( Graph& graph, int weight, SocialPrefNode& initial );
 
+bool transitivity( Graph& graph );
+
+Preferencematrix cycles( Graph& graph );
+
 // Implement Min-Heapify( p.112 ) and Extract-Min( p. 119 ). After, do Dijkstra( p.479 )
 
 #endif // SCTGRAPH_H

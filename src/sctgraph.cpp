@@ -252,3 +252,74 @@ void dijkstra( Graph& graph, int weight, SocialPrefNode& initial ){
 
 
 }
+
+// By design, if a node B is in node A's preferences, then A > B. Thus, B cannot contain
+// A in its preferences. It must contain A in worsethan
+bool transitivity( Graph& graph ){
+
+    for( auto first : graph ){
+
+        if( !first.get_preferences( ).empty( ) ){
+
+            for( auto second : first.get_preferences( ) ){
+
+                if( !second -> get_preferences( ).empty( ) ){
+
+                    for( auto third : second -> get_preferences( ) ){
+
+                        if( !third -> get_preferences( ).empty( ) ){
+
+                            for( auto fourth : third->get_preferences( ) ){
+
+                                if( first == *fourth ){
+
+                                    std::cout << "intransitive profile\n";
+
+                                    return false;
+                                }
+
+                                else{
+
+                                    continue;
+                                }
+                            }
+                        }
+
+                        else{
+
+                            continue;
+                        }
+                    }
+                }
+
+                else{
+
+                    continue;
+                }
+            }
+        }
+
+        else{
+
+            continue;
+        }
+    }
+
+    std::cout << "transitive profile\n";
+
+    return true;
+}
+
+Preferencematrix cycles( Graph& graph ){
+
+    Preferencematrix matrix{};
+
+    Profile profile{};
+
+    if( !transitivity( graph ) ){
+
+
+    }
+
+    return matrix;
+}
