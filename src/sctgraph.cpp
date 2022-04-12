@@ -318,7 +318,49 @@ Preferencematrix cycles( Graph& graph ){
 
     if( !transitivity( graph ) ){
 
+        for( auto i = 0; i < graph.size( ); ++i ){
 
+            profile.clear( );
+
+            SocialPrefNode* pref1 = &graph[ i ];
+
+            for( auto j = 0; j < pref1 -> get_preferences( ).size( ); ++j ){
+
+                SocialPrefNode* pref2 = pref1 -> get_preferences( )[ j ];
+
+                for( auto k = 0; k < pref2 -> get_preferences( ).size( ); ++k ){
+
+                    SocialPrefNode* pref3 = pref2 -> get_preferences( )[ k ];
+
+                    // if pref3 > pref1, push the cycle into matrix
+                    // but this algorithm will be redundant, since it will
+                    // include repeated cycles. There must be a way of removing
+                    // redundancy
+
+                    for( auto m = 0; m < pref3 -> get_preferences( ).size( ); ++m ){
+
+                        SocialPrefNode* repeated = pref3 -> get_preferences( )[ m ];
+
+                        if( pref1 == pref3 -> get_preferences( )[ m ] ){
+
+                            profile.push_back( Options( pref1->get_id( ) ) );
+                            profile.push_back( Options( pref2->get_id( ) ) );
+                            profile.push_back( Options( pref3->get_id( ) ) );
+                        }
+                    }
+                }
+            }
+
+            if( !profile.empty( ) ){
+
+                matrix.push_back( profile );
+            }
+
+            else{
+
+                continue;
+            }
+        }
     }
 
     return matrix;
