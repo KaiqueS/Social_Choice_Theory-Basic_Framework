@@ -11,7 +11,7 @@
 // be WRONG! This is not an implementation problem, since majority rule is NOT
 // guaranteed to be acyclic! Thus, the implementation is CORRECT.
 
-// What happens when we have an even number of profiles s.t. a == b????????
+// Fixed for indifference
 Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 
 	SCT::Decision_set set{ };
@@ -116,12 +116,14 @@ Profile SCT::Qualified_majority_rule::operator( )( Preferencematrix& matrix ){
 					winnerset.insert( iterate_x, perfil.pair.ypref );
 					winnerset.erase( position_y + 1 );
 				}
+			
+				// else, profile ranks x == y, thus, we do not change their positions
 			}
 
-			// one is not in winnerset
+			// only one is in winnerset
 			else{
 
-				// which must be ypref, by the structure of decision_set
+				// which must be ypref, by the structure of decision_set, put it into the winnerset
 				winnerset.push_back( perfil.pair.ypref );
 			}
 		}
@@ -140,17 +142,23 @@ Options SCT::Qualified_majority_rule::operator( )( Options& left, Options& right
 
 	for( auto element : set.get_decisors( ) ){
 
+		// If we are reading a valid pair
 		if( ( element.pair.xpref == left && element.pair.ypref == right ) ||
 			( element.pair.ypref == left && element.pair.xpref == right ) ){
 
+			// Check if the number of decisors for that pair is greater than half the total
 			if( element.elements.size( ) > ( matrix.size( ) / 2 ) ){
 
+				// And return the winner from the pair
 				return element.winner;
 			}
 
-			else{
+			// if the number of decisors equals half the total, return indifference
+			else if( element.winner.get_value( ) == ( matrix.size( ) / 2 ) ){
 
-				continue;
+				element.winner = Options( "Indifference" );
+
+				return element.winner;
 			}
 		}
 

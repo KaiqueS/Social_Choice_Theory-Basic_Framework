@@ -119,8 +119,8 @@ void Graph::initialize( Profile profile ){
 // problems will be evident from this with cycles.
 void Graph::make_graph( Preferencematrix& matrix, SCT::Procedure& rule ){
 
-    SCT::Decision_set set{ };
-    set( matrix );
+    //SCT::Decision_set set{ };
+    //set( matrix );
 
     Options first{ };
     Options second{ };
@@ -133,16 +133,25 @@ void Graph::make_graph( Preferencematrix& matrix, SCT::Procedure& rule ){
             first.set_opt( nodes[ left ].get_id( ) );
             second.set_opt( nodes[ right ].get_id( ) );
 
+            // if left is preferred to right, put right into left.preferences and left into right.worse
             if( nodes[ left ].get_id( ) == rule( first, second, matrix ).get_opt( ) ){
 
                 nodes[ left ].set_pref( nodes[ right ] );
                 nodes[ right ].set_worse( nodes[ left ] );
             }
 
-            else{
+            // else, if the converse, do the converse of the above
+            else if( nodes[ right ].get_id( ) == rule( first, second, matrix ).get_opt( ) ){
 
                 nodes[ right ].set_pref( nodes[ left ] );
                 nodes[ left ].set_worse( nodes[ right ] );
+            }
+
+            // else, left == right
+            else if( rule( first, second, matrix ) == Options( "Indifference" ) ){
+
+                nodes[ left ].set_indiff( nodes[ right ] );
+                nodes[ right ].set_indiff( nodes[ left ] );
             }
         }
     }
@@ -310,6 +319,7 @@ bool transitivity( Graph& graph ){
     return true;
 }
 
+// How to handle indifference????
 Preferencematrix cycles( Graph& graph ){
 
     Preferencematrix matrix{};

@@ -17,6 +17,9 @@ SCT::Procedure::~Procedure( ){ }
 // pra ver quem ganha em cada par, pego só os profiles com a relação
 // observada no ranking
 
+
+// FOUND THE BUG: whenever a == b, for any alternative a,b, the pair a, b is not included in the set!
+// I.E.: indifference fucks things up!
 void SCT::Decision_set::operator( )( Preferencematrix& matrix ){
 
 	Rank social_order{ matrix };
@@ -25,6 +28,7 @@ void SCT::Decision_set::operator( )( Preferencematrix& matrix ){
 
 	for( auto i = 0; i < social_order.size( ); ++i ){
 
+		// if x beats y
 		if( social_order[ i ].get_xval( ) > social_order[ i ].get_yval( ) ){
 
 			decide.pair.xpref = social_order[ i ].get_optx( );
@@ -49,6 +53,7 @@ void SCT::Decision_set::operator( )( Preferencematrix& matrix ){
 			decisor.push_back( decide );
 		}
 
+		// if y beats x
 		else if( social_order[ i ].get_xval( ) < social_order[ i ].get_yval( ) ){
 
 			decide.pair.xpref = social_order[ i ].get_optx( );
@@ -73,8 +78,28 @@ void SCT::Decision_set::operator( )( Preferencematrix& matrix ){
 			decisor.push_back( decide );
 		}
 
+		// Case society is indifferent between a and b, for any a, b
+		// we have no winner...
+		else{
+
+			// how the fuck should decisors be filled? For any profile, we have
+			// that a > b XOR b > a. Indifference is not allowed on individual
+			// profiles.
+			decide.pair.xpref = social_order[ i ].get_optx( );
+			decide.pair.ypref = social_order[ i ].get_opty( );
+
+			decide.winner = Options( "Indifference" );
+
+			// Here we can use the value of any alternative, since both are equal
+			decide.winner.set_value( social_order[ i ].get_yval( ) );
+
+			decisor.push_back( decide );
+		}
+
 		decide = { };
 	}
+
+	std::string test{ };
 }
 
 void SCT::Decision_set::intersect( ){
