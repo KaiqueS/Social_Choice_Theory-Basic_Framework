@@ -262,9 +262,71 @@ void dijkstra( Graph& graph, int weight, SocialPrefNode& initial ){
 
 }
 
-// By design, if a node B is in node A's preferences, then A > B. Thus, B cannot contain
-// A in its preferences. It must contain A in worsethan
+// Transitivity over non-stric preferences!
 bool transitivity( Graph& graph ){
+
+    for( auto first : graph ){
+
+        if( !first.get_indiff( ).empty( ) ){
+
+            // first == second
+            for( auto second : first.get_indiff( ) ){
+
+                if( !second -> get_indiff( ).empty( ) ){
+
+                    // second == third
+                    for( auto third : second -> get_indiff( ) ){
+
+                        if( !third -> get_indiff( ).empty( ) ){
+
+                            for( auto fourth : third -> get_indiff( ) ){
+
+                                // first == fourth, then transitive
+                                if( first == *fourth ){
+
+                                    std::cout << "transitive profile\n";
+
+                                    return true;
+                                }
+
+                                else{
+
+                                    auto search_pref = std::find( fourth -> get_preferences( ).begin( ), fourth -> get_preferences( ).end( ), first );
+
+                                    // Careful with the casting here!
+                                    const SocialPrefNode cycle = *fourth -> get_preferences( ).at( ( int )*( search_pref ) );
+
+                                    // first != fourth, but fourth == cycle > first, then intransitive
+                                    if( cycle == first ){
+
+                                        std::cout << "intransitive profile\n";
+
+                                        return false;
+                                    }
+
+                                    // else, first != fourth, but first > fourth == cycle, then transitive
+                                    else{
+                                    
+                                        std::cout << "transitive profile\n";
+
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    std::cout << "transitive profile\n";
+
+    return true;
+}
+
+// Transitivity over STRIC preferences
+bool quasi_transitivity( Graph& graph ){
 
     for( auto first : graph ){
 
@@ -282,7 +344,7 @@ bool transitivity( Graph& graph ){
 
                                 if( first == *fourth ){
 
-                                    std::cout << "intransitive profile\n";
+                                    std::cout << "not quasi-transitive profile\n";
 
                                     return false;
                                 }
@@ -314,7 +376,7 @@ bool transitivity( Graph& graph ){
         }
     }
 
-    std::cout << "transitive profile\n";
+    std::cout << "quasi-transitive profile\n";
 
     return true;
 }

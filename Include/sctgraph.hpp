@@ -10,7 +10,6 @@
 
 // A graph should always be initialized BEFORE the edges are created
 // How should graphs be made? From profiles resulting of aggregating procedures and from ranks!
-
 class Graph{
 
 public:
@@ -80,6 +79,7 @@ bool bellman_ford( Graph& graph, double weight, SocialPrefNode& initial );
 void dijkstra( Graph& graph, int weight, SocialPrefNode& initial );
 
 bool transitivity( Graph& graph );
+bool quasi_transitivity( Graph& graph );
 
 Preferencematrix cycles( Graph& graph );
 
