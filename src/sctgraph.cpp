@@ -265,55 +265,48 @@ void dijkstra( Graph& graph, int weight, SocialPrefNode& initial ){
 // Transitivity over non-stric preferences!
 bool transitivity( Graph& graph ){
 
+    // Here, we have either a strict preference xor indifference,
+    // it is not possible to have non-strict preferences, because
+    // of completeness
+
+    // if aRb and bRc, then aRc
+    // this can happen in two ways:
+        // indifference -> aRb and bRa
+            // aIb and bIc -> aIc and cIa
+            // aIb and bPc -> aPc
+                // thus, if cPa, intransitive
+        // strict preferences -> aRb and !bRa
+            // aPb and bIc -> aPc
+            // aIb and bPc -> aPc
+
+    // indifference transitivity
     for( auto first : graph ){
 
-        if( !first.get_indiff( ).empty( ) ){
+        // if second indiff first
+        for( auto second : first.get_indiff( ) ){
+    
+            // if third indiff second
+            for( auto third : second->get_indiff( ) ){
 
-            // first == second
-            for( auto second : first.get_indiff( ) ){
+                if( first != *third ){
 
-                if( !second -> get_indiff( ).empty( ) ){
+                    SocialPrefNode checker{ };
 
-                    // second == third
-                    for( auto third : second -> get_indiff( ) ){
+                    for( auto cycle : third -> get_indiff( ) ){
 
-                        if( !third -> get_indiff( ).empty( ) ){
+                        // if we find first in third.indiff, let checker == first
+                        if( first == *cycle ){
 
-                            for( auto fourth : third -> get_indiff( ) ){
-
-                                // first == fourth, then transitive
-                                if( first == *fourth ){
-
-                                    std::cout << "transitive profile\n";
-
-                                    return true;
-                                }
-
-                                else{
-
-                                    auto search_pref = std::find( fourth -> get_preferences( ).begin( ), fourth -> get_preferences( ).end( ), first );
-
-                                    // Careful with the casting here!
-                                    const SocialPrefNode cycle = *fourth -> get_preferences( ).at( ( int )*( search_pref ) );
-
-                                    // first != fourth, but fourth == cycle > first, then intransitive
-                                    if( cycle == first ){
-
-                                        std::cout << "intransitive profile\n";
-
-                                        return false;
-                                    }
-
-                                    // else, first != fourth, but first > fourth == cycle, then transitive
-                                    else{
-                                    
-                                        std::cout << "transitive profile\n";
-
-                                        return true;
-                                    }
-                                }
-                            }
+                            checker = first;
                         }
+                    }
+                       
+                    // if not an element in third.indiff == first, then intransitive
+                    if( checker != first ){
+
+                        std::cout << "intransitive profile\n";
+
+                        return false;
                     }
                 }
             }
@@ -326,7 +319,7 @@ bool transitivity( Graph& graph ){
 }
 
 // Transitivity over STRIC preferences
-bool quasi_transitivity( Graph& graph ){
+/*bool quasi_transitivity( Graph& graph ){
 
     for( auto first : graph ){
 
@@ -379,10 +372,10 @@ bool quasi_transitivity( Graph& graph ){
     std::cout << "quasi-transitive profile\n";
 
     return true;
-}
+}*/
 
 // How to handle indifference????
-Preferencematrix cycles( Graph& graph ){
+/*Preferencematrix cycles( Graph& graph ){
 
     Preferencematrix matrix{};
 
@@ -436,4 +429,4 @@ Preferencematrix cycles( Graph& graph ){
     }
 
     return matrix;
-}
+}*/
