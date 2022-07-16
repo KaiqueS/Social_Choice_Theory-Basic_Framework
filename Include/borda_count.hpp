@@ -13,11 +13,11 @@ class Borda_Count : public Procedure{
 	public:
 
 		Borda_Count( ){ }
-		~Borda_Count( ){ }
+		~Borda_Count( ){ winnerset.clear( ); }
 
-		virtual Profile operator( )( Preferencematrix& matrix );
+		virtual Profile operator( )( Preferencematrix& matrix ) override;
 
-		virtual Options operator( )( Options& left, Options& right, Preferencematrix& matrix );
+		virtual Options operator( )( Options& left, Options& right, Preferencematrix& matrix ) override;
 
 		virtual void score( Preferencematrix& matrix ) override;
 
