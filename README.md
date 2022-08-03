@@ -79,9 +79,13 @@ Implement Arrow's Impossibility Theorem - under revision.
 |
 |-> Pareto: done. Generate a SCRank, check if any alternative that is unanimously chosen beats every other alternative in the Social Ordering generated through the procedure
     
- -> IIA:         
+ -> IIA: let a PreferenceMatrix be a n-tuple of Profiles. Here, we take the profiles to be **strict**, instead of a **weak** orderings over a set of Options. By the definition of the axiom, for any Option x, y( which, given Universal Domain, must contain every possible Options ), and for any two different PreferenceMatrix a, b, if we verify that a | {x, y} = b | {x, y}, i.e., if the relative rankings of x and y are the same on every Profile p_i, p'_i in a and b, then the aggregation procedure must keep the same relative ranking of x and y. Two possible implementations:
  
-1. ALTERNATIVE IMPLEMENTATION: first, check for transitivity on a *PreferenceMatrix* under an aggregation procedure. Then, if the resulting ordering is transitive, get any two pairs m = ( a, b ), n = ( b, c ). Without directly checking for ( a, c ), check if a > b and b > c. By transitivity, we must have a > c. But, then, ( a, b ) is determined by b, thus violating IIA. 
+1. take two PreferenceMatrix, which must contain the same amount of Profiles of the same size and alternatives, compare Profiles at the same position in both PreferenceMatrix, check if any two alternatives share the same relative ranking. If true, then check if the aggregation procedure preserves this ranking. If true, then the axiom is satisfied.
+  
+2. The same as above, but, here, we must consider all possible permutations of Options in Profile, then restrict the set of permutations so as it contains only the PreferenceMatrix'es where the relative ranking of any two Options is the same. Then, we aggregate and check if the procedure preserves this rankings.
+  
+Why should we not consider PreferenceMatrix'es and Profile where the rankings are not the same? Because the IIA axiom is in a conditional form. If the antecedent is not true, then the statemente is true whatever the logical status of the consequent.
  
 -> Non-Dictatorship: 
         
