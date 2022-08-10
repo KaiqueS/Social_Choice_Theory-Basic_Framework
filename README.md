@@ -93,6 +93,8 @@ Why should we not consider PreferenceMatrix'es and Profile where the rankings ar
  
 --> second attempt of implementation: find ALL decisive sets. Check whether the smallest of those has cardinality equal to 1. If not, then there is no dictator.
 
+ATTENTION: dictatorshipness is a property of a PROFILE, not an "individual". Thus, any Profile ranking the alternatives the same way that the Dictatorial Profiles does is, in turn, Dictatorial.
+
 Implement Social Choice Graph Algorithms( only majorities are implemented until now )
 
 Implement GUI - needs rework. Adjust to new codebase under SCT_Test branch.
