@@ -91,6 +91,9 @@ std::ostream& operator<<( std::ostream& os, Profile& profile );
 // One must guarantee that lhs and rhs are sorted by opt, else, it may occur that
 // lhs and rhs have the same opts with the same values, but, being the opts in a
 // different order, the operator may understand that lhs != rhs
+
+// Two Profiles are equal if they hold the same set of alternatives AND
+// if these are ranked equally
 inline bool operator==( const Profile& lhs, const Profile& rhs ){
 
 	if( lhs.get_alternatives( ) == rhs.get_alternatives( ) )

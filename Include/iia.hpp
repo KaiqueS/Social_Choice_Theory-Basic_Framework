@@ -20,7 +20,7 @@ class Irrelevant_Alternatives{
 		Irrelevant_Alternatives& operator=( Irrelevant_Alternatives copy );
 		Irrelevant_Alternatives& operator=( Irrelevant_Alternatives&& alts );
 
-		bool operator( )( SCT::Procedure& procedure );
+		bool operator( )( Preferencematrix& left, Preferencematrix& right , SCT::Procedure& procedure );
 
 		// Helper functions
 		friend void swap( Irrelevant_Alternatives& left, Irrelevant_Alternatives& right ){

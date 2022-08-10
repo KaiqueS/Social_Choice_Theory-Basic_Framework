@@ -43,51 +43,33 @@ SCT::Irrelevant_Alternatives& SCT::Irrelevant_Alternatives::operator=( SCT::Irre
 	return *this;
 }
 
-bool SCT::Irrelevant_Alternatives::operator( )( SCT::Procedure& procedure ){
+// PreferenceMatrix'es are assumed to be of the same size. Their Profiles are assumed to hold
+// the same set of alternatives.
+bool SCT::Irrelevant_Alternatives::operator( )( Preferencematrix& left, Preferencematrix& right , SCT::Procedure& procedure ){
 
-	// Sorting here will enforce correctness on the matrix comparison conditional, i.e., they will
-	// only be equal when its alternatives appear in the same order
-	matrix.merge_sort_by_value( );
+	// The ideia here is: if the relative ranking of a pair x,y of alternatives is the same in both PreferenceMatrix'es,
+	// then the aggregation procedure must preserve this ranking. If this is not true, then IIA was violated.
 
-	Rank original( matrix );
-	original.order_ranking( );
+	Profile first_aggregation = procedure( left );
+	procedure.~Procedure( );
 
-	Preferencematrix primematrix = generate_prime_profile( matrix );
-	primematrix.merge_sort_by_value( );
+	Profile second_aggregation = procedure( right );
+	procedure.~Procedure( );
 
-	Rank primerank( primematrix );
-	primerank.order_ranking( );
+	if( left == right ){
 
-	if( matrix != primematrix ){
+		if( first_aggregation == second_aggregation ){
 
-		if( rank_relations( original, primerank ) == true ){
-
-			Profile winnerset = procedure( matrix ); // MODIFIED THIS
-			winnerset.sort_by_value( );
-
-			Profile primeset = procedure( primematrix ); // MODIFIED THIS
-			primeset.sort_by_value( );
-
-			// Especial attention here. What one wants from this? Not the same values, but same ORDER, i.e.,
-			// for i from 0 to set.size, winnerset[ i ] == primeset[ i ]. DEBUG THIS
-			if( winnerset == primeset ){
-
-				return true;
-			}
-
-			else{
-
-				return false;
-			}
+			return true;
 		}
 
 		else{
 
-			std::cerr << "Ma boi, you really have a problem here.\n";
+			return false;
 		}
 	}
 
-	else if( matrix == primematrix ){
+	else{
 
 		return true;
 	}
@@ -103,9 +85,6 @@ void SCT::Irrelevant_Alternatives::clear( ){
 // This is all about relative positioning of alternatives. If, for any two profiles p and p', the rela
 // tive positions of its alternatives are the same, then, f( p ) and f( p' ) must keep their relative
 // positions equal
-// The secret: for a set A with n elements, generate all possible list, without repetitions of options,
-// of those elements. Then, for a matrix with k rows, generate all possible matrixes, with repetition
-// allowed, using the lists taken from all possible lists
 
 
 /// Non-member helpers
