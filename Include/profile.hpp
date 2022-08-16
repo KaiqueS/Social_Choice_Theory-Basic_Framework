@@ -88,21 +88,32 @@ private:
 // Non-Member Helpers
 std::ostream& operator<<( std::ostream& os, Profile& profile );
 
-// One must guarantee that lhs and rhs are sorted by opt, else, it may occur that
-// lhs and rhs have the same opts with the same values, but, being the opts in a
-// different order, the operator may understand that lhs != rhs
-
-// Two Profiles are equal if they hold the same set of alternatives AND
-// if these are ranked equally
+// Two Profiles are equal if they hold the same set of alternatives AND if these are ranked equally.
+// Implementation: assuming same size, same set of Options, and same range of values, sort by value.
+// If two elements are NOT on the same ith position on both Profiles, then the Profiles are NOT equal.
+// Why? When sorted by value, if x is not in the same position both in Left and Right, then the preferences
+// differ by at least 2 alternatives: x and some y that occupy x's position in one profile.
 inline bool operator==( const Profile& lhs, const Profile& rhs ){
 
-	if( lhs.get_alternatives( ) == rhs.get_alternatives( ) )
+    Profile left{ lhs }, right{ rhs };
 
-		return true;
+    left.sort_by_value( );
+    right.sort_by_value( );
 
-	else
+    for( auto i = 0; i < right.size( ); ++i ){
 
-		return false;
+        if( left[ i ] != right[ i ] ){
+
+            return false;
+        }
+
+        else{
+
+            continue;
+        }
+    }
+
+    return true;
 }
 inline bool operator!=( const Profile& lhs, const Profile& rhs ){ return !operator==( lhs, rhs ); }
 

@@ -11,7 +11,7 @@
 //#include <map>
 #include <string>
 #include <fstream>
-#include <Python.h>
+//#include <Python.h>
 #include "profile.hpp"
 
 // A Matrix of Preferences. This matrix is created from a vector of vectors of Options.
@@ -78,15 +78,36 @@ private:
 // Non-member helpers
 std::ostream& operator<<( std::ostream& os, Preferencematrix& matrix );
 
+
+// Two PreferenceMatrix'es are equal iff for every 0 <= i <= matrix.size, we have that
+// left[ i ] == right[ i ]. I.e., they must hold the same Profiles on the same position, 
+// which, in turn, must be equal to each other.
 inline bool operator==( const Preferencematrix& left, const Preferencematrix& right ){
 
-	if( left.get_matrix( ) == right.get_matrix( ) )
-
-		return true;
-
-	else
+	if( left.size( ) != right.size( ) ){
 
 		return false;
+	}
+
+	else{
+
+		for( auto i = 0; i < left.size( ); ++i ){
+
+			if( left.get_matrix( )[ i ] != right.get_matrix( )[ i ] ){
+
+				return false;
+			}
+
+			else{
+
+				continue;
+			}
+		}
+
+		return true;
+	}
+
+	
 }
 inline bool operator!=( const Preferencematrix& left, const Preferencematrix& right ){ return !operator==( left, right ); }
 

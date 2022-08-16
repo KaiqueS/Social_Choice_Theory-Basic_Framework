@@ -1,4 +1,4 @@
-#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\profile.hpp"
+#include "/Projetos/CPP/SocialChoice/Include/profile.hpp"
 
 // remove sort_by_opt( ) if one starts to have problems
 

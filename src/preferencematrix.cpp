@@ -1,4 +1,4 @@
-#include "D:\Trabalho\Projetos\Cpp\Social_Choice\Include\preferencematrix.hpp"
+#include "/Projetos/CPP/SocialChoice/Include/preferencematrix.hpp"
 
 /// Constructors
 
