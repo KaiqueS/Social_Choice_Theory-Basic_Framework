@@ -26,7 +26,7 @@ public:
     void sorted_by_value( bool value ){ _value_sorted = value; }
     void sorted_by_opt( bool opt ){ _opt_sorted = opt; }
 
-    void set_identifier( std::string& id ){ identifier = std::move( id ); }
+    void set_identifier( std::string id ){ identifier = id; }
 
     void set_alternatives( std::vector<Options>& alts );
     void set_alternatives( Options& opt );

@@ -86,15 +86,16 @@ void Preferencematrix::set_matrix( std::vector<int>::size_type rowsz, std::vecto
 		setofalts[ i ].set_opt( alternatives[ i ] );
 	}
 
+    matrix.resize( rowsize );
+
 	// Sets alternatives' values
 	for( std::vector<int>::size_type i = 0; i < rowsz; ++i ){
 
-        std::string id = ( std::string )( id );
+        std::string id = std::to_string( i + 1 );
 
         setofalts.set_identifier( id );
 
-		matrix.push_back( setofalts );
-        
+        matrix[ i ] = setofalts;
 
 		for( std::vector<int>::size_type j = 0; j < colsz; ++j ){
 

@@ -98,6 +98,8 @@ Profile& Profile::operator=( const Profile& copy ){
 	_opt_sorted = copy._opt_sorted;
 	indifference = copy.indifference;
 
+	identifier = copy.identifier;
+
 	alternatives = copy.alternatives;
 
     return *this;
