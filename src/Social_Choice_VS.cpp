@@ -40,7 +40,7 @@
     std::cout << "\n\n";
 }*/
 
-// Remember: use only TRANSITIVE matrixes!
+// Remember: use only TRANSITIVE matrixes! 
 void testing_dictator(Preferencematrix& matrix) {
 
     SCT::Qualified_majority_rule rule{ };
